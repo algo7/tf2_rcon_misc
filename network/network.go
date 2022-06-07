@@ -20,10 +20,18 @@ func scanPort(protocol, hostname string, port int) bool {
 }
 
 func getHostInfo() []string {
+	// Get host name
+	host, err := os.Hostname()
+	utils.ErrorHandler(err)
 
-	host, _ := os.Hostname()
-	addrs, _ := net.LookupIP(host)
+	// Get host's ipv4 and ipv6 addresses
+	addrs, err := net.LookupIP(host)
+	utils.ErrorHandler(err)
+
+	// Slice to hold ipv4 and ipv6 addresses
 	var ips []string
+
+	// Loop through the addresses and keep only ipv4 addresses
 	for _, addr := range addrs {
 		if ipv4 := addr.To4(); ipv4 != nil {
 			ips = append(ips, ipv4.String())
@@ -33,10 +41,12 @@ func getHostInfo() []string {
 	return ips
 }
 
-func determineRconHost() string {
+// DetermineRconHost determines the rcon host to connect to
+func DetermineRconHost() string {
 
 	var rconHost string = "Nothing"
 
+	// Scan all the ip address opened rcon port and return the ip addr with an opened rcon port
 	for _, ip := range getHostInfo() {
 		open := scanPort("tcp", ip, 27015)
 		if open {
