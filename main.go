@@ -30,6 +30,7 @@ func main() {
 			Poll:      true,
 		})
 	utils.ErrorHandler(err)
+
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
@@ -37,7 +38,7 @@ func main() {
 		if strings.Contains(line.Text, "killed Algo7") &&
 			!strings.Contains(line.Text, "(crit)") {
 			// Send rcon command
-			rconExecute(conn, "say \"Algo7 Down\"")
+			network.RconExecute(conn, "say \"Algo7 Down\"")
 		}
 
 		// Function 2
@@ -66,7 +67,7 @@ func main() {
 			fmt.Println(victim)
 			fmt.Println("say" + " " + "\"" + killer[0] + "nice crit" + "\"")
 
-			rconExecute(conn, ("say" + " " + "\"" + killer[0] + "nice crit" + "\""))
+			network.RconExecute(conn, ("say" + " " + "\"" + killer[0] + "nice crit" + "\""))
 
 		}
 

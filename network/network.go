@@ -60,8 +60,23 @@ func DetermineRconHost() string {
 	return rconHost
 }
 
+// RconConnect connects to a rcon host
+func RconConnect(rconHost string) *rcon.Conn {
+
+	conn, err := rcon.Dial(rconHost+":27015", "123")
+	utils.ErrorHandler(err)
+
+	_, err = conn.Execute("status")
+	utils.ErrorHandler(err)
+
+	fmt.Println("Connected")
+
+	return conn
+}
+
 // RconExecute executes a rcon command
 func RconExecute(conn *rcon.Conn, command string) {
+
 	fmt.Println("Executing: " + command)
 	_, err := conn.Execute(command)
 	utils.ErrorHandler(err)
