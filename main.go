@@ -2,6 +2,7 @@ package main
 
 import (
 	"tf2-rcon/network"
+	"tf2-rcon/utils"
 )
 
 // Global variables
@@ -12,6 +13,7 @@ var (
 func main() {
 	rconHost := network.DetermineRconHost()
 	if rconHost == "Nothing" {
-
+		utils.ErrorHandler(utils.ErrMissingRconHost)
 	}
+
 }
