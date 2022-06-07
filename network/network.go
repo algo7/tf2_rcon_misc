@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"tf2-rcon/utils"
 	"time"
+
+	"github.com/gorcon/rcon"
 )
 
 func scanPort(protocol, hostname string, port int) bool {
@@ -56,4 +58,11 @@ func DetermineRconHost() string {
 	}
 
 	return rconHost
+}
+
+// RconExecute executes a rcon command
+func RconExecute(conn *rcon.Conn, command string) {
+	fmt.Println("Executing: " + command)
+	_, err := conn.Execute(command)
+	utils.ErrorHandler(err)
 }

@@ -2,7 +2,10 @@ module tf2-rcon
 
 go 1.18
 
-require github.com/nxadm/tail v1.4.8
+require (
+	github.com/gorcon/rcon v1.3.3
+	github.com/nxadm/tail v1.4.8
+)
 
 require (
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
