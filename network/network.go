@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"tf2-rcon/utils"
 	"time"
 )
 
@@ -13,10 +14,7 @@ func scanPort(protocol, hostname string, port int) bool {
 	fmt.Printf("Scanning: %s\n", hostname)
 	address := hostname + ":" + strconv.Itoa(port)
 	conn, err := net.DialTimeout(protocol, address, 60*time.Second)
-
-	if err != nil {
-		return false
-	}
+	utils.ErrorHandler(err)
 	defer conn.Close()
 	return true
 }
