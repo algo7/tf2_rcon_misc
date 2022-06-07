@@ -27,6 +27,9 @@ func main() {
 	// Connect to the rcon host
 	conn := network.RconConnect(rconHost)
 
+	// Empty the log file
+	utils.EmptyLog(winTf2LogPath)
+
 	// Tail tf2 console log
 	t, err := tail.TailFile(
 		winTf2LogPath,

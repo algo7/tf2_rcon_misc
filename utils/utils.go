@@ -8,20 +8,7 @@ import (
 
 // Custom errors
 var (
-	ErrMissingRconHost          = errors.New("TF2 Not Running / RCON Not Enabled")
-	errGetDirectory             = errors.New("FAILED TO GET THE CURRENT DIRECTORY")
-	errPurgeDirectory           = errors.New("FAILED TO PURGE THE TMP DIRECTORY")
-	errCopyFile                 = errors.New("FAILED TO COPY DOCKER-COMPSE-PROD.YML")
-	errCloneRepo                = errors.New("FAILED TO CLONE THE REPOSITORY")
-	errDockerCheck              = errors.New("DOCKER IS NOT INSTALLED")
-	ErrSetupCheck               = errors.New("SETUP CHECK FAILED")
-	errDockerComposeRun         = errors.New("FAILED TO RUN DOCKER-COMPOSE")
-	errReviewsNotEmpty          = errors.New("REVIEWS DIRECTORY IS NOT EMPTY")
-	errMissingSourceFiles       = errors.New("MISSING SOURCE FILES")
-	errInputScrapMode           = errors.New("INVALID SCRAP MODE")
-	errInputConcurrency         = errors.New("INVALID CONCURRENCY VALUE")
-	errDockerComposeYmlNotFound = errors.New("DOCKER-COMPSE-PROD.YML NOT FOUND")
-	errValueReplace             = errors.New("FAILED TO REPLACE VALUE")
+	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
 )
 
 /**
@@ -36,4 +23,10 @@ func ErrorHandler(err error) {
 		fmt.Scanln()
 		os.Exit(0)
 	}
+}
+
+// EmptyLog empties the tf2 log file
+func EmptyLog(path string) {
+	err := os.Truncate(path, 0)
+	ErrorHandler(err)
 }
