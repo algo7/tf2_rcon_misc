@@ -16,7 +16,7 @@ var (
 
 func main() {
 
-	// Get the rcon host
+	// Get the rcon host s
 	rconHost := network.DetermineRconHost()
 	if rconHost == "Nothing" {
 		utils.ErrorHandler(utils.ErrMissingRconHost)
