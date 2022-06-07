@@ -16,7 +16,9 @@ func scanPort(protocol, hostname string, port int) bool {
 	fmt.Printf("Scanning: %s\n", hostname)
 	address := hostname + ":" + strconv.Itoa(port)
 	conn, err := net.DialTimeout(protocol, address, 60*time.Second)
-	utils.ErrorHandler(err)
+	if err != nil {
+		return false
+	}
 	defer conn.Close()
 	return true
 }
@@ -56,7 +58,6 @@ func DetermineRconHost() string {
 			break
 		}
 	}
-
 	return rconHost
 }
 
