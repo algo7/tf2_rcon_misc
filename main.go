@@ -15,11 +15,17 @@ var (
 )
 
 func main() {
+
+	// Get the rcon host
 	rconHost := network.DetermineRconHost()
 	if rconHost == "Nothing" {
 		utils.ErrorHandler(utils.ErrMissingRconHost)
 	}
+
 	fmt.Printf("Rcon Host: %s\n", rconHost)
+
+	// Connect to the rcon host
+	conn := network.RconConnect(rconHost)
 
 	// Tail tf2 console log
 	t, err := tail.TailFile(
