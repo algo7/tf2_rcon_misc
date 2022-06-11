@@ -12,7 +12,7 @@ import (
 // Global variables
 var (
 	winTf2LogPath string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-	downMessage          = [3]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Wating to Respawn"}
+	downMessage          = [3]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn"}
 	critMessage          = [3]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced"}
 )
 
