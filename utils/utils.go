@@ -3,7 +3,9 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
+	"time"
 )
 
 // Custom errors
@@ -29,4 +31,10 @@ func ErrorHandler(err error) {
 func EmptyLog(path string) {
 	err := os.Truncate(path, 0)
 	ErrorHandler(err)
+}
+
+// PickRandomMessageIndex returns a random index of the messages array
+func PickRandomMessageIndex(min int, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
 }
