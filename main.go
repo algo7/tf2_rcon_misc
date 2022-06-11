@@ -12,6 +12,8 @@ import (
 // Global variables
 var (
 	winTf2LogPath string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+	downMessage          = [3]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Wating to Respawn"}
+	critMessage          = [3]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced"}
 )
 
 func main() {
@@ -47,7 +49,8 @@ func main() {
 		if strings.Contains(line.Text, "killed Algo7") &&
 			!strings.Contains(line.Text, "(crit)") {
 			// Send rcon command
-			network.RconExecute(conn, "say \"Algo7 Down\"")
+			msgIndex := utils.PickRandomMessageIndex(0, len(downMessage)-1)
+			network.RconExecute(conn, ("say" + " " + "\"" + downMessage[msgIndex] + "\""))
 		}
 
 		// Function 2
@@ -74,9 +77,9 @@ func main() {
 			fmt.Println(line.Text)
 			fmt.Println(killer[0])
 			fmt.Println(victim)
-			fmt.Println("say" + " " + "\"" + killer[0] + "nice crit" + "\"")
+			msgIndex := utils.PickRandomMessageIndex(0, len(critMessage)-1)
 
-			network.RconExecute(conn, ("say" + " " + "\"" + killer[0] + "nice crit" + "\""))
+			network.RconExecute(conn, ("say" + " " + "\"" + killer[0] + critMessage[msgIndex] + "\""))
 
 		}
 
