@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "strings"
+	"strings"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 )
@@ -25,44 +25,50 @@ func main() {
 
 	// Connect to the rcon host
 	conn := network.RconConnect(rconHost)
+
+	// Get the current player name
 	res := network.RconExecute(conn, "name")
-	fmt.Printf("Name: %s\n", res)
+	playerName := strings.Split(res, " ")[2]
+	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
 
 	// Empty the log file
 	utils.EmptyLog(utils.WinTf2LogPath)
 
-	// // Loop through the text of each received line
-	// for line := range t.Lines {
+	// Tail the log
+	t := utils.TailLog()
 
-	// 	// Function 1
-	// 	if strings.Contains(line.Text, "killed Algo7") &&
-	// 		!strings.Contains(line.Text, "(crit)") {
-	// 		// Send rcon command
-	// 		msgIndex := utils.PickRandomMessageIndex(0, len(downMessage)-1)
-	// 		network.RconExecute(conn, ("say" + " " + "\"" + downMessage[msgIndex] + "\""))
-	// 	}
+	// Loop through the text of each received line
+	for line := range t.Lines {
 
-	// 	// Function 3
-	// 	if strings.Contains(line.Text, "killed") &&
-	// 		strings.Contains(line.Text, "(crit)") &&
-	// 		strings.Contains(line.Text, "Algo7") {
-	// 		killer := strings.Split(line.Text, "killed")
-	// 		// victim := strings.TrimSpace(strings.Split(killer[1], "with")[0])
-	// 		// fmt.Println(line.Text)
-	// 		// fmt.Println(killer[0])
-	// 		// fmt.Println(victim)
-	// 		theKiller := killer[0]
-	// 		if theKiller == "Algo7" {
-	// 			theKiller = ""
-	// 		}
-	// 		msgIndex := utils.PickRandomMessageIndex(0, len(critMessage)-1)
+		// Function 1
+		if strings.Contains(line.Text, "killed Algo7") &&
+			!strings.Contains(line.Text, "(crit)") {
+			// Send rcon command
+			msgIndex := utils.PickRandomMessageIndex(0, len(downMessage)-1)
+			network.RconExecute(conn, ("say" + " " + "\"" + downMessage[msgIndex] + "\""))
+		}
 
-	// 		network.RconExecute(conn, ("say" + " " + "\"" + theKiller + critMessage[msgIndex] + "\""))
+		// Function 3
+		if strings.Contains(line.Text, "killed") &&
+			strings.Contains(line.Text, "(crit)") &&
+			strings.Contains(line.Text, "Algo7") {
+			killer := strings.Split(line.Text, "killed")
+			// victim := strings.TrimSpace(strings.Split(killer[1], "with")[0])
+			// fmt.Println(line.Text)
+			// fmt.Println(killer[0])
+			// fmt.Println(victim)
+			theKiller := killer[0]
+			if theKiller == "Algo7" {
+				theKiller = ""
+			}
+			msgIndex := utils.PickRandomMessageIndex(0, len(critMessage)-1)
 
-	// 	}
+			network.RconExecute(conn, ("say" + " " + "\"" + theKiller + critMessage[msgIndex] + "\""))
 
-	// 	fmt.Println(line.Text)
+		}
 
-	// }
+		fmt.Println(line.Text)
+
+	}
 
 }
