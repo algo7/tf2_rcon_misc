@@ -6,11 +6,14 @@ import (
 	"math/rand"
 	"os"
 	"time"
+
+	"github.com/nxadm/tail"
 )
 
 // Custom errors
 var (
-	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
+	ErrMissingRconHost        = errors.New("TF2 Not Running / RCON Not Enabled")
+	WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
 )
 
 /**
@@ -37,4 +40,20 @@ func EmptyLog(path string) {
 func PickRandomMessageIndex(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
+}
+
+// TailLog tails the tf2 log file
+func TailLog() *tail.Tail {
+	// Tail tf2 console log
+	t, err := tail.TailFile(
+		WinTf2LogPath,
+		tail.Config{
+			MustExist: true,
+			Follow:    true,
+			Poll:      true,
+		})
+
+	ErrorHandler(err)
+
+	return t
 }

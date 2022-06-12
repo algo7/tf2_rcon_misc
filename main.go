@@ -5,14 +5,12 @@ import (
 	// "strings"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
-	// "github.com/nxadm/tail"
 )
 
 // Global variables
 var (
-	winTf2LogPath string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-	downMessage          = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
-	critMessage          = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
+	downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
+	critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
 )
 
 func main() {
@@ -29,18 +27,9 @@ func main() {
 	conn := network.RconConnect(rconHost)
 	res := network.RconExecute(conn, "name")
 	fmt.Printf("Name: %s\n", res)
-	// Empty the log file
-	utils.EmptyLog(winTf2LogPath)
 
-	// // Tail tf2 console log
-	// t, err := tail.TailFile(
-	// 	winTf2LogPath,
-	// 	tail.Config{
-	// 		MustExist: true,
-	// 		Follow:    true,
-	// 		Poll:      true,
-	// 	})
-	// utils.ErrorHandler(err)
+	// Empty the log file
+	utils.EmptyLog(utils.WinTf2LogPath)
 
 	// // Loop through the text of each received line
 	// for line := range t.Lines {
