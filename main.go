@@ -34,29 +34,20 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Function 1
-		if strings.Contains(line.Text, "killed Algo7") && !strings.Contains(line.Text, "(crit)") {
-			// Send rcon command
-			msgIndex := utils.PickRandomMessageIndex(0, len(downMessage)-1)
-			network.RconExecute(conn, ("say" + " " + "\"" + downMessage[msgIndex] + "\""))
-		}
-
 		// Function 3
 		if strings.Contains(line.Text, "killed") &&
 			strings.Contains(line.Text, "(crit)") &&
-			strings.Contains(line.Text, "Algo7") {
+			strings.Contains(line.Text, playerName) {
+
 			killer := strings.Split(line.Text, "killed")
-			// victim := strings.TrimSpace(strings.Split(killer[1], "with")[0])
-			// fmt.Println(line.Text)
-			// fmt.Println(killer[0])
-			// fmt.Println(victim)
 			theKiller := killer[0]
+
 			if theKiller == playerName {
 				theKiller = ""
 			}
-			msgIndex := utils.PickRandomMessageIndex(0, len(critMessage)-1)
 
-			network.RconExecute(conn, ("say" + " " + "\"" + theKiller + critMessage[msgIndex] + "\""))
+			msg := utils.PickRandomMessage("crit")
+			network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
 
 		}
 

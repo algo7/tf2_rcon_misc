@@ -14,6 +14,8 @@ import (
 var (
 	ErrMissingRconHost        = errors.New("TF2 Not Running / RCON Not Enabled")
 	WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+	downMessage               = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
+	critMessage               = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
 )
 
 /**
@@ -36,10 +38,27 @@ func EmptyLog(path string) {
 	ErrorHandler(err)
 }
 
-// PickRandomMessageIndex returns a random index of the messages array
-func PickRandomMessageIndex(min int, max int) int {
+// pickRandomMessageIndex returns a random index of the messages array
+func pickRandomMessageIndex(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
+}
+
+// PickRandomMessage returns a random message from the messages array depending on the given message type
+func PickRandomMessage(msgType string) string {
+
+	msg := ""
+
+	switch msgType {
+	case "down":
+		msgIndex := pickRandomMessageIndex(0, len(downMessage)-1)
+		msg = downMessage[msgIndex]
+	case "crit":
+		msgIndex := pickRandomMessageIndex(0, len(critMessage)-1)
+		msg = critMessage[msgIndex]
+	}
+
+	return msg
 }
 
 // TailLog tails the tf2 log file
