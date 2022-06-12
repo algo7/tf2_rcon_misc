@@ -7,12 +7,6 @@ import (
 	"tf2-rcon/utils"
 )
 
-// Global variables
-var (
-	downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
-	critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
-)
-
 func main() {
 
 	// Get the rcon host s
@@ -41,8 +35,7 @@ func main() {
 	for line := range t.Lines {
 
 		// Function 1
-		if strings.Contains(line.Text, "killed Algo7") &&
-			!strings.Contains(line.Text, "(crit)") {
+		if strings.Contains(line.Text, "killed Algo7") && !strings.Contains(line.Text, "(crit)") {
 			// Send rcon command
 			msgIndex := utils.PickRandomMessageIndex(0, len(downMessage)-1)
 			network.RconExecute(conn, ("say" + " " + "\"" + downMessage[msgIndex] + "\""))
@@ -58,7 +51,7 @@ func main() {
 			// fmt.Println(killer[0])
 			// fmt.Println(victim)
 			theKiller := killer[0]
-			if theKiller == "Algo7" {
+			if theKiller == playerName {
 				theKiller = ""
 			}
 			msgIndex := utils.PickRandomMessageIndex(0, len(critMessage)-1)
