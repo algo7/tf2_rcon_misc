@@ -7,6 +7,11 @@ import (
 	"tf2-rcon/utils"
 )
 
+// var bignum, ok = new(big.Int).SetString("76561197960265728", 0)
+// var bigNum2, ok2 = new(big.Int).SetString("132456789", 0)
+// var xy = new(big.Int)
+// xy.Add(bignum, bigNum2)
+// 	fmt.Println(xy)
 func main() {
 
 	// Get the rcon host s
@@ -34,24 +39,31 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Function 3
-		if strings.Contains(line.Text, "killed") &&
-			strings.Contains(line.Text, "(crit)") &&
-			strings.Contains(line.Text, playerName) {
+		// // Function 3
+		// if strings.Contains(line.Text, "killed") &&
+		// 	strings.Contains(line.Text, "(crit)") &&
+		// 	strings.Contains(line.Text, playerName) {
 
-			killer := strings.Split(line.Text, "killed")
-			theKiller := killer[0]
+		// 	killer := strings.Split(line.Text, "killed")
+		// 	theKiller := killer[0]
 
-			if theKiller == playerName {
-				theKiller = ""
-			}
+		// 	if theKiller == playerName {
+		// 		theKiller = ""
+		// 	}
 
-			msg := utils.PickRandomMessage("crit")
-			network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
+		// 	msg := utils.PickRandomMessage("crit")
+		// 	network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
 
+		// }
+
+		if strings.Contains(line.Text, "Lobby updated") {
+			network.RconExecute(conn, "status")
 		}
 
-		fmt.Println(line.Text)
+		if utils.Steam3IdMatcher(line.Text) {
+			// fmt.Println(line.Text)
+			fmt.Println(utils.Steam3IdFindString(line.Text))
+		}
 
 	}
 
