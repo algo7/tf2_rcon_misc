@@ -55,9 +55,8 @@ func main() {
 			network.RconExecute(conn, "status")
 		}
 
-		if utils.Steam3IdMatcher(line.Text) {
-			// fmt.Println(line.Text)
-			fmt.Println(utils.Steam3IdFindString(line.Text))
+		if utils.Steam3IDMatcher(line.Text) {
+			fmt.Println(utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text)))
 		}
 
 	}

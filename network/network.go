@@ -78,7 +78,7 @@ func RconConnect(rconHost string) *rcon.Conn {
 // RconExecute executes a rcon command
 func RconExecute(conn *rcon.Conn, command string) string {
 
-	fmt.Println("Executing: " + command)
+	// fmt.Println("Executing: " + command)
 	response, err := conn.Execute(command)
 	utils.ErrorHandler(err)
 
