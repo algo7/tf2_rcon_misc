@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/nxadm/tail"
@@ -75,4 +76,10 @@ func TailLog() *tail.Tail {
 	ErrorHandler(err)
 
 	return t
+}
+
+//
+
+func Steam3IdMatcher() {
+	re := regexp.MustCompile(`\[U:[0-9]:\d{8,11}\]`)
 }
