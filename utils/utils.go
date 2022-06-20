@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"math/rand"
 	"os"
 	"regexp"
@@ -17,6 +18,7 @@ var (
 	WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
 	downMessage               = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
 	critMessage               = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
+	steam3IdRegEx             = `\[U:[0-9]:\d{8,11}\]`
 )
 
 /**
@@ -78,14 +80,22 @@ func TailLog() *tail.Tail {
 	return t
 }
 
-// Steam3IdMatcher returns a boolean indicating if the given string matches the regex
-func Steam3IdMatcher(text string) bool {
-	re := regexp.MustCompile(`\[U:[0-9]:\d{8,11}\]`)
+// Steam3IDMatcher returns a boolean indicating if the given string matches the regex
+func Steam3IDMatcher(text string) bool {
+	re := regexp.MustCompile(steam3IdRegEx)
 	return re.MatchString(text)
 }
 
-// Steam3IdFindString returns the string the matches the given regex
-func Steam3IdFindString(text string) string {
-	re := regexp.MustCompile(`\[U:[0-9]:\d{8,11}\]`)
+// Steam3IDFindString returns the string the matches the given regex
+func Steam3IDFindString(text string) string {
+	re := regexp.MustCompile(steam3IdRegEx)
 	return re.FindString(text)
+}
+
+// Steam3IDToSteam64 converts a steam3 id to a steam64 id
+func Steam3IDToSteam64(givenSteam3ID string) *big.Int {
+	baseSteamID, _ := new(big.Int).SetString("76561197960265728", 0)
+	steam3ID, _ := new(big.Int).SetString(givenSteam3ID, 0)
+	steam64ID := new(big.Int).Add(baseSteamID, steam3ID)
+	return steam64ID
 }

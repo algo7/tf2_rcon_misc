@@ -7,11 +7,6 @@ import (
 	"tf2-rcon/utils"
 )
 
-// var bignum, ok = new(big.Int).SetString("76561197960265728", 0)
-// var bigNum2, ok2 = new(big.Int).SetString("132456789", 0)
-// var xy = new(big.Int)
-// xy.Add(bignum, bigNum2)
-// 	fmt.Println(xy)
 func main() {
 
 	// Get the rcon host s
