@@ -78,8 +78,8 @@ func TailLog() *tail.Tail {
 	return t
 }
 
-//
-
-func Steam3IdMatcher() {
+// Steam3IdMatcher return a boolean indicating if the given string matches the regex
+func Steam3IdMatcher(text string) bool {
 	re := regexp.MustCompile(`\[U:[0-9]:\d{8,11}\]`)
+	return re.MatchString(text)
 }
