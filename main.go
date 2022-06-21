@@ -51,7 +51,7 @@ func main() {
 
 		// }
 
-		if strings.Contains(line.Text, "Lobby updated") {
+		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute(conn, "status")
 		}
 
