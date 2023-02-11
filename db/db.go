@@ -32,7 +32,7 @@ func DBConnect() *mongo.Client {
 	return client
 }
 
-func DBAddPlayer(playerID string) {
+func DBAddPlayer(playerID int64) {
 
 	// Connect to the DB
 	client := DBConnect()
