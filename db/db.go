@@ -32,11 +32,15 @@ func DBConnect() *mongo.Client {
 	return client
 }
 
-func DBAddPlayer(client *mongo.Client, playerID string) {
+func DBAddPlayer(playerID string) {
+
+	// Connect to the DB
+	client := DBConnect()
+
 	collection := client.Database("TF2").Collection("Players")
 
 	filter := bson.D{{Key: "SteamID", Value: playerID}}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "Encounter", Value: 1}}}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "SteamID", Value: playerID}}}}
 	opts := options.Update().SetUpsert(true)
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 	if err != nil {
