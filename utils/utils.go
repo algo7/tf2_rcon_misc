@@ -12,7 +12,7 @@ import (
 	"github.com/nxadm/tail"
 )
 
-// Custom errors
+// Custom (error) messages
 var (
 	ErrMissingRconHost        = errors.New("TF2 Not Running / RCON Not Enabled")
 	WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
@@ -87,7 +87,7 @@ func Steam3IDMatcher(text string) bool {
 	return re.MatchString(text)
 }
 
-// Steam3IDFindString returns the string the matches the given regex
+// Steam3IDFindString returns the string that matches the given regex
 func Steam3IDFindString(text string) string {
 	re := regexp.MustCompile(steam3IDRegEx)
 	return re.FindString(text)
