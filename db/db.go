@@ -12,6 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type Player struct {
+	steamID   string
+	encounter int32
+}
+
 func DBConnect() {
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
