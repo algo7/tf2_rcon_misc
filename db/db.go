@@ -1,8 +1,6 @@
 package db
 
 import (
-
-	// "go.mongodb.org/mongo-driver/bson"
 	"context"
 	"fmt"
 
@@ -17,12 +15,12 @@ type Player struct {
 	encounter int32
 }
 
-func DBConnect() {
+func DBConnect() *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB
-	_, err := mongo.Connect(context.TODO(), clientOptions)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
 		utils.ErrorHandler(err)
@@ -30,5 +28,5 @@ func DBConnect() {
 
 	fmt.Println("Connected to MongoDB!")
 
-	// collection := client.Database("TF2").Collection("Players")
+	return client
 }
