@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"tf2-rcon/utils"
 
@@ -32,20 +33,25 @@ func DBConnect() *mongo.Client {
 	return client
 }
 
-func DBAddPlayer(playerID int64) {
+func DBAddPlayer(client *mongo.Client, playerID int64, playerName string)*mongo.UpdateResult {
 
-	// Connect to the DB
-	client := DBConnect()
 
 	collection := client.Database("TF2").Collection("Players")
 
+
 	filter := bson.D{{Key: "SteamID", Value: playerID}}
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "SteamID", Value: playerID}}}}
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "SteamID", Value: playerID},
+		{Key: "Name", Value: playerName},
+		{Key: "Updated", Value: time.Now().UnixNano()},
+	}}}
 	opts := options.Update().SetUpsert(true)
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Number of documents updated: %v\n", result.ModifiedCount)
-	fmt.Printf("Number of documents upserted: %v\n", result.UpsertedCount)
+
+	// fmt.Printf("Number of documents upserted: %v\n", result)
+	return result
+
 }
