@@ -69,10 +69,18 @@ func main() {
 		// 	fmt.Println(userName)
 		// }
 
-		if utils.Steam3IDMatcher(line.Text) && utils.UserNameMatcher(line.Text) {
+		// Match all the players' steamID and name from the output of the status command
+		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
+
+			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
-			userName := utils.UserNameFindString(line.Text)
+
+			// Find the player's userName
+			userName := utils.PlayerNameFindString(line.Text)
+
+			// Add the player to the DB
 			db.DBAddPlayer(client, steamID, userName)
+
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
 		}
 

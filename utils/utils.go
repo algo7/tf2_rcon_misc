@@ -105,14 +105,14 @@ func Steam3IDToSteam64(givenSteam3ID string) int64 {
 	return num
 }
 
-// UserNameMatcher returns a boolean indicating if the given string matches the regex
-func UserNameMatcher(text string) bool {
+// PlayerNameMatcher returns a boolean indicating if the given string matches the regex
+func PlayerNameMatcher(text string) bool {
 	re := regexp.MustCompile(userNameRegEx)
 	return re.MatchString(text)
 }
 
-// UserNameFindString returns the string that matches the given regex
-func UserNameFindString(text string) string {
+// PlayerNameFindString returns the string that matches the given regex
+func PlayerNameFindString(text string) string {
 	re := regexp.MustCompile(userNameRegEx)
 	return re.FindStringSubmatch(text)[1]
 }
