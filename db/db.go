@@ -12,12 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type Player struct {
-// 	steamID   string
-// 	encounter int32
-// }
-
-func DBConnect() *mongo.Client {
+// Connect to the database
+func Connect() *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
@@ -33,20 +29,30 @@ func DBConnect() *mongo.Client {
 	return client
 }
 
-func DBAddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
+// AddPlayer adds a player to the database
+func AddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
 
+	// Get a handle for your collection
 	collection := client.Database("TF2").Collection("Players")
 
+	// Filter by the steamID (64)
 	filter := bson.D{{Key: "SteamID", Value: playerID}}
+
+	// The information to be updated
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "SteamID", Value: playerID},
 		{Key: "Name", Value: playerName},
 		{Key: "UpdatedAt", Value: time.Now().UnixNano()},
 	}}}
+
+	// Upsert the document if it doesn't exist
 	opts := options.Update().SetUpsert(true)
+
+	// Update the document
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
+
 	if err != nil {
-		panic(err)
+		utils.ErrorHandler(err)
 	}
 
 	// fmt.Printf("Number of documents upserted: %v\n", result)

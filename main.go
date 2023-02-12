@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// Connect to the DB
-	client := db.DBConnect()
+	client := db.Connect()
 
 	// Get the rcon host
 	rconHost := network.DetermineRconHost()
@@ -79,7 +79,7 @@ func main() {
 			userName := utils.PlayerNameFindString(line.Text)
 
 			// Add the player to the DB
-			db.DBAddPlayer(client, steamID, userName)
+			db.AddPlayer(client, steamID, userName)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
 		}
