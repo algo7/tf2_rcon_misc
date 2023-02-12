@@ -33,17 +33,15 @@ func DBConnect() *mongo.Client {
 	return client
 }
 
-func DBAddPlayer(client *mongo.Client, playerID int64, playerName string)*mongo.UpdateResult {
-
+func DBAddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
 
 	collection := client.Database("TF2").Collection("Players")
-
 
 	filter := bson.D{{Key: "SteamID", Value: playerID}}
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "SteamID", Value: playerID},
 		{Key: "Name", Value: playerName},
-		{Key: "Updated", Value: time.Now().UnixNano()},
+		{Key: "UpdatedAt", Value: time.Now().UnixNano()},
 	}}}
 	opts := options.Update().SetUpsert(true)
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
