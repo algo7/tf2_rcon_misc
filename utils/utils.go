@@ -20,6 +20,7 @@ var (
 	critMessage               = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
 	steam3IDRegEx             = `\[U:[0-9]:\d{8,11}\]`
 	steam3AccIDRegEx          = `\d{8,11}`
+	userNameRegEx             = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
 )
 
 /**
@@ -102,4 +103,16 @@ func Steam3IDToSteam64(givenSteam3ID string) int64 {
 	num := steam64ID.Int64()
 
 	return num
+}
+
+// UserNameMatcher returns a boolean indicating if the given string matches the regex
+func UserNameMatcher(text string) bool {
+	re := regexp.MustCompile(userNameRegEx)
+	return re.MatchString(text)
+}
+
+// UserNameFindString returns the string that matches the given regex
+func UserNameFindString(text string) string {
+	re := regexp.MustCompile(userNameRegEx)
+	return re.FindStringSubmatch(text)[1]
 }
