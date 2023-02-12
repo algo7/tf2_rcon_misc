@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	
 	// Connect to the DB
 	client := db.Connect()
 
@@ -37,37 +38,10 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// // Function 3
-		// if strings.Contains(line.Text, "killed") &&
-		// 	strings.Contains(line.Text, "(crit)") &&
-		// 	strings.Contains(line.Text, playerName) {
-
-		// 	killer := strings.Split(line.Text, "killed")
-		// 	theKiller := killer[0]
-
-		// 	if theKiller == playerName {
-		// 		theKiller = ""
-		// 	}
-
-		// 	msg := utils.PickRandomMessage("crit")
-		// 	network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
-
-		// }
-
+		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute(conn, "status")
 		}
-
-		// if utils.Steam3IDMatcher(line.Text) {
-		// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
-		// 	fmt.Println(steamID)
-		// 	db.DBAddPlayer(client, steamID)
-		// }
-
-		// if utils.UserNameMatcher(line.Text) {
-		// 	userName := utils.UserNameFindString(line.Text)
-		// 	fmt.Println(userName)
-		// }
 
 		// Match all the players' steamID and name from the output of the status command
 		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
@@ -87,3 +61,31 @@ func main() {
 	}
 
 }
+
+// // Function 3
+// if strings.Contains(line.Text, "killed") &&
+// 	strings.Contains(line.Text, "(crit)") &&
+// 	strings.Contains(line.Text, playerName) {
+
+// 	killer := strings.Split(line.Text, "killed")
+// 	theKiller := killer[0]
+
+// 	if theKiller == playerName {
+// 		theKiller = ""
+// 	}
+
+// 	msg := utils.PickRandomMessage("crit")
+// 	network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
+
+// }
+
+// if utils.Steam3IDMatcher(line.Text) {
+// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
+// 	fmt.Println(steamID)
+// 	db.DBAddPlayer(client, steamID)
+// }
+
+// if utils.UserNameMatcher(line.Text) {
+// 	userName := utils.UserNameFindString(line.Text)
+// 	fmt.Println(userName)
+// }
