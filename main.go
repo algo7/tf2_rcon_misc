@@ -9,8 +9,10 @@ import (
 )
 
 func main() {
+	// Connect to the DB
+	client := db.DBConnect()
 
-	// Get the rcon host s
+	// Get the rcon host
 	rconHost := network.DetermineRconHost()
 	if rconHost == "Nothing" {
 		utils.ErrorHandler(utils.ErrMissingRconHost)
@@ -56,10 +58,22 @@ func main() {
 			network.RconExecute(conn, "status")
 		}
 
-		if utils.Steam3IDMatcher(line.Text) {
+		// if utils.Steam3IDMatcher(line.Text) {
+		// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
+		// 	fmt.Println(steamID)
+		// 	db.DBAddPlayer(client, steamID)
+		// }
+
+		// if utils.UserNameMatcher(line.Text) {
+		// 	userName := utils.UserNameFindString(line.Text)
+		// 	fmt.Println(userName)
+		// }
+
+		if utils.Steam3IDMatcher(line.Text) && utils.UserNameMatcher(line.Text) {
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
-			fmt.Println(steamID)
-			db.DBAddPlayer(steamID)
+			userName := utils.UserNameFindString(line.Text)
+			db.DBAddPlayer(client, steamID, userName)
+			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
 		}
 
 	}
