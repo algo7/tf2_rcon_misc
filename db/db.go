@@ -10,18 +10,34 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 // Connect to the database
 func Connect() *mongo.Client {
+
+	// Use the SetServerAPIOptions() method to set the Stable API version to 1
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017").SetServerAPIOptions(serverAPI)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
 		utils.ErrorHandler(err)
+	}
+
+	defer func() {
+		if err = client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+
+	// Send a ping to confirm a successful connection
+	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		panic(err)
 	}
 
 	fmt.Println("Connected to MongoDB!")
