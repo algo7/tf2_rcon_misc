@@ -51,7 +51,8 @@ func main() {
 
 			// Find the player's userName
 			userNameStrintToParse := strings.Fields(line.Text)
-			userName := strings.Join(userNameStrintToParse[2:len(userNameStrintToParse)-5], " ")
+			userNameNotTrimmed := strings.Join(userNameStrintToParse[2:len(userNameStrintToParse)-5], " ")
+			userName:= strings.Trim(userNameNotTrimmed, "\"")
 			
 			// Add the player to the DB
 			db.AddPlayer(client, steamID, userName)
