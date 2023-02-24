@@ -111,15 +111,3 @@ func PlayerNameMatcher(text string) bool {
 	re := regexp.MustCompile(userNameRegEx)
 	return re.MatchString(text)
 }
-
-// PlayerNameFindString returns the string that matches the given regex
-func PlayerNameFindString(text string) string {
-	re := regexp.MustCompile(userNameRegEx)
-	return re.FindString(text)
-}
-
-// PlayerNameFindString returns the string that matches the given regex
-// func PlayerNameFindString(text string) string {
-// 	re := regexp.MustCompile(userNameRegEx)
-// 	return re.FindStringSubmatch(text)[1]
-// }
