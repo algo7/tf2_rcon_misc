@@ -20,7 +20,7 @@ var (
 	critMessage               = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
 	steam3IDRegEx             = `\[U:[0-9]:\d{8,11}\]`
 	steam3AccIDRegEx          = `\d{8,11}`
-	userNameRegEx             = `\[U:\d:\d+\] \d{2}:\d{2}`
+	userNameRegEx             = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
 )
 
