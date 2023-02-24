@@ -21,6 +21,7 @@ var (
 	steam3IDRegEx             = `\[U:[0-9]:\d{8,11}\]`
 	steam3AccIDRegEx          = `\d{8,11}`
 	userNameRegEx             = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
+	userNameRegEx2            = `\[U:\d:\d+\] \d{2}:\d{2}`
 )
 
 /**
@@ -115,4 +116,10 @@ func PlayerNameMatcher(text string) bool {
 func PlayerNameFindString(text string) string {
 	re := regexp.MustCompile(userNameRegEx)
 	return re.FindStringSubmatch(text)[1]
+}
+
+// PlayerNameFindStringV2 returns the string that matches the given regex
+func PlayerNameFindStringV2(text string) string {
+	re := regexp.MustCompile(userNameRegEx2)
+	return re.FindString(text)
 }

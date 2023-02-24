@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	
+
 	// Connect to the DB
 	client := db.Connect()
 
@@ -45,6 +45,17 @@ func main() {
 
 		// Match all the players' steamID and name from the output of the status command
 		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
+
+			// Potential logic for parsing the status command output
+			// // Sample input with player name containing spaces and nested quotes
+			// input := `32 "Saigial ""D""arun" [U:1:60866573] 07:46 64 0 active`
+
+			// // Split the input string into an array using spaces as the delimiter
+			// fields := strings.Fields(input)
+			// fmt.Println(fields)
+
+			// playerName := strings.Join(fields[1:len(fields)-5], " ")
+			// fmt.Println(playerName)
 
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
