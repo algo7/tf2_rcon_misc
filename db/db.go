@@ -29,11 +29,11 @@ func Connect() *mongo.Client {
 		utils.ErrorHandler(err)
 	}
 
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			utils.ErrorHandler(err)
-		}
-	}()
+	// defer func() {
+	// 	if err = client.Disconnect(context.TODO()); err != nil {
+	// 		utils.ErrorHandler(err)
+	// 	}
+	// }()
 
 	// Send a ping to confirm a successful connection
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
