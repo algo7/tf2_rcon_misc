@@ -57,7 +57,6 @@ func LogPathDection() string {
 		// Get operating system name
 		osName := runtime.GOOS
 		fmt.Println("OS: ", osName)
-
 		switch osName {
 
 		case "windows":
@@ -80,10 +79,10 @@ func LogPathDection() string {
 
 			fmt.Println("OS User: ", osUSerName)
 			tf2LogPath = `/home/` + osUSerName + `/.local/share/Steam/steamapps/common/Team Fortress 2/tf/console.log`
-			fmt.Println("Linux Detected. Log Path Defaulting to: \n", tf2LogPath)
+			fmt.Printf("Linux Detected. Log Path Defaulting to: \n%s", tf2LogPath)
 
 		default:
-			fmt.Printf("%s.\n", osName)
+			fmt.Println("OS: ", osName)
 			fmt.Println("Custom Log Path Not Provided or OS Not Supported Yet")
 			os.Exit(0)
 		}
