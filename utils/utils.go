@@ -79,7 +79,7 @@ func LogPathDection() string {
 
 			fmt.Println("OS User: ", osUSerName)
 			tf2LogPath = `/home/` + osUSerName + `/.local/share/Steam/steamapps/common/Team Fortress 2/tf/console.log`
-			fmt.Printf("Linux Detected. Log Path Defaulting to: \n%s", tf2LogPath)
+			fmt.Printf("Linux Detected. Log Path Defaulting to: \n%s\n", tf2LogPath)
 
 		default:
 			fmt.Println("OS: ", osName)
