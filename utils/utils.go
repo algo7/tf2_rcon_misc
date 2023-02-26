@@ -48,8 +48,10 @@ func EmptyLog(path string) {
 // LogPathDection
 func LogPathDection() string {
 
+	// Get TF2 log path from env variable
 	tf2LogPath := os.Getenv("TF2_LOGPATH")
 
+	// Auto detect log path if env variable is not set
 	if tf2LogPath == "" {
 
 		// Get operating system name
@@ -57,6 +59,7 @@ func LogPathDection() string {
 		fmt.Println("OS: ", osName)
 
 		switch osName {
+
 		case "windows":
 			tf2LogPath = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
 			fmt.Println("Windows Detected. Log Path Defaulting to: ", tf2LogPath)
@@ -85,6 +88,7 @@ func LogPathDection() string {
 			os.Exit(0)
 		}
 	}
+
 	return tf2LogPath
 }
 
