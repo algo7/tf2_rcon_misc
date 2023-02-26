@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"runtime"
 	"time"
 
 	"github.com/nxadm/tail"
@@ -69,13 +70,39 @@ func PickRandomMessage(msgType string) string {
 
 // TailLog tails the tf2 log file
 func TailLog() *tail.Tail {
-    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
-        WinTf2LogPath = envWinTf2LogPath
-    }
+
+	tf2LogPath := os.Getenv("TF2_LOGPATH")
+
+	if tf2LogPath == "" {
+
+		// Get operating system name
+		osName := runtime.GOOS
+		fmt.Println("OS: ", osName)
+
+		switch osName {
+		case "windows":
+			tf2LogPath = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+			fmt.Println("Windows Detected. Log Path Defaulting to: ", tf2LogPath)
+
+		case "darwin":
+			tf2LogPath = "/Users/Shared/Steam/steamapps/common/Team\\ Fortress\\ 2/tf/console.log"
+			fmt.Println("macOS Detected. Log Path Defaulting to: ", tf2LogPath)
+			os.Exit(0)
+
+		case "linux":
+			tf2LogPath = "~/.steam/steam/steamapps/common/Team\\ Fortress\\ 2/tf/console.log"
+			fmt.Println("Linux Detected. Log Path Defaulting to: ", tf2LogPath)
+
+		default:
+			fmt.Printf("%s.\n", osName)
+			fmt.Println("Custom Log Path Not Provided or OS Not Supported Yet")
+			os.Exit(0)
+		}
+	}
 
 	// Tail tf2 console log
 	t, err := tail.TailFile(
-		WinTf2LogPath,
+		tf2LogPath,
 		tail.Config{
 			MustExist: true,
 			Follow:    true,
