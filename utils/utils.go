@@ -108,15 +108,6 @@ func TailLog(tf2LogPath string) *tail.Tail {
 	return t
 }
 
-func GetLogPath() string {
-    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
-        return envWinTf2LogPath
-    }
-	
-	return WinTf2LogPath
-}
-
-
 // Steam3IDMatcher returns a boolean indicating if the given string matches the regex
 func Steam3IDMatcher(text string) bool {
 	re := regexp.MustCompile(steam3IDRegEx)
