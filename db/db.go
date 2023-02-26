@@ -3,8 +3,8 @@ package db
 import (
 	"context"
 	"fmt"
-	"time"
 	"os"
+	"time"
 
 	"tf2-rcon/utils"
 
@@ -17,15 +17,17 @@ import (
 // Connect to the database
 func Connect() *mongo.Client {
 
+	// Get the MongoDB URI from the environment
+	mongoURI := os.Getenv("MONGODB_URI")
+
+	// If the URI is empty, use the default
+	if mongoURI == "" {
+		mongoURI = "mongodb://localhost:27017"
+	}
+
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
-	mongoURI := "mongodb://localhost:27017"
-
-    if envMongoURI := os.Getenv("MONGODB_URI"); envMongoURI != "" {
-        mongoURI = envMongoURI
-    }
-	
 	// Set client options
 	clientOptions := options.Client().ApplyURI(mongoURI).SetServerAPIOptions(serverAPI)
 
@@ -54,12 +56,14 @@ func Connect() *mongo.Client {
 
 // AddPlayer adds a player to the database
 func AddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
-	mongoDBName := "TF2"
 
-    if envMongoDBName := os.Getenv("MONGODB_NAME"); envMongoDBName != "" {
-        mongoDBName = envMongoDBName
-    }
-	
+	// Database  name
+	mongoDBName := os.Getenv("MONGODB_NAME")
+	// If the URI is empty, use the default
+	if mongoDBName == "" {
+		mongoDBName = "TF2"
+	}
+
 	// Get a handle for your collection
 	collection := client.Database(mongoDBName).Collection("Players")
 

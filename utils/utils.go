@@ -4,23 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
-	"math/rand"
 	"os"
+	"os/user"
 	"regexp"
-	"time"
+	"runtime"
 
 	"github.com/nxadm/tail"
 )
 
 // Custom (error) messages
 var (
-	ErrMissingRconHost        = errors.New("TF2 Not Running / RCON Not Enabled")
-	WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-	downMessage               = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
-	critMessage               = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
-	steam3IDRegEx             = `\[U:[0-9]:\d{8,11}\]`
-	steam3AccIDRegEx          = `\d{8,11}`
-	userNameRegEx             = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
+
+	steam3IDRegEx    = `\[U:[0-9]:\d{8,11}\]`
+	steam3AccIDRegEx = `\d{8,11}`
+	userNameRegEx    = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+	// downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
+	// critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
 	// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
 )
 
@@ -44,38 +45,58 @@ func EmptyLog(path string) {
 	ErrorHandler(err)
 }
 
-// pickRandomMessageIndex returns a random index of the messages array
-func pickRandomMessageIndex(min int, max int) int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(max-min+1) + min
-}
+// LogPathDection
+func LogPathDection() string {
 
-// PickRandomMessage returns a random message from the messages array depending on the given message type
-func PickRandomMessage(msgType string) string {
+	// Get TF2 log path from env variable
+	tf2LogPath := os.Getenv("TF2_LOGPATH")
 
-	msg := ""
+	// Auto detect log path if env variable is not set
+	if tf2LogPath == "" {
 
-	switch msgType {
-	case "down":
-		msgIndex := pickRandomMessageIndex(0, len(downMessage)-1)
-		msg = downMessage[msgIndex]
-	case "crit":
-		msgIndex := pickRandomMessageIndex(0, len(critMessage)-1)
-		msg = critMessage[msgIndex]
+		// Get operating system name
+		osName := runtime.GOOS
+		fmt.Println("OS: ", osName)
+		switch osName {
+
+		case "windows":
+			tf2LogPath = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+			fmt.Println("Windows Detected. Log Path Defaulting to: ", tf2LogPath)
+
+		case "darwin":
+			tf2LogPath = "/Users/Shared/Steam/steamapps/common/Team\\ Fortress\\ 2/tf/console.log"
+			fmt.Println("macOS Detected. Log Path Defaulting to: ", tf2LogPath)
+			os.Exit(0)
+
+		case "linux":
+
+			// Get current os user name
+			user, err := user.Current()
+			if err != nil {
+				ErrorHandler(err)
+			}
+			osUSerName := user.Username
+
+			fmt.Println("OS User: ", osUSerName)
+			tf2LogPath = `/home/` + osUSerName + `/.local/share/Steam/steamapps/common/Team Fortress 2/tf/console.log`
+			fmt.Printf("Linux Detected. Log Path Defaulting to: \n%s\n", tf2LogPath)
+
+		default:
+			fmt.Println("OS: ", osName)
+			fmt.Println("Custom Log Path Not Provided or OS Not Supported Yet")
+			os.Exit(0)
+		}
 	}
 
-	return msg
+	return tf2LogPath
 }
 
 // TailLog tails the tf2 log file
-func TailLog() *tail.Tail {
-    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
-        WinTf2LogPath = envWinTf2LogPath
-    }
+func TailLog(tf2LogPath string) *tail.Tail {
 
 	// Tail tf2 console log
 	t, err := tail.TailFile(
-		WinTf2LogPath,
+		tf2LogPath,
 		tail.Config{
 			MustExist: true,
 			Follow:    true,
@@ -115,3 +136,26 @@ func PlayerNameMatcher(text string) bool {
 	re := regexp.MustCompile(userNameRegEx)
 	return re.MatchString(text)
 }
+
+// // pickRandomMessageIndex returns a random index of the messages array
+// func pickRandomMessageIndex(min int, max int) int {
+// 	rand.Seed(time.Now().UnixNano())
+// 	return rand.Intn(max-min+1) + min
+// }
+
+// // PickRandomMessage returns a random message from the messages array depending on the given message type
+// func PickRandomMessage(msgType string) string {
+
+// 	msg := ""
+
+// 	switch msgType {
+// 	case "down":
+// 		msgIndex := pickRandomMessageIndex(0, len(downMessage)-1)
+// 		msg = downMessage[msgIndex]
+// 	case "crit":
+// 		msgIndex := pickRandomMessageIndex(0, len(critMessage)-1)
+// 		msg = critMessage[msgIndex]
+// 	}
+
+// 	return msg
+// }
