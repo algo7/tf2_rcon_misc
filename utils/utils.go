@@ -69,6 +69,10 @@ func PickRandomMessage(msgType string) string {
 
 // TailLog tails the tf2 log file
 func TailLog() *tail.Tail {
+    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
+        WinTf2LogPath = envWinTf2LogPath
+    }
+
 	// Tail tf2 console log
 	t, err := tail.TailFile(
 		WinTf2LogPath,

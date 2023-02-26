@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"os"
 
 	"tf2-rcon/utils"
 
@@ -19,8 +20,14 @@ func Connect() *mongo.Client {
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 
+	mongoURI := "mongodb://localhost:27017"
+
+    if envMongoURI := os.Getenv("MONGODB_URI"); envMongoURI != "" {
+        mongoURI = envMongoURI
+    }
+	
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017").SetServerAPIOptions(serverAPI)
+	clientOptions := options.Client().ApplyURI(mongoURI).SetServerAPIOptions(serverAPI)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -47,9 +54,14 @@ func Connect() *mongo.Client {
 
 // AddPlayer adds a player to the database
 func AddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
+	mongoDBName := "TF2"
 
+    if envMongoDBName := os.Getenv("MONGODB_NAME"); envMongoDBName != "" {
+        mongoDBName = envMongoDBName
+    }
+	
 	// Get a handle for your collection
-	collection := client.Database("TF2").Collection("Players")
+	collection := client.Database(mongoDBName).Collection("Players")
 
 	// Filter by the steamID (64)
 	filter := bson.D{{Key: "SteamID", Value: playerID}}
