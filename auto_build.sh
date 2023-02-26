@@ -9,6 +9,9 @@ if [[ -z "$package" ]]; then
   exit 1
 fi
 
+# Create the build directory
+mkdir -p build
+
 # Extract the pkg name
 package_split=(${package//\// })
 package_name=${package_split[-1]}
@@ -38,7 +41,7 @@ do
 	fi	
 
 # Set the env vars and build the binary
-	env GOOS=$GOOS GOARCH=$GOARCH go build -o ./$output_name main.go
+	env GOOS=$GOOS GOARCH=$GOARCH go build -o ./build/$output_name main.go
 
 	# Exit if the build failed
 	if [ $? -ne 0 ]; then
