@@ -29,11 +29,14 @@ func main() {
 	playerName := strings.Split(res, " ")[2]
 	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
 
+	// Get log path
+	tf2LogPath := utils.LogPathDection()
+
 	// Empty the log file
-	utils.EmptyLog(utils.WinTf2LogPath)
+	utils.EmptyLog(tf2LogPath)
 
 	// Tail the log
-	t := utils.TailLog()
+	t := utils.TailLog(tf2LogPath)
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
@@ -52,8 +55,8 @@ func main() {
 			// Find the player's userName
 			userNameStrintToParse := strings.Fields(line.Text)
 			userNameNotTrimmed := strings.Join(userNameStrintToParse[2:len(userNameStrintToParse)-5], " ")
-			userName:= strings.Trim(userNameNotTrimmed, "\"")
-			
+			userName := strings.Trim(userNameNotTrimmed, "\"")
+
 			// Add the player to the DB
 			db.AddPlayer(client, steamID, userName)
 
