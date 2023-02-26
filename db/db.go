@@ -56,10 +56,12 @@ func Connect() *mongo.Client {
 
 // AddPlayer adds a player to the database
 func AddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
-	mongoDBName := "TF2"
 
-	if envMongoDBName := os.Getenv("MONGODB_NAME"); envMongoDBName != "" {
-		mongoDBName = envMongoDBName
+	// Database  name
+	mongoDBName := os.Getenv("MONGODB_NAME")
+	// If the URI is empty, use the default
+	if mongoDBName == "" {
+		mongoDBName = "TF2"
 	}
 
 	// Get a handle for your collection
