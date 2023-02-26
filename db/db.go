@@ -16,6 +16,7 @@ import (
 
 // Connect to the database
 func Connect() *mongo.Client {
+	fmt.Println("Connecting to MongoDB...")
 
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)

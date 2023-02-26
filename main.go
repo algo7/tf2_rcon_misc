@@ -30,7 +30,7 @@ func main() {
 	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
 
 	// Empty the log file
-	utils.EmptyLog(utils.WinTf2LogPath)
+	utils.EmptyLog(utils.GetLogPath())
 
 	// Tail the log
 	t := utils.TailLog()

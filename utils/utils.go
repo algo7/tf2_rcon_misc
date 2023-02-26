@@ -69,13 +69,11 @@ func PickRandomMessage(msgType string) string {
 
 // TailLog tails the tf2 log file
 func TailLog() *tail.Tail {
-    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
-        WinTf2LogPath = envWinTf2LogPath
-    }
+
 
 	// Tail tf2 console log
 	t, err := tail.TailFile(
-		WinTf2LogPath,
+		GetLogPath(),
 		tail.Config{
 			MustExist: true,
 			Follow:    true,
@@ -86,6 +84,15 @@ func TailLog() *tail.Tail {
 
 	return t
 }
+
+func GetLogPath() string {
+    if envWinTf2LogPath := os.Getenv("TF2_LOGPATH"); envWinTf2LogPath != "" {
+        return envWinTf2LogPath
+    }
+	
+	return WinTf2LogPath
+}
+
 
 // Steam3IDMatcher returns a boolean indicating if the given string matches the regex
 func Steam3IDMatcher(text string) bool {
