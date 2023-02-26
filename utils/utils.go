@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"os/user"
 	"regexp"
 	"runtime"
 
@@ -66,8 +67,17 @@ func LogPathDection() string {
 			os.Exit(0)
 
 		case "linux":
-			tf2LogPath = "~/.steam/steam/steamapps/common/Team\\ Fortress\\ 2/tf/console.log"
-			fmt.Println("Linux Detected. Log Path Defaulting to: ", tf2LogPath)
+
+			// Get current os user name
+			user, err := user.Current()
+			if err != nil {
+				ErrorHandler(err)
+			}
+			osUSerName := user.Username
+
+			fmt.Println("OS User: ", osUSerName)
+			tf2LogPath = `/home/` + osUSerName + `/.local/share/Steam/steamapps/common/Team Fortress 2/tf/console.log`
+			fmt.Println("Linux Detected. Log Path Defaulting to: \n", tf2LogPath)
 
 		default:
 			fmt.Printf("%s.\n", osName)
