@@ -17,7 +17,7 @@ import (
 var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
 
-	steam3IDRegEx    = `\[U:[0-9]:\d{8,11}\]`
+	steam3IDRegEx    = `\[U:[0-9]:\d{1,11}\]`
 	steam3AccIDRegEx = `\d{8,11}`
 	userNameRegEx    = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
