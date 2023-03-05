@@ -6,7 +6,10 @@ import (
 	"tf2-rcon/db"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
+	"time"
 )
+
+const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 func main() {
 
@@ -38,17 +41,23 @@ func main() {
 	// Tail the log
 	t := utils.TailLog(tf2LogPath)
 
+	selfCommandMap := map[string]func(){
+		"!gpt": func() {
+			// TBD
+		},
+		"!test": func() {
+			// 500 ms seems to work often, but not always, so lets be safe and use 1k
+			time.Sleep(1000 * time.Millisecond)
+			network.RconExecute(conn, ("say \"Test confirmed!\""))
+		},
+	}
+
 	// Loop through the text of each received line
 	for line := range t.Lines {
-
 		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute(conn, "status")
-		}
-
-		// Match all the players' steamID and name from the output of the status command
-		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
-
+		} else if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) { // Match all the players' steamID and name from the output of the status command
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
@@ -61,10 +70,31 @@ func main() {
 			db.AddPlayer(client, steamID, userName)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
+		} else if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+			// check if it starts with "!"
+			if string(line.Text[len(playerName)+4]) == "!" {
+				// command string, e.g. !gpt
+				command := line.Text[len(playerName)+4:]
+
+				// when command is too long, we skip
+				if len(command) > 16 {
+					continue
+				}
+
+				cmdFunc := selfCommandMap[command]
+
+				if cmdFunc == nil {
+					continue
+				} else {
+					cmdFunc()
+				}
+			} else if strings.Contains(line.Text, teamSwitchMessage) { // when you get team switched forcefully, thank gaben for the bonusxp!
+				network.RconExecute(conn, ("say \"Thanks gaben for bonusxp!\""))
+			}
+		} else {
+			fmt.Println("Unknown:", line.Text)
 		}
-
 	}
-
 }
 
 // // Function 3

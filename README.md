@@ -2,8 +2,18 @@
 Go program that performs various commands via RCON base on local TF2 console output.
 Get all the players' name and steamID on the server and store them into the local MongoDB instance.
 
-### Note:
-So far the binary only works on Windows due to the fact that I haven't add the TF2 log path for other operating systems yet.
+# Build and run
+## Linux
+```bash
+$ ./auto_build.sh
+$ ./run.sh
+```
+
+## Windows
+```bash
+$ ./auto_build.sh
+$ ./run.bat
+```
 
 ### Launch Options:
 ---
