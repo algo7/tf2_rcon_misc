@@ -8,6 +8,7 @@ import (
 	"os/user"
 	"regexp"
 	"runtime"
+	"strings"
 
 	"github.com/nxadm/tail"
 )
@@ -159,3 +160,28 @@ func PlayerNameMatcher(text string) bool {
 
 // 	return msg
 // }
+
+func RemoveEmptyLines(content string) string {
+	lines := strings.Split(content, "\n")
+	filtered := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		if strings.TrimSpace(line) != "" {
+			filtered = append(filtered, line)
+		}
+	}
+
+	return strings.Join(filtered, "\n")
+}
+
+func GetCommandAndArgs(content string) (string, string) {
+	// Find the index of the next space character
+	index := strings.IndexByte(content, ' ')
+
+	// No whitespace found, everything is a command, there are no arguments
+	if index == -1 {
+		return content, ""
+	} else {
+		return content[0:index], content[index:]
+	}
+}

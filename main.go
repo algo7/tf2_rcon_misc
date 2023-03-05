@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"tf2-rcon/db"
+	"tf2-rcon/gpt"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 	"time"
@@ -41,11 +43,42 @@ func main() {
 	// Tail the log
 	t := utils.TailLog(tf2LogPath)
 
-	selfCommandMap := map[string]func(){
-		"!gpt": func() {
-			// TBD
+	selfCommandMap := map[string]func(args string){
+		"!gpt": func(args string) {
+			if !gpt.IsAvailable() {
+				fmt.Println("!gpt is unavailable, cause env *OPENAI_APIKEY* is not set!")
+				return
+			}
+
+			fmt.Println("!gpt - requesting:", args)
+			response, err := gpt.Ask(args)
+			fmt.Println("!gpt - requesting:", args, "- Response:", response)
+
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error occured while gpt-communication:", err)
+			} else {
+				// Split the original string into chunks of 121 characters
+				for i := 0; i < len(response); i += 121 {
+					end := i + 121
+					if end > len(response) {
+						end = len(response)
+					}
+					chunk := response[i:end]
+					fmt.Println(chunk)
+
+					// on first run only delay 500 ms
+					if i == 0 {
+						time.Sleep(500 * time.Millisecond)
+						network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+					} else { // delay 1000 ms cause else we may get supressed
+						time.Sleep(1000 * time.Millisecond)
+						network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+						break // only execute this once, we dont want to spam
+					}
+				}
+			}
 		},
-		"!test": func() {
+		"!test": func(args string) {
 			// 500 ms seems to work often, but not always, so lets be safe and use 1k
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute(conn, ("say \"Test confirmed!\""))
@@ -74,19 +107,20 @@ func main() {
 			// check if it starts with "!"
 			if string(line.Text[len(playerName)+4]) == "!" {
 				// command string, e.g. !gpt
-				command := line.Text[len(playerName)+4:]
+				completeCommand := line.Text[len(playerName)+4:]
 
 				// when command is too long, we skip
-				if len(command) > 16 {
+				if len(completeCommand) > 128 {
 					continue
 				}
 
+				command, args := utils.GetCommandAndArgs(completeCommand)
 				cmdFunc := selfCommandMap[command]
 
 				if cmdFunc == nil {
 					continue
 				} else {
-					cmdFunc()
+					cmdFunc(args)
 				}
 			} else if strings.Contains(line.Text, teamSwitchMessage) { // when you get team switched forcefully, thank gaben for the bonusxp!
 				network.RconExecute(conn, ("say \"Thanks gaben for bonusxp!\""))
