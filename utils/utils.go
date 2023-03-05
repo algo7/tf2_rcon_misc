@@ -8,6 +8,7 @@ import (
 	"os/user"
 	"regexp"
 	"runtime"
+	"strings"
 
 	"github.com/nxadm/tail"
 )
@@ -16,7 +17,7 @@ import (
 var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
 
-	steam3IDRegEx    = `\[U:[0-9]:\d{8,11}\]`
+	steam3IDRegEx    = `\[U:[0-9]:\d{1,11}\]`
 	steam3AccIDRegEx = `\d{8,11}`
 	userNameRegEx    = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
@@ -159,3 +160,31 @@ func PlayerNameMatcher(text string) bool {
 
 // 	return msg
 // }
+
+// Take supplied content and filter out empty lines, then return resulting string
+func RemoveEmptyLines(content string) string {
+	lines := strings.Split(content, "\n")
+	filtered := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		if strings.TrimSpace(line) != "" {
+			filtered = append(filtered, line)
+		}
+	}
+
+	return strings.Join(filtered, "\n")
+}
+
+// Split supplied func-argument into command and argument, argument can be empty if there's none
+func GetCommandAndArgs(content string) (string, string) {
+	// Find the index of the next space character
+	index := strings.IndexByte(content, ' ')
+
+	// No whitespace found, everything is a command, there are no arguments
+	if index == -1 {
+		return content, ""
+	} else {
+		// argument found, return both command and arg
+		return content[0:index], content[index:]
+	}
+}

@@ -16,6 +16,7 @@ import (
 
 // Connect to the database
 func Connect() *mongo.Client {
+	fmt.Println("Connecting to MongoDB...")
 
 	// Get the MongoDB URI from the environment
 	mongoURI := os.Getenv("MONGODB_URI")
