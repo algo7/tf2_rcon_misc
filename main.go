@@ -43,28 +43,35 @@ func main() {
 	// Tail the log
 	t := utils.TailLog(tf2LogPath)
 
+	// Commandmap for chat-commands that only you are allowed to execute
 	selfCommandMap := map[string]func(args string){
+		// ask gpt API and print reponse
 		"!gpt": func(args string) {
+			// check if gpt is configured and available
 			if !gpt.IsAvailable() {
 				fmt.Println("!gpt is unavailable, cause env *OPENAI_APIKEY* is not set!")
 				return
 			}
 
+			// execute request and proceed with result or error
 			fmt.Println("!gpt - requesting:", args)
 			response, err := gpt.Ask(args)
 			fmt.Println("!gpt - requesting:", args, "- Response:", response)
 
+			// Check for error
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Error occured while gpt-communication:", err)
 			} else {
 				// Split the original string into chunks of 121 characters
+				// Have at max 2 interations cause we dont want to spam chat
 				for i := 0; i < len(response); i += 121 {
 					end := i + 121
+
 					if end > len(response) {
 						end = len(response)
 					}
+
 					chunk := response[i:end]
-					fmt.Println(chunk)
 
 					// on first run only delay 500 ms
 					if i == 0 {
@@ -78,6 +85,7 @@ func main() {
 				}
 			}
 		},
+		// Just a test command
 		"!test": func(args string) {
 			// 500 ms seems to work often, but not always, so lets be safe and use 1k
 			time.Sleep(1000 * time.Millisecond)
@@ -114,18 +122,21 @@ func main() {
 					continue
 				}
 
+				// Split parsed string into actual !command and arguments
 				command, args := utils.GetCommandAndArgs(completeCommand)
 				cmdFunc := selfCommandMap[command]
 
+				// Command is not configured
 				if cmdFunc == nil {
 					continue
-				} else {
+				} else { // call func for given command
 					cmdFunc(args)
 				}
-			} else if strings.Contains(line.Text, teamSwitchMessage) { // when you get team switched forcefully, thank gaben for the bonusxp!
+			} else if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 				network.RconExecute(conn, ("say \"Thanks gaben for bonusxp!\""))
 			}
 		} else {
+			// Input text is not being parsed since there's no logic for parsing it (yet)
 			fmt.Println("Unknown:", line.Text)
 		}
 	}
@@ -158,3 +169,10 @@ func main() {
 // 	userName := utils.UserNameFindString(line.Text)
 // 	fmt.Println(userName)
 // }
+
+// Check if autobalance-response is enabled or not, specified by ENV var
+func IsAutobalanceCommentEnabled() bool {
+	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
+
+	return enabled == "1"
+}

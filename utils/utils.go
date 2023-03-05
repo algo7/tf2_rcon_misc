@@ -161,6 +161,7 @@ func PlayerNameMatcher(text string) bool {
 // 	return msg
 // }
 
+// Take supplied content and filter out empty lines, then return resulting string
 func RemoveEmptyLines(content string) string {
 	lines := strings.Split(content, "\n")
 	filtered := make([]string, 0, len(lines))
@@ -174,6 +175,7 @@ func RemoveEmptyLines(content string) string {
 	return strings.Join(filtered, "\n")
 }
 
+// Split supplied func-argument into command and argument, argument can be empty if there's none
 func GetCommandAndArgs(content string) (string, string) {
 	// Find the index of the next space character
 	index := strings.IndexByte(content, ' ')
@@ -182,6 +184,7 @@ func GetCommandAndArgs(content string) (string, string) {
 	if index == -1 {
 		return content, ""
 	} else {
+		// argument found, return both command and arg
 		return content[0:index], content[index:]
 	}
 }
