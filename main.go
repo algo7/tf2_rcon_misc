@@ -49,7 +49,7 @@ func main() {
 		// ask gpt API and print reponse
 		"!gpt": func(args string) {
 			// check if gpt is configured and available
-			if !gpt.IsAvailable() {
+			if !gpt.OpenAPIKeyIsAvailable() {
 				fmt.Println("!gpt is unavailable, cause env *OPENAI_APIKEY* is not set!")
 				return
 			}
