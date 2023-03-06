@@ -5,10 +5,8 @@ import (
 	"os"
 	"strings"
 	"tf2-rcon/db"
-	"tf2-rcon/gpt"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
-	"time"
 )
 
 // Const console message that informs you about forceful autobalance
@@ -43,57 +41,6 @@ func main() {
 
 	// Tail the log
 	t := utils.TailLog(tf2LogPath)
-
-	// Commandmap for chat-commands that only you are allowed to execute
-	selfCommandMap := map[string]func(args string){
-		// ask gpt API and print reponse
-		"!gpt": func(args string) {
-			// check if gpt is configured and available
-			if !gpt.OpenAPIKeyIsAvailable() {
-				fmt.Println("!gpt is unavailable, cause env *OPENAI_APIKEY* is not set!")
-				return
-			}
-
-			// execute request and proceed with result or error
-			fmt.Println("!gpt - requesting:", args)
-			responses, err := gpt.Ask(args)
-			fmt.Println("!gpt - requesting:", args, "- Response:", responses)
-
-			// Check for error
-			if err != nil {
-				utils.ErrorHandler(err)
-			}
-
-			// Split the original string into chunks of 121 characters
-			// Have at max 2 interations cause we dont want to spam chat
-			for i := 0; i < len(responses); i += 121 {
-				end := i + 121
-
-				if end > len(responses) {
-					end = len(responses)
-				}
-
-				chunk := responses[i:end]
-
-				// If no the 1st try, delay 1000 ms cause else we may get supressed
-				if i != 0 {
-					time.Sleep(1000 * time.Millisecond)
-					network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-					break // only execute this once, we dont want to spam
-				}
-
-				// on first run only delay 500 ms
-				time.Sleep(500 * time.Millisecond)
-				network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-			}
-		},
-		// Just a test command
-		"!test": func(args string) {
-			// 500 ms seems to work often, but not always, so lets be safe and use 1k
-			time.Sleep(1000 * time.Millisecond)
-			network.RconExecute(conn, ("say \"Test confirmed!\""))
-		},
-	}
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
