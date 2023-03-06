@@ -3,10 +3,9 @@
 # Args supplied by the user
 package=$1
 
-# Input validation
+# Default to package main
 if [[ -z "$package" ]]; then
-  echo "usage: $0 <package-name>"
-  exit 1
+  package=main
 fi
 
 # Create the build directory
@@ -47,5 +46,7 @@ do
 	if [ $? -ne 0 ]; then
    		echo 'An error has occurred! Aborting the script execution...'
 		exit 1
+	else
+		echo "Built ./build/${output_name}"
 	fi
 done
