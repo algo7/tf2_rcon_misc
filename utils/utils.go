@@ -133,6 +133,12 @@ func PlayerNameMatcher(text string) bool {
 	return re.MatchString(text)
 }
 
+// CommandMatcher returns a boolean indicating if the given string matches the regex
+func CommandMatcher(playerName string, text string) bool {
+	re := regexp.MustCompile(playerName + ` :\s{1,2}!\w+`)
+	return re.MatchString(text)
+}
+
 // RemoveEmptyLines takes the supplied content and filter out empty lines, then return resulting string
 func RemoveEmptyLines(content string) string {
 	lines := strings.Split(content, "\n")

@@ -5,11 +5,13 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"tf2-rcon/network"
 	"tf2-rcon/utils"
 )
 
 // GetInsult returns an insult for the given target
-func GetInsult(target string) string {
+func GetInsult(target string) {
+
 	// Set up query parameters
 	query := url.Values{}
 	query.Set("plural", "true")
@@ -36,5 +38,6 @@ func GetInsult(target string) string {
 		utils.ErrorHandler(errors.New("Could not parse insult from response data"))
 	}
 
-	return insult
+	network.RconExecute("say \"" + insult + "\"")
+
 }

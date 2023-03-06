@@ -2,7 +2,6 @@ package gpt
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"tf2-rcon/network"
@@ -26,6 +25,10 @@ var SelfCommandMap = map[string]func(args string){
 	"!test": func(args string) {
 		network.RconExecute("say \"Test command executed!\"")
 	},
+	// Roast someone
+	"!roast": func(args string) {
+		GetInsult(args)
+	},
 }
 
 // openAIConnect connects to openai API and returns an instance of the client
@@ -36,7 +39,9 @@ func openAIConnect() *openai.Client {
 
 	// Check if apikey is available, error if not
 	if openAiApikey == "" {
-		utils.ErrorHandler(errors.New("Apikey is not set! (env: *OPENAI_APIKEY*)"))
+		// utils.ErrorHandler(errors.New("Apikey is not set! (env: *OPENAI_APIKEY*)"))
+		fmt.Println("Key Not Set")
+		return nil
 	}
 
 	// Create client from lib and request "answer" to "question"

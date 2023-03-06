@@ -22,6 +22,7 @@ func main() {
 	res := network.RconExecute("name")
 	playerName := strings.Split(res, " ")[2]
 	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
+	fmt.Println("Player name:", playerName)
 
 	// Get log path
 	tf2LogPath := utils.LogPathDection()
@@ -62,7 +63,7 @@ func main() {
 			if string(line.Text[len(playerName)+4]) == "!" {
 				// command string, e.g. !gpt
 				completeCommand := line.Text[len(playerName)+4:]
-
+				fmt.Println("Command:", completeCommand)
 				// when command is too long, we skip
 				if len(completeCommand) > 128 {
 					continue
@@ -71,13 +72,14 @@ func main() {
 				// Split parsed string into actual !command and arguments
 				command, args := utils.GetCommandAndArgs(completeCommand)
 				cmdFunc := gpt.SelfCommandMap[command]
-
+				fmt.Println("Command:", command)
 				// Command is not configured
 				if cmdFunc == nil {
 					continue
 				}
 
 				// call func for given command
+				fmt.Print("Args: ", args)
 				cmdFunc(args)
 
 			}
@@ -86,10 +88,29 @@ func main() {
 			if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
 				network.RconExecute("say \"Thanks gaben for bonusxp!\"")
 			}
-		} else {
-			// Input text is not being parsed since there's no logic for parsing it (yet)
-			fmt.Println("Unknown:", line.Text)
 		}
+		// fmt.Println(utils.CommandMatcher(playerName, line.Text))
+		if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
+
+			if len(strings.Fields(line.Text)) >= 4 {
+				command := strings.Fields(line.Text)[2:3][0]
+				args := strings.Fields(line.Text)[3:4][0]
+				cmdFunc := gpt.SelfCommandMap[command]
+				fmt.Println("Command:", command)
+				// Command is not configured
+				if cmdFunc == nil {
+					continue
+				}
+
+				// call func for given command
+				cmdFunc(args)
+			}
+			continue
+		}
+
+		// Input text is not being parsed since there's no logic for parsing it (yet)
+		fmt.Println("Unknown:", line.Text)
+
 	}
 }
 
