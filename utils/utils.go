@@ -138,6 +138,34 @@ func PlayerNameMatcher(text string) bool {
 	return re.MatchString(text)
 }
 
+// RemoveEmptyLines takes the supplied content and filter out empty lines, then return resulting string
+func RemoveEmptyLines(content string) string {
+	lines := strings.Split(content, "\n")
+	filtered := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		if strings.TrimSpace(line) != "" {
+			filtered = append(filtered, line)
+		}
+	}
+
+	return strings.Join(filtered, "\n")
+}
+
+// GetCommandAndArgs sokts supplied func-argument (from rcon log) into command and argument, argument can be empty if there's none
+func GetCommandAndArgs(content string) (string, string) {
+	// Find the index of the next space character
+	index := strings.IndexByte(content, ' ')
+
+	// No whitespace found, everything is a command, there are no arguments
+	if index == -1 {
+		return content, ""
+	} else {
+		// argument found, return both command and arg
+		return content[0:index], content[index:]
+	}
+}
+
 // // pickRandomMessageIndex returns a random index of the messages array
 // func pickRandomMessageIndex(min int, max int) int {
 // 	rand.Seed(time.Now().UnixNano())
@@ -160,31 +188,3 @@ func PlayerNameMatcher(text string) bool {
 
 // 	return msg
 // }
-
-// Take supplied content and filter out empty lines, then return resulting string
-func RemoveEmptyLines(content string) string {
-	lines := strings.Split(content, "\n")
-	filtered := make([]string, 0, len(lines))
-
-	for _, line := range lines {
-		if strings.TrimSpace(line) != "" {
-			filtered = append(filtered, line)
-		}
-	}
-
-	return strings.Join(filtered, "\n")
-}
-
-// Split supplied func-argument into command and argument, argument can be empty if there's none
-func GetCommandAndArgs(content string) (string, string) {
-	// Find the index of the next space character
-	index := strings.IndexByte(content, ' ')
-
-	// No whitespace found, everything is a command, there are no arguments
-	if index == -1 {
-		return content, ""
-	} else {
-		// argument found, return both command and arg
-		return content[0:index], content[index:]
-	}
-}
