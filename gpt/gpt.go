@@ -26,7 +26,7 @@ var SelfCommandMap = map[string]func(args string){
 	"!test": func(args string) {
 		fmt.Println("Test command executed!")
 		time.Sleep(1000 * time.Millisecond)
-		network.RconExecute("say \"Test command executed!\"")
+		network.RconExecute("say \"Test command executed!. Value:" + args + "\"")
 	},
 	// Roast someone
 	"!roast": func(args string) {
