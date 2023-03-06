@@ -12,7 +12,7 @@ import (
 )
 
 // Connect to openai API
-var client = openAIConnect()
+var client,clientAvailable = openAIConnect()
 
 // SelfCommandMap is a map of functions for chat-commands that only you are allowed to execute
 var SelfCommandMap = map[string]func(args string){
@@ -36,8 +36,9 @@ var SelfCommandMap = map[string]func(args string){
 	},
 }
 
+
 // openAIConnect connects to openai API and returns an instance of the client
-func openAIConnect() *openai.Client {
+func openAIConnect() (*openai.Client, bool) {
 
 	// Get apikey from env
 	openAiApikey := os.Getenv("OPENAI_APIKEY")
@@ -46,13 +47,13 @@ func openAIConnect() *openai.Client {
 	if openAiApikey == "" {
 		// utils.ErrorHandler(errors.New("Apikey is not set! (env: *OPENAI_APIKEY*)"))
 		fmt.Println("Key Not Set")
-		return nil
+		return nil, false
 	}
 
 	// Create client from lib and request "answer" to "question"
 	client := openai.NewClient(openAiApikey)
 
-	return client
+	return client,true
 }
 
 // Ask asks GPT the given question, make request to openai API
