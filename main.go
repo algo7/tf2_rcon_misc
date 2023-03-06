@@ -56,34 +56,35 @@ func main() {
 
 			// execute request and proceed with result or error
 			fmt.Println("!gpt - requesting:", args)
-			response, err := gpt.Ask(args)
-			fmt.Println("!gpt - requesting:", args, "- Response:", response)
+			responses, err := gpt.Ask(args)
+			fmt.Println("!gpt - requesting:", args, "- Response:", responses)
 
 			// Check for error
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error occured while gpt-communication:", err)
-			} else {
-				// Split the original string into chunks of 121 characters
-				// Have at max 2 interations cause we dont want to spam chat
-				for i := 0; i < len(response); i += 121 {
-					end := i + 121
+				utils.ErrorHandler(err)
+			}
 
-					if end > len(response) {
-						end = len(response)
-					}
+			// Split the original string into chunks of 121 characters
+			// Have at max 2 interations cause we dont want to spam chat
+			for i := 0; i < len(responses); i += 121 {
+				end := i + 121
 
-					chunk := response[i:end]
-
-					// on first run only delay 500 ms
-					if i == 0 {
-						time.Sleep(500 * time.Millisecond)
-						network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-					} else { // delay 1000 ms cause else we may get supressed
-						time.Sleep(1000 * time.Millisecond)
-						network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-						break // only execute this once, we dont want to spam
-					}
+				if end > len(responses) {
+					end = len(responses)
 				}
+
+				chunk := responses[i:end]
+
+				// If no the 1st try, delay 1000 ms cause else we may get supressed
+				if i != 0 {
+					time.Sleep(1000 * time.Millisecond)
+					network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+					break // only execute this once, we dont want to spam
+				}
+
+				// on first run only delay 500 ms
+				time.Sleep(500 * time.Millisecond)
+				network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
 			}
 		},
 		// Just a test command
@@ -96,10 +97,15 @@ func main() {
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
+
 		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute(conn, "status")
-		} else if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) { // Match all the players' steamID and name from the output of the status command
+		}
+
+		// Match all the players' steamID and name from the output of the status command
+		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
+
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
@@ -112,7 +118,9 @@ func main() {
 			db.AddPlayer(client, steamID, userName)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
-		} else if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+		}
+
+		if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
 			// check if it starts with "!"
 			if string(line.Text[len(playerName)+4]) == "!" {
 				// command string, e.g. !gpt
@@ -130,10 +138,15 @@ func main() {
 				// Command is not configured
 				if cmdFunc == nil {
 					continue
-				} else { // call func for given command
-					cmdFunc(args)
 				}
-			} else if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+
+				// call func for given command
+				cmdFunc(args)
+
+			}
+
+			// when you get team switched forcefully, thank gaben for the bonusxp!
+			if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
 				network.RconExecute(conn, ("say \"Thanks gaben for bonusxp!\""))
 			}
 		} else {
