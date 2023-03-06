@@ -57,6 +57,12 @@ func openAIConnect() (*openai.Client, bool) {
 // Ask asks GPT the given question, make request to openai API
 func Ask(question string) {
 
+	// Check if openai is available
+	if clientAvailable == false {
+		fmt.Println("!gpt issued but no apikey set!")
+		return
+	}
+
 	fmt.Println("!gpt - requesting to api with Q:", question)
 
 	// execute request and proceed with result or error
@@ -86,7 +92,7 @@ func Ask(question string) {
 
 	fmt.Println("!gpt - requesting:", question, "- Response:", responses)
 
-	// Split the original string into chunks of 121 characters
+	// Split the original string into chunks of 121 characters, the overall chat-say limit is 126, subtract any chars needed for prefix
 	// Have at max 2 interations cause we dont want to spam chat
 	chunk := ""
 	for i := 0; i < len(responses); i += 121 {
@@ -102,13 +108,13 @@ func Ask(question string) {
 		if i != 0 {
 			time.Sleep(1000 * time.Millisecond)
 
-			network.RconExecute("say \"GPT " + chunk + "\"")
+			network.RconExecute("say \"GPT> " + chunk + "\"")
 			break // only execute this once, we dont want to spam
 
 		}
 
 		// on first run only delay 500 ms
 		time.Sleep(500 * time.Millisecond)
-		network.RconExecute("say \"GPT " + chunk + "\"")
+		network.RconExecute("say \"GPT> " + chunk + "\"")
 	}
 }
