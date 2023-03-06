@@ -18,7 +18,7 @@ func main() {
 	client := db.Connect()
 
 	// Get the current player name
-	res := network.RconExecute(conn, "name")
+	res := network.RconExecute("name")
 	playerName := strings.Split(res, " ")[2]
 	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
 
@@ -36,7 +36,7 @@ func main() {
 
 		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
-			network.RconExecute(conn, "status")
+			network.RconExecute("status")
 		}
 
 		// Match all the players' steamID and name from the output of the status command
@@ -83,7 +83,7 @@ func main() {
 
 			// when you get team switched forcefully, thank gaben for the bonusxp!
 			if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
-				network.RconExecute(conn, ("say \"Thanks gaben for bonusxp!\""))
+				network.RconExecute("say \"Thanks gaben for bonusxp!\"")
 			}
 		} else {
 			// Input text is not being parsed since there's no logic for parsing it (yet)

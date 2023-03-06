@@ -17,11 +17,11 @@ var client = openAIConnect()
 
 // Commandmap for chat-commands that only you are allowed to execute
 var selfCommandMap = map[string]interface{}{
-
-	// ask gpt API and print reponse
-	"!gpt": Ask(question),
+	// Stuff follows the : are only function pointers not function calls
+	// Ask gpt API and print reponse
+	"!gpt": Ask,
 	// Just a test command
-	"!test": network.RconExecute(conn, ("say \"Test confirmed!\"")),
+	"!test": network.RconExecute,
 }
 
 // openAIConnect connects to openai API and returns an instance of the client
@@ -42,7 +42,7 @@ func openAIConnect() *openai.Client {
 }
 
 // Ask asks GPT the given question, make request to openai API
-func Ask(question string) string {
+func Ask(question string) {
 
 	fmt.Println("!gpt - requesting to api with Q:", question)
 
@@ -88,15 +88,14 @@ func Ask(question string) string {
 		// If no the 1st try, delay 1000 ms cause else we may get supressed
 		if i != 0 {
 			time.Sleep(1000 * time.Millisecond)
-			return chunk
-			// network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+
+			network.RconExecute("say \"GPT " + chunk + "\"")
 			break // only execute this once, we dont want to spam
+
 		}
 
 		// on first run only delay 500 ms
 		time.Sleep(500 * time.Millisecond)
-		// network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+		network.RconExecute("say \"GPT " + chunk + "\"")
 	}
-
-	return chunk
 }
