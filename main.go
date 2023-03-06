@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"tf2-rcon/db"
+	"tf2-rcon/gpt"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 )
@@ -69,7 +70,7 @@ func main() {
 
 				// Split parsed string into actual !command and arguments
 				command, args := utils.GetCommandAndArgs(completeCommand)
-				cmdFunc := selfCommandMap[command]
+				cmdFunc := gpt.SelfCommandMap[command]
 
 				// Command is not configured
 				if cmdFunc == nil {

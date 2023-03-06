@@ -15,13 +15,17 @@ import (
 // Connect to openai API
 var client = openAIConnect()
 
-// Commandmap for chat-commands that only you are allowed to execute
-var selfCommandMap = map[string]interface{}{
+// SelfCommandMap is a map of functions for chat-commands that only you are allowed to execute
+var SelfCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
-	"!gpt": Ask,
+	"!gpt": func(args string) {
+		Ask(args)
+	},
 	// Just a test command
-	"!test": network.RconExecute,
+	"!test": func(args string) {
+		network.RconExecute("say \"Test command executed!\"")
+	},
 }
 
 // openAIConnect connects to openai API and returns an instance of the client
