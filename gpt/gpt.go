@@ -12,53 +12,19 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+// Connect to openai API
+var client = openAIConnect()
+
 // Commandmap for chat-commands that only you are allowed to execute
-var selfCommandMap = map[string]func(args string){
+var selfCommandMap = map[string]interface{}{
 
 	// ask gpt API and print reponse
-	"!gpt": func(args string) {
-
-		// execute request and proceed with result or error
-		fmt.Println("!gpt - requesting:", args)
-		responses, err := Ask(args)
-		fmt.Println("!gpt - requesting:", args, "- Response:", responses)
-
-		// Check for error
-		if err != nil {
-			utils.ErrorHandler(err)
-		}
-
-		// Split the original string into chunks of 121 characters
-		// Have at max 2 interations cause we dont want to spam chat
-		for i := 0; i < len(responses); i += 121 {
-			end := i + 121
-
-			if end > len(responses) {
-				end = len(responses)
-			}
-
-			chunk := responses[i:end]
-
-			// If no the 1st try, delay 1000 ms cause else we may get supressed
-			if i != 0 {
-				time.Sleep(1000 * time.Millisecond)
-				network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-				break // only execute this once, we dont want to spam
-			}
-
-			// on first run only delay 500 ms
-			time.Sleep(500 * time.Millisecond)
-			network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
-		}
-	},
+	"!gpt": Ask(question),
 	// Just a test command
-	"!test": func(args string) {
-		// 500 ms seems to work often, but not always, so lets be safe and use 1k
-		time.Sleep(1000 * time.Millisecond)
-		network.RconExecute(conn, ("say \"Test confirmed!\""))
-	},
+	"!test": network.RconExecute(conn, ("say \"Test confirmed!\"")),
 }
 
+// openAIConnect connects to openai API and returns an instance of the client
 func openAIConnect() *openai.Client {
 
 	// Get apikey from env
@@ -76,13 +42,14 @@ func openAIConnect() *openai.Client {
 }
 
 // Ask asks GPT the given question, make request to openai API
-func Ask(question string) (string, error) {
-
-	// Connect to openai API
-	client := openAIConnect()
+func Ask(question string) string {
 
 	fmt.Println("!gpt - requesting to api with Q:", question)
 
+	// execute request and proceed with result or error
+	fmt.Println("!gpt - requesting:", question)
+
+	// Send request to openai API
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -102,5 +69,34 @@ func Ask(question string) (string, error) {
 	}
 
 	// Return Content node, remove empty lines from it beforehand
-	return utils.RemoveEmptyLines(resp.Choices[0].Message.Content), nil
+	responses := utils.RemoveEmptyLines(resp.Choices[0].Message.Content)
+
+	fmt.Println("!gpt - requesting:", question, "- Response:", responses)
+
+	// Split the original string into chunks of 121 characters
+	// Have at max 2 interations cause we dont want to spam chat
+	chunk := ""
+	for i := 0; i < len(responses); i += 121 {
+		end := i + 121
+
+		if end > len(responses) {
+			end = len(responses)
+		}
+
+		chunk = responses[i:end]
+
+		// If no the 1st try, delay 1000 ms cause else we may get supressed
+		if i != 0 {
+			time.Sleep(1000 * time.Millisecond)
+			return chunk
+			// network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+			break // only execute this once, we dont want to spam
+		}
+
+		// on first run only delay 500 ms
+		time.Sleep(500 * time.Millisecond)
+		// network.RconExecute(conn, ("say \"GPT " + chunk + "\""))
+	}
+
+	return chunk
 }

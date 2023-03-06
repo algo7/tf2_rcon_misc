@@ -17,17 +17,6 @@ func main() {
 	// Connect to the DB
 	client := db.Connect()
 
-	// Get the rcon host
-	rconHost := network.DetermineRconHost()
-	if rconHost == "Nothing" {
-		utils.ErrorHandler(utils.ErrMissingRconHost)
-	}
-
-	fmt.Printf("Rcon Host: %s\n", rconHost)
-
-	// Connect to the rcon host
-	conn := network.RconConnect(rconHost)
-
 	// Get the current player name
 	res := network.RconExecute(conn, "name")
 	playerName := strings.Split(res, " ")[2]
