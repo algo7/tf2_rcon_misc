@@ -11,6 +11,13 @@ import (
 	"github.com/gorcon/rcon"
 )
 
+// Get the rcon host
+var rconHost = determineRconHost()
+
+// Connect to the rcon host
+var conn = rconConnect(rconHost)
+
+// scanPort scans for the given port on the host
 func scanPort(protocol, hostname string, port int) bool {
 
 	fmt.Printf("Scanning: %s\n", hostname)
@@ -45,8 +52,8 @@ func getHostInfo() []string {
 	return ips
 }
 
-// DetermineRconHost determines the rcon host to connect to
-func DetermineRconHost() string {
+// determineRconHost determines the rcon host to connect to
+func determineRconHost() string {
 
 	var rconHost string = "Nothing"
 
@@ -58,11 +65,19 @@ func DetermineRconHost() string {
 			break
 		}
 	}
+
+	// Check if rconHost is still "Nothing" and error if so
+	if rconHost == "Nothing" {
+		utils.ErrorHandler(utils.ErrMissingRconHost)
+	}
+
+	fmt.Printf("Rcon Host: %s\n", rconHost)
+
 	return rconHost
 }
 
-// RconConnect connects to a rcon host
-func RconConnect(rconHost string) *rcon.Conn {
+// rconConnect connects to a rcon host
+func rconConnect(rconHost string) *rcon.Conn {
 
 	conn, err := rcon.Dial(rconHost+":27015", "123")
 	utils.ErrorHandler(err)
@@ -76,7 +91,7 @@ func RconConnect(rconHost string) *rcon.Conn {
 }
 
 // RconExecute executes a rcon command
-func RconExecute(conn *rcon.Conn, command string) string {
+func RconExecute(command string) string {
 
 	// fmt.Println("Executing: " + command)
 	response, err := conn.Execute(command)

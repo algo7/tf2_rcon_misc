@@ -16,14 +16,9 @@ import (
 // Custom (error) messages
 var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
-
-	steam3IDRegEx    = `\[U:[0-9]:\d{1,11}\]`
-	steam3AccIDRegEx = `\d{8,11}`
-	userNameRegEx    = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
-	// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-	// downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
-	// critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
-	// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
+	steam3IDRegEx      = `\[U:[0-9]:\d{1,11}\]`
+	steam3AccIDRegEx   = `\d{8,11}`
+	userNameRegEx      = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 )
 
 /**
@@ -138,6 +133,42 @@ func PlayerNameMatcher(text string) bool {
 	return re.MatchString(text)
 }
 
+// RemoveEmptyLines takes the supplied content and filter out empty lines, then return resulting string
+func RemoveEmptyLines(content string) string {
+	lines := strings.Split(content, "\n")
+	filtered := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		if strings.TrimSpace(line) != "" {
+			filtered = append(filtered, line)
+		}
+	}
+
+	return strings.Join(filtered, "\n")
+}
+
+// GetCommandAndArgs sokts supplied func-argument (from rcon log) into command and argument, argument can be empty if there's none
+func GetCommandAndArgs(content string) (string, string) {
+	// Find the index of the next space character
+	index := strings.IndexByte(content, ' ')
+
+	// No whitespace found, everything is a command, there are no arguments
+	if index == -1 {
+		return content, ""
+	}
+
+	// argument found, return both command and arg
+	return content[0:index], content[index:]
+
+}
+
+// Old shit
+
+// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+// downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
+// critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
+// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
+
 // // pickRandomMessageIndex returns a random index of the messages array
 // func pickRandomMessageIndex(min int, max int) int {
 // 	rand.Seed(time.Now().UnixNano())
@@ -160,31 +191,3 @@ func PlayerNameMatcher(text string) bool {
 
 // 	return msg
 // }
-
-// Take supplied content and filter out empty lines, then return resulting string
-func RemoveEmptyLines(content string) string {
-	lines := strings.Split(content, "\n")
-	filtered := make([]string, 0, len(lines))
-
-	for _, line := range lines {
-		if strings.TrimSpace(line) != "" {
-			filtered = append(filtered, line)
-		}
-	}
-
-	return strings.Join(filtered, "\n")
-}
-
-// Split supplied func-argument into command and argument, argument can be empty if there's none
-func GetCommandAndArgs(content string) (string, string) {
-	// Find the index of the next space character
-	index := strings.IndexByte(content, ' ')
-
-	// No whitespace found, everything is a command, there are no arguments
-	if index == -1 {
-		return content, ""
-	} else {
-		// argument found, return both command and arg
-		return content[0:index], content[index:]
-	}
-}
