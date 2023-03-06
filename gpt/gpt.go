@@ -56,10 +56,10 @@ func openAIConnect() (*openai.Client, bool) {
 
 // Ask asks GPT the given question, make request to openai API
 func Ask(question string) {
-
-	// Check if openai is available
-	if clientAvailable == false {
-		fmt.Println("!gpt issued but no apikey set!")
+	
+	// Check if client is available
+	if !clientAvailable {
+		fmt.Println("GPT Client not available")
 		return
 	}
 
@@ -67,13 +67,6 @@ func Ask(question string) {
 
 	// execute request and proceed with result or error
 	fmt.Println("!gpt - requesting:", question)
-
-	// Check if client is available
-
-	if !clientAvailable {
-		fmt.Println("Client not available")
-		return
-	}
 
 	// Send request to openai API
 	resp, err := client.CreateChatCompletion(
