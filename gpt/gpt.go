@@ -62,6 +62,13 @@ func Ask(question string) {
 	// execute request and proceed with result or error
 	fmt.Println("!gpt - requesting:", question)
 
+	// Check if client is available
+
+	if !clientAvailable {
+		fmt.Println("Client not available")
+		return
+	}
+
 	// Send request to openai API
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
