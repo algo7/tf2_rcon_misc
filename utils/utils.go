@@ -160,10 +160,11 @@ func GetCommandAndArgs(content string) (string, string) {
 	// No whitespace found, everything is a command, there are no arguments
 	if index == -1 {
 		return content, ""
-	} else {
-		// argument found, return both command and arg
-		return content[0:index], content[index:]
 	}
+
+	// argument found, return both command and arg
+	return content[0:index], content[index:]
+
 }
 
 // // pickRandomMessageIndex returns a random index of the messages array
