@@ -16,14 +16,9 @@ import (
 // Custom (error) messages
 var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
-
-	steam3IDRegEx    = `\[U:[0-9]:\d{1,11}\]`
-	steam3AccIDRegEx = `\d{8,11}`
-	userNameRegEx    = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
-	// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-	// downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
-	// critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
-	// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
+	steam3IDRegEx      = `\[U:[0-9]:\d{1,11}\]`
+	steam3AccIDRegEx   = `\d{8,11}`
+	userNameRegEx      = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 )
 
 /**
@@ -166,6 +161,13 @@ func GetCommandAndArgs(content string) (string, string) {
 	return content[0:index], content[index:]
 
 }
+
+// Old shit
+
+// WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
+// downMessage = [6]string{"Algo7 Down", "Algo7 Temporarily Unavailable", "Algo7 Waiting to Respawn", "Got smoked. Be right back", "Bruh...", "-.-"}
+// critMessage = [5]string{"Nice crit", "Gaben has blessed you with a crit", "Random crits are fair and balanced", "Darn it, crits are always good", "Crit'd"}
+// userNameRegExOld          = `#\s\s\s\s[0-9][0-9][0-9]\s"*(.*?)"`
 
 // // pickRandomMessageIndex returns a random index of the messages array
 // func pickRandomMessageIndex(min int, max int) int {
