@@ -58,37 +58,37 @@ func main() {
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
 		}
 
-		if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
-			// check if it starts with "!"
-			if string(line.Text[len(playerName)+4]) == "!" {
-				// command string, e.g. !gpt
-				completeCommand := line.Text[len(playerName)+4:]
-				fmt.Println("Command:", completeCommand)
-				// when command is too long, we skip
-				if len(completeCommand) > 128 {
-					continue
-				}
+		// if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+		// 	// check if it starts with "!"
+		// 	if string(line.Text[len(playerName)+4]) == "!" {
+		// 		// command string, e.g. !gpt
+		// 		completeCommand := line.Text[len(playerName)+4:]
+		// 		fmt.Println("Command:", completeCommand)
+		// 		// when command is too long, we skip
+		// 		if len(completeCommand) > 128 {
+		// 			continue
+		// 		}
 
-				// Split parsed string into actual !command and arguments
-				command, args := utils.GetCommandAndArgs(completeCommand)
-				cmdFunc := gpt.SelfCommandMap[command]
-				fmt.Println("Command:", command)
-				// Command is not configured
-				if cmdFunc == nil {
-					continue
-				}
+		// 		// Split parsed string into actual !command and arguments
+		// 		command, args := utils.GetCommandAndArgs(completeCommand)
+		// 		cmdFunc := gpt.SelfCommandMap[command]
+		// 		fmt.Println("Command:", command)
+		// 		// Command is not configured
+		// 		if cmdFunc == nil {
+		// 			continue
+		// 		}
 
-				// call func for given command
-				fmt.Print("Args: ", args)
-				cmdFunc(args)
+		// 		// call func for given command
+		// 		fmt.Print("Args: ", args)
+		// 		cmdFunc(args)
 
-			}
+		// 	}
 
-			// when you get team switched forcefully, thank gaben for the bonusxp!
-			if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
-				network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-			}
-		}
+		// 	// when you get team switched forcefully, thank gaben for the bonusxp!
+		// 	if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
+		// 		network.RconExecute("say \"Thanks gaben for bonusxp!\"")
+		// 	}
+		// }
 		// fmt.Println(utils.CommandMatcher(playerName, line.Text))
 		if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
 
@@ -102,6 +102,8 @@ func main() {
 					continue
 				}
 
+				fmt.Print("Args: ", args)
+
 				// call func for given command
 				cmdFunc(args)
 			}
@@ -109,7 +111,7 @@ func main() {
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
-		fmt.Println("Unknown:", line.Text)
+		// fmt.Println("Unknown:", line.Text)
 
 	}
 }

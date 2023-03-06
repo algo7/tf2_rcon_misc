@@ -19,14 +19,19 @@ var SelfCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
+		fmt.Println(args)
 		Ask(args)
 	},
 	// Just a test command
 	"!test": func(args string) {
+		fmt.Println("Test command executed!")
+		time.Sleep(1000 * time.Millisecond)
+		fmt.Println(args)
 		network.RconExecute("say \"Test command executed!\"")
 	},
 	// Roast someone
 	"!roast": func(args string) {
+		fmt.Println(args)
 		GetInsult(args)
 	},
 }
