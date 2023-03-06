@@ -160,11 +160,11 @@ func GetCommandAndArgs(content string) (string, string) {
 
 	// No whitespace found, everything is a command, there are no arguments
 	if index == -1 {
-		return content, ""
+		return strings.TrimSuffix(strings.TrimSuffix(content, "\n"), "\r"), ""
 	}
 
 	// argument found, return both command and arg
-	return content[0:index], content[index:]
+	return strings.TrimSuffix(strings.TrimSuffix(content[0:index], "\n"), "\r"), strings.TrimSuffix(strings.TrimSuffix(content[index:], "\n"), "\r")
 
 }
 

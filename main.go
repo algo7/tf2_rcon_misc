@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 	"strings"
 	"tf2-rcon/db"
 	"tf2-rcon/gpt"
@@ -39,10 +40,7 @@ func main() {
 		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute("status")
-		}
-
-		// Match all the players' steamID and name from the output of the status command
-		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
+		} else if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
 
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
@@ -56,47 +54,42 @@ func main() {
 			db.AddPlayer(client, steamID, userName)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
-		}
+		} else if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+			// check if it starts with "!"
+			if string(line.Text[len(playerName)+4]) == "!" {
+				// command string, e.g. !gpt
+				completeCommand := line.Text[len(playerName)+4:]
+				fmt.Println("Command:", completeCommand)
+				// when command is too long, we skip
+				if len(completeCommand) > 128 {
+					continue
+				}
 
-		// if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
-		// 	// check if it starts with "!"
-		// 	if string(line.Text[len(playerName)+4]) == "!" {
-		// 		// command string, e.g. !gpt
-		// 		completeCommand := line.Text[len(playerName)+4:]
-		// 		fmt.Println("Command:", completeCommand)
-		// 		// when command is too long, we skip
-		// 		if len(completeCommand) > 128 {
-		// 			continue
-		// 		}
+				// Split parsed string into actual !command and arguments
+				command, args := utils.GetCommandAndArgs(completeCommand)
+				cmdFunc := gpt.SelfCommandMap[command]
+				fmt.Println("Command:", command)
+				
+				// Command is not configured
+				if cmdFunc == nil {
+					fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+					continue
+				}
 
-		// 		// Split parsed string into actual !command and arguments
-		// 		command, args := utils.GetCommandAndArgs(completeCommand)
-		// 		cmdFunc := gpt.SelfCommandMap[command]
-		// 		fmt.Println("Command:", command)
-		// 		// Command is not configured
-		// 		if cmdFunc == nil {
-		// 			continue
-		// 		}
-
-		// 		// call func for given command
-		// 		fmt.Print("Args: ", args)
-		// 		cmdFunc(args)
-
-		// 	}
-
-		// 	// when you get team switched forcefully, thank gaben for the bonusxp!
-		// 	if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() {
-		// 		network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-		// 	}
-		// }
-		// fmt.Println(utils.CommandMatcher(playerName, line.Text))
-		if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
-
+				// call func for given command
+				fmt.Print("Args: ", args)
+				cmdFunc(args)
+			}
+		} else if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+			time.Sleep(1000 * time.Millisecond)
+			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
+		} else if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
 			if len(strings.Fields(line.Text)) >= 4 {
 				command := strings.Fields(line.Text)[2:3][0]
 				args := strings.Fields(line.Text)[3:4][0]
 				cmdFunc := gpt.SelfCommandMap[command]
 				fmt.Println("Command:", command)
+
 				// Command is not configured
 				if cmdFunc == nil {
 					continue
@@ -107,12 +100,10 @@ func main() {
 				// call func for given command
 				cmdFunc(args)
 			}
-			continue
+		} else {
+			// Input text is not being parsed since there's no logic for parsing it (yet)
+			fmt.Println("Unknown:", line.Text)
 		}
-
-		// Input text is not being parsed since there's no logic for parsing it (yet)
-		// fmt.Println("Unknown:", line.Text)
-
 	}
 }
 
