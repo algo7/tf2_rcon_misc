@@ -12,7 +12,7 @@ import (
 )
 
 // Connect to openai API
-var client,clientAvailable = openAIConnect()
+var client, clientAvailable = openAIConnect()
 
 // SelfCommandMap is a map of functions for chat-commands that only you are allowed to execute
 var SelfCommandMap = map[string]func(args string){
@@ -26,16 +26,14 @@ var SelfCommandMap = map[string]func(args string){
 	"!test": func(args string) {
 		fmt.Println("Test command executed!")
 		time.Sleep(1000 * time.Millisecond)
-		fmt.Println(args)
 		network.RconExecute("say \"Test command executed!\"")
 	},
 	// Roast someone
 	"!roast": func(args string) {
-		fmt.Println(args)
+		time.Sleep(1000 * time.Millisecond)
 		GetInsult(args)
 	},
 }
-
 
 // openAIConnect connects to openai API and returns an instance of the client
 func openAIConnect() (*openai.Client, bool) {
@@ -53,7 +51,7 @@ func openAIConnect() (*openai.Client, bool) {
 	// Create client from lib and request "answer" to "question"
 	client := openai.NewClient(openAiApikey)
 
-	return client,true
+	return client, true
 }
 
 // Ask asks GPT the given question, make request to openai API
