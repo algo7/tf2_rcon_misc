@@ -228,8 +228,8 @@ func TrimCommon(in string) string {
 	return strings.TrimSuffix(strings.TrimSuffix(in, "\n"), "\r")
 }
 
-func GetPlayernameFromLine(in string) string {
-	//fmt.Println("GetPlayernameFromLine()", in)
+// GetPlayerNameFromLine extracts the playername from the supplied string
+func GetPlayerNameFromLine(in string) string {
 
 	re := regexp.MustCompile(`# + \d+ "(.*)" +\[U:\d:\d+\] +[0-9:]+ + \d+ + \d+ (active|spawning)`)
 	match := re.FindStringSubmatch(in)

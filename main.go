@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"	
+	"strings"
 	"tf2-rcon/db"
 	"tf2-rcon/gpt"
 	"tf2-rcon/network"
@@ -13,6 +13,7 @@ import (
 
 // Const console message that informs you about forceful autobalance
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
+
 var players []string
 
 func main() {
@@ -44,13 +45,13 @@ func main() {
 
 			// erase local player storage
 			copy(players, []string{})
-		} else if utils.Steam3IDMatcher(line.Text) && utils.GetPlayernameFromLine(line.Text) != "" {
+		} else if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
 
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
 			// Find the player's userName
-			user := utils.GetPlayernameFromLine(line.Text)			
+			user := utils.GetPlayerNameFromLine(line.Text)
 
 			if user == "" {
 				fmt.Println("Failed to parse user! line.Text:", line.Text)
