@@ -168,6 +168,73 @@ func GetCommandAndArgs(content string) (string, string) {
 
 }
 
+func AddPlayer(players *[]string, elem string) {
+    if !SliceContains(*players, elem) {		
+        *players = append(*players, elem)
+		fmt.Println("adding:", elem, *players)
+    }
+}
+
+func SliceContains(slice []string, elem string) bool {
+    for _, s := range slice {
+        if s == elem {
+            return true
+        }
+    }
+    return false
+}
+
+func ExtractUsername(in string) string {
+	re := regexp.MustCompile(`(\w+)" \[U:\d:[0-9]+\]`)
+	match := re.FindStringSubmatch(in)
+
+	if len(match) > 1 {
+		return match[1]
+	}
+
+	return ""
+}
+
+// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
+func GetChatSay(players []string, in string) (bool, string, string) {
+	//fmt.Println("players:", players)
+	for _, player := range players {		
+		// check if we found a player saying that in our playerlist
+		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" { // %TODO, +1 is probably not right
+			fmt.Println("IsChatSay - found player that said:", in[len(player)+4:])
+			fmt.Println("IsChatSay - found player that said, player:", player)			
+			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
+		}
+
+		// detect dead playertalk
+		// +6 is the len of string "*DEAD* "
+		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* " + player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
+			fmt.Println("IsChatSay (dead) - found player that said:", in[len(player)+4+7:])
+			fmt.Println("IsChatSay (dead) - found player that said, player:", player)			
+			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
+		}
+	}
+
+	return false, "", ""
+}
+
+func TrimCommon(in string) string {
+	return strings.TrimSuffix(strings.TrimSuffix(in, "\n"), "\r")
+}
+
+func GetPlayernameFromLine(in string) string {
+	//fmt.Println("GetPlayernameFromLine()", in)
+
+	re := regexp.MustCompile(`# + \d+ "(.*)" +\[U:\d:\d+\] +[0-9:]+ + \d+ + \d+ (active|spawning)`)
+	match := re.FindStringSubmatch(in)
+
+	if len(match) > 1 {
+		return match[1]
+	}
+
+	return ""
+}
+
 // Old shit
 
 // WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"

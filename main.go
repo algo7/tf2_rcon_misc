@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"strings"	
 	"tf2-rcon/db"
 	"tf2-rcon/gpt"
 	"tf2-rcon/network"
@@ -13,6 +13,7 @@ import (
 
 // Const console message that informs you about forceful autobalance
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
+var players []string
 
 func main() {
 
@@ -40,53 +41,90 @@ func main() {
 		// Run the status command when the lobby is updated or a player connects
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
 			network.RconExecute("status")
-		}
 
-		if utils.Steam3IDMatcher(line.Text) && utils.PlayerNameMatcher(line.Text) {
+			// erase local player storage
+			copy(players, []string{})
+		} else if utils.Steam3IDMatcher(line.Text) && utils.GetPlayernameFromLine(line.Text) != "" {
 
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
 			// Find the player's userName
-			userNameStrintToParse := strings.Fields(line.Text)
-			userNameNotTrimmed := strings.Join(userNameStrintToParse[2:len(userNameStrintToParse)-5], " ")
-			userName := strings.Trim(userNameNotTrimmed, "\"")
+			user := utils.GetPlayernameFromLine(line.Text)			
+
+			if user == "" {
+				fmt.Println("Failed to parse user! line.Text:", line.Text)
+			}
 
 			// Add the player to the DB
-			db.AddPlayer(client, steamID, userName)
+			db.AddPlayer(client, steamID, user)
+			utils.AddPlayer(&players, user)
 
-			fmt.Println("SteamID: ", steamID, " UserName: ", userName)
-		}
+			fmt.Println("SteamID: ", steamID, " UserName: ", user)
+			//fmt.Println("internal players:", players)
+		} else if isSay, user, text := utils.GetChatSay(players, line.Text); isSay {
+			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
+			// is it me?
+			if user == playerName {
+				fmt.Println("ChatSay, it is me!", user)
 
-		if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
-			// check if it starts with "!"
-			if string(line.Text[len(playerName)+4]) == "!" {
-				// command string, e.g. !gpt
-				completeCommand := line.Text[len(playerName)+4:]
-				fmt.Println("Command:", completeCommand)
-				// when command is too long, we skip
-				if len(completeCommand) > 128 {
-					continue
+				// check if it starts with "!"
+				if string(text[0]) == "!" {
+					// command string, e.g. !gpt
+					completeCommand := line.Text[len(playerName)+4:]
+					fmt.Println("Command:", completeCommand)
+					// when command is too long, we skip
+					if len(completeCommand) > 128 {
+						continue
+					}
+
+					// Split parsed string into actual !command and arguments
+					command, args := utils.GetCommandAndArgs(completeCommand)
+					cmdFunc := gpt.SelfCommandMap[command]
+					fmt.Println("Command:", command)
+
+					// Command is not configured
+					if cmdFunc == nil {
+						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+						continue
+					}
+
+					// call func for given command
+					fmt.Print("Args: ", args)
+					cmdFunc(args)
 				}
+			} else {
+				fmt.Println("ChatSay, it is not me!", user)
 
-				// Split parsed string into actual !command and arguments
-				command, args := utils.GetCommandAndArgs(completeCommand)
-				cmdFunc := gpt.SelfCommandMap[command]
-				fmt.Println("Command:", command)
+				// check if it starts with "!"
+				if string(text[0]) == "!" {
+					// command string, e.g. !gpt
+					completeCommand := line.Text[len(playerName)+4:]
+					fmt.Println("Command:", completeCommand)
+					// when command is too long, we skip
+					if len(completeCommand) > 128 {
+						continue
+					}
 
-				// Command is not configured
-				if cmdFunc == nil {
-					fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-					continue
+					// Split parsed string into actual !command and arguments
+					command, args := utils.GetCommandAndArgs(completeCommand)
+					cmdFunc := gpt.OtherUsersCommandMap[command]
+					fmt.Println("Command:", command)
+
+					// Command is not configured
+					if cmdFunc == nil {
+						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+						continue
+					}
+
+					// call func for given command
+					fmt.Print("Args: ", args)
+					cmdFunc(args)
 				}
-
-				// call func for given command
-				fmt.Print("Args: ", args)
-				cmdFunc(args)
 			}
-		}
+		} else if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
 
-		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+		} else if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
 		} else {
