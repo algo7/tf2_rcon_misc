@@ -35,6 +35,21 @@ var SelfCommandMap = map[string]func(args string){
 	},
 }
 
+// OtherUsersCommandMap is a map of functions for chat-commands that everyone (but you) is allowed to execute
+var OtherUsersCommandMap = map[string]func(args string){
+	// Stuff follows the : are only function pointers not function calls
+	// Ask gpt API and print reponse
+	"!gpt": func(args string) {
+		fmt.Println(args)
+		Ask(args)
+	},
+	// Roast someone
+	"!roast": func(args string) {
+		time.Sleep(1000 * time.Millisecond)
+		GetInsult(args)
+	},
+}
+
 // openAIConnect connects to openai API and returns an instance of the client
 func openAIConnect() (*openai.Client, bool) {
 
@@ -56,7 +71,7 @@ func openAIConnect() (*openai.Client, bool) {
 
 // Ask asks GPT the given question, make request to openai API
 func Ask(question string) {
-	
+
 	// Check if client is available
 	if !clientAvailable {
 		fmt.Println("GPT Client not available")

@@ -1,0 +1,303 @@
+Unknown command "dimmer_clicked"
+Unknown command "dimmer_clicked"
+Connecting to 135.125.189.220:27025...
+Connected to 135.125.189.220:27025
+
+Team Fortress
+Map: cp_snakewater_final1
+Players: 2 / 33
+Build: 7882260
+Server Number: 17
+
+Client reached server_spawn.
+Recognizing MM server id [G:1:4430566]
+Attemped to precache unknown particle system "blood_impact_red"!
+The server is using sv_pure 1.  (Custom pure server rules.)
+Cannot figure out which search path sound\physics\metal\metal_grenade_roll_loop1.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\timer.wav came from. Not playing.
+Cannot figure out which search path sound\items\pyro_guitar_solo_with_verb.wav came from. Not playing.
+Cannot figure out which search path sound\player\sniper_taunt_hawk.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_pyro_twirl.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing1.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial1.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial3.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial4.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial5.wav came from. Not playing.
+Cannot figure out which search path sound\ui\quest_status_complete.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\shotgun_cock.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\airstrike_fail.wav came from. Not playing.
+atomy connected
+Compact freed 131072 bytes
+Redownloading all lightmaps
+version : 7882260/24 7882260 secure
+hostname: Uncletopia | Frankfurt | 2 | All Maps
+udp/ip  : 135.125.189.220:27025
+steamid : [G:1:4430566] (85568392924469990)
+account : not logged in  (No account specified)
+# userid name                uniqueid            connected ping loss state
+map     : cp_snakewater_final1 at: 0 x, 0 y, 0 z
+#      2 "Uncletopia | Frankfurt | 2 | Al" BOT                       active
+tags    : cp,nocrits,nodmgspread,uncletopia
+#    378 "atomy"             [U:1:259772]        00:07      156   74 active
+sourcetv:  135.125.189.220:27025, delay 0.0s
+players : 1 humans, 1 bots (33 max)
+edicts  : 636 used of 2048 max
+Connecting to 135.125.189.220:27085...
+Connected to 135.125.189.220:27085
+
+Team Fortress
+Map: workshop/cp_reckoner_rc6.ugc674719999
+Players: 15 / 33
+Build: 7882260
+Server Number: 29
+
+Client reached server_spawn.
+Recognizing MM server id [G:1:4703404]
+Attemped to precache unknown particle system "blood_impact_red"!
+[TF Workshop] Map ID 674719999 isn't tracked, adding
+[TF Workshop] New version available for map, download queued [ workshop/cp_reckoner_rc6.ugc674719999 ]
+[TF Workshop] Installed subscribed map [ workshop/cp_reckoner_rc6.ugc674719999 ]
+[TF Workshop] Successfully prepared client map from workshop [ workshop/cp_reckoner_rc6.ugc674719999 ]
+The server is using sv_pure 1.  (Custom pure server rules.)
+Cannot figure out which search path sound\physics\metal\metal_grenade_roll_loop1.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\timer.wav came from. Not playing.
+Cannot figure out which search path sound\items\pyro_guitar_solo_with_verb.wav came from. Not playing.
+Cannot figure out which search path sound\player\sniper_taunt_hawk.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_pyro_twirl.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing1.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial1.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial3.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial4.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial5.wav came from. Not playing.
+Cannot figure out which search path sound\ui\quest_status_complete.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\shotgun_cock.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\airstrike_fail.wav came from. Not playing.
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_trunk_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_moonbase/moon_steelsupport01_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_leaves_03_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+SOLID_VPHYSICS static prop with no vphysics model! (models/props_frontline/tree_birch_card_skybox.mdl)
+atomy connected
+Compact freed 638976 bytes
+Redownloading all lightmaps
+King Sunshine suicided.
+version : 7882260/24 7882260 secure
+hostname: Uncletopia | Frankfurt | 8 | Community
+udp/ip  : 135.125.189.220:27085
+steamid : [G:1:4703404] (85568392924742828)
+account : not logged in  (No account specified)
+map     : workshop/cp_reckoner_rc6.ugc674719999 at: 0 x, 0 y, 0 z
+tags    : cp,nocrits,nodmgspread,uncletopia
+sourcetv:  135.125.189.220:27085, delay 0.0s
+players : 14 humans, 1 bots (33 max)
+# userid name                uniqueid            connected ping loss state
+edicts  : 799 used of 2048 max
+#      2 "Uncletopia | Frankfurt | 8 | Co" BOT                       active
+#    578 "Discount Magician" [U:1:37366784]      07:43       60    0 active
+#    579 "atomy"             [U:1:259772]        00:14       66   43 active
+#    510 "BallaZz"           [U:1:103383012]      1:30:44    49    0 active
+#    570 "volkiano"          [U:1:359536303]     24:16       60    0 active
+#    467 "kektuse"           [U:1:128160852]      2:10:45    60    0 active
+#    555 "Captain HandicappedCock" [U:1:149584674] 48:31     60    0 active
+#    572 "King Sunshine"     [U:1:842457914]     23:21       74    0 active
+#    532 "Musica Universalis" [U:1:224528446]     1:09:49   201    1 active
+#    533 "Majestic"          [U:1:58725082]       1:09:46   159    1 active
+#    574 "BarbÀtrou"        [U:1:1478875803]    20:43       56    0 active
+#    551 "thia"              [U:1:226100871]     50:41       76    0 active
+#    502 "b r o o g ?"       [U:1:320569091]      1:37:33    58    0 active
+#    561 "Kan0_"             [U:1:169331043]     43:10       45    0 active
+#    518 "tiia"              [U:1:85930277]       1:27:21    40    0 active
+tiia killed Musica Universalis with tf_projectile_rocket.
+tiia killed BallaZz with tf_projectile_rocket.
+'scout.cfg' not present; not executing.
+volkiano, b r o o g ?, tiia captured The Bridge for team #3
+Connecting to 51.195.189.144:27045...
+Connected to 51.195.189.144:27045
+
+Team Fortress
+Map: pl_frontier_final
+Players: 17 / 33
+Build: 7882260
+Server Number: 49
+
+Client reached server_spawn.
+Recognizing MM server id [G:1:4470769]
+Attemped to precache unknown particle system "blood_impact_red"!
+The server is using sv_pure 1.  (Custom pure server rules.)
+Cannot figure out which search path sound\physics\metal\metal_grenade_roll_loop1.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\timer.wav came from. Not playing.
+Cannot figure out which search path sound\items\pyro_guitar_solo_with_verb.wav came from. Not playing.
+Cannot figure out which search path sound\player\sniper_taunt_hawk.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_pyro_twirl.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing1.wav came from. Not playing.
+Cannot figure out which search path sound\player\taunt_yeti_standee_spy_swing2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial1.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial2.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial3.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial4.wav came from. Not playing.
+Cannot figure out which search path sound\player\cyoa_pda_dial5.wav came from. Not playing.
+Cannot figure out which search path sound\ui\quest_status_complete.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\shotgun_cock.wav came from. Not playing.
+Cannot figure out which search path sound\weapons\airstrike_fail.wav came from. Not playing.
+atomy connected
+CAsyncWavDataCache:  1426 .wavs total 0 bytes, 0.00 % of capacity
+Compact freed 167936 bytes
+Redownloading all lightmaps
+Started download of cloud file 1C2A2283644E529F
+*DEAD* The.Real.Genesis :  Hey guys, thanks for tuning in for another video on x.com, I'm Ian Mccollum and I'm here today at the Rock Islan
+AmBush killed Bambi with minigun.
+the_bassmann3 killed Wiki with tf_projectile_rocket.
+gibb (official) :  00:33 gaming
+hostname: Uncletopia | London | 4 | All Maps
+edicts  : 917 used of 2048 max
+version : 7882260/24 7882260 secure
+# userid name                uniqueid            connected ping loss state
+udp/ip  : 51.195.189.144:27045
+#      2 "Uncletopia | London | 4 | All M" BOT                       active
+steamid : [G:1:4470769] (85568392924510193)
+#    958 "The.Real.Genesis"  [U:1:1039386312]    32:45       45    0 active
+account : not logged in  (No account specified)
+#    937 "Fashion"           [U:1:96522298]      45:53      130    0 active
+map     : pl_frontier_final at: 0 x, 0 y, 0 z
+#    976 "BaconWizard4"      [U:1:424326017]     00:29      118    0 active
+tags    : nocrits,nodmgspread,payload,uncletopia
+#    977 "atomy"             [U:1:259772]        00:13       90   68 active
+sourcetv:  51.195.189.144:27045, delay 0.0s
+#    893 "gediot#2"          [U:1:1269633427]     1:32:09    37    0 active
+players : 16 humans, 1 bots (33 max)
+#    968 "Wiki"              [U:1:188189914]     21:52       45    0 active
+#    948 "AmBush"            [U:1:131797987]     38:58       67    0 active
+#    959 "Sandshee"          [U:1:128308938]     32:36       43    0 active
+#    928 "SuntanPikachu"     [U:1:160976748]      1:00:43    61    0 active
+#    951 "gibb (official)"   [U:1:113831927]     37:12       37    0 active
+#    974 "the_bassmann3"     [U:1:1253742982]    03:41      145    0 active
+#    911 "Summer ♥"        [U:1:87458179]       1:17:26    31    0 active
+#    970 "Dag!"              [U:1:69882213]      15:44       70    0 active
+#    954 "CORGI.EXE"         [U:1:116827704]     35:15      124    0 active
+#    967 "Stańczyk"         [U:1:38640835]      27:04       42    0 active
+#    933 "Bambi"             [U:1:206706983]     47:45       45    0 active
+gibb (official) killed gediot#2 with tomislav.
+SuntanPikachu killed Summer ♥ with pistol.
+Sandshee killed AmBush with nonnonviolent_protest.
