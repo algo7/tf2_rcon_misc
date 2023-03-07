@@ -39,14 +39,17 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Run the status command when the lobby is updated or a player connects
+		// Refresh player list logic
 		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
+			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 
 			// erase local player storage
 			copy(players, []string{})
+		}
 
-		} else if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
+		// Save to DB logic
+		if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
 
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
@@ -60,21 +63,29 @@ func main() {
 
 			// Add the player to the DB
 			db.AddPlayer(client, steamID, user)
+
+			// Add the player to the cache
 			utils.AddPlayer(&players, user)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
-			//fmt.Println("internal players:", players)
-		} else if isSay, user, text := utils.GetChatSay(players, line.Text); isSay {
+		}
+
+		if isSay, user, text := utils.GetChatSay(players, line.Text); isSay {
+
 			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
-			// is it me?
-			if user == playerName {
+
+			switch user {
+
+			case playerName:
 				fmt.Println("ChatSay, it is me!", user)
 
 				// check if it starts with "!"
 				if string(text[0]) == "!" {
+
 					// command string, e.g. !gpt
 					completeCommand := line.Text[len(playerName)+4:]
 					fmt.Println("Command:", completeCommand)
+
 					// when command is too long, we skip
 					if len(completeCommand) > 128 {
 						continue
@@ -82,6 +93,8 @@ func main() {
 
 					// Split parsed string into actual !command and arguments
 					command, args := utils.GetCommandAndArgs(completeCommand)
+
+					// Get the function for the given command
 					cmdFunc := gpt.SelfCommandMap[command]
 					fmt.Println("Command:", command)
 
@@ -91,11 +104,11 @@ func main() {
 						continue
 					}
 
-					// call func for given command
+					// Call func for given command
 					fmt.Print("Args: ", args)
 					cmdFunc(args)
 				}
-			} else {
+			default:
 				fmt.Println("ChatSay, it is not me!", user)
 
 				// check if it starts with "!"
@@ -124,15 +137,22 @@ func main() {
 					cmdFunc(args)
 				}
 			}
-		} else if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+		}
 
-		} else if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+		// To be decided if this is needed
+		if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+
+		}
+
+		// Autobalance comment logic
+		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-		} else {
-			// Input text is not being parsed since there's no logic for parsing it (yet)
-			fmt.Println("Unknown:", line.Text)
 		}
+
+		// Input text is not being parsed since there's no logic for parsing it (yet)
+		fmt.Println("Unknown:", line.Text)
+
 	}
 }
 
