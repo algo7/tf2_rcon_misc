@@ -178,6 +178,7 @@ func AddPlayer(players *[]string, elem string) {
 	}
 }
 
+// SliceContains checks if a slice contains a specific element
 func SliceContains(slice []string, elem string) bool {
 	for _, s := range slice {
 		if s == elem {
@@ -187,6 +188,7 @@ func SliceContains(slice []string, elem string) bool {
 	return false
 }
 
+// ExtractUsername extracts the username from the supplied string
 func ExtractUsername(in string) string {
 	re := regexp.MustCompile(`(\w+)" \[U:\d:[0-9]+\]`)
 	match := re.FindStringSubmatch(in)
@@ -200,7 +202,7 @@ func ExtractUsername(in string) string {
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
 func GetChatSay(players []string, in string) (bool, string, string) {
-	//fmt.Println("players:", players)
+
 	for _, player := range players {
 		// check if we found a player saying that in our playerlist
 		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" { // %TODO, +1 is probably not right
@@ -221,6 +223,7 @@ func GetChatSay(players []string, in string) (bool, string, string) {
 	return false, "", ""
 }
 
+// TrimCommon trims the common line endings from a string
 func TrimCommon(in string) string {
 	return strings.TrimSuffix(strings.TrimSuffix(in, "\n"), "\r")
 }
