@@ -155,6 +155,7 @@ func RemoveEmptyLines(content string) string {
 
 // GetCommandAndArgs sokts supplied func-argument (from rcon log) into command and argument, argument can be empty if there's none
 func GetCommandAndArgs(content string) (string, string) {
+
 	// Find the index of the next space character
 	index := strings.IndexByte(content, ' ')
 
@@ -164,24 +165,26 @@ func GetCommandAndArgs(content string) (string, string) {
 	}
 
 	// argument found, return both command and arg
-	return strings.TrimSuffix(strings.TrimSuffix(content[0:index], "\n"), "\r"), strings.TrimSuffix(strings.TrimSuffix(content[index:], "\n"), "\r")
+	commands := strings.TrimSuffix(strings.TrimSuffix(content[0:index], "\n"), "\r")
+	arguments := strings.TrimSuffix(strings.TrimSuffix(content[index:], "\n"), "\r")
 
+	return commands, arguments
 }
 
 func AddPlayer(players *[]string, elem string) {
-    if !SliceContains(*players, elem) {		
-        *players = append(*players, elem)
+	if !SliceContains(*players, elem) {
+		*players = append(*players, elem)
 		fmt.Println("adding:", elem, *players)
-    }
+	}
 }
 
 func SliceContains(slice []string, elem string) bool {
-    for _, s := range slice {
-        if s == elem {
-            return true
-        }
-    }
-    return false
+	for _, s := range slice {
+		if s == elem {
+			return true
+		}
+	}
+	return false
 }
 
 func ExtractUsername(in string) string {
@@ -198,19 +201,19 @@ func ExtractUsername(in string) string {
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
 func GetChatSay(players []string, in string) (bool, string, string) {
 	//fmt.Println("players:", players)
-	for _, player := range players {		
+	for _, player := range players {
 		// check if we found a player saying that in our playerlist
 		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" { // %TODO, +1 is probably not right
 			fmt.Println("IsChatSay - found player that said:", in[len(player)+4:])
-			fmt.Println("IsChatSay - found player that said, player:", player)			
+			fmt.Println("IsChatSay - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
 		}
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
-		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* " + player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
+		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
 			fmt.Println("IsChatSay (dead) - found player that said:", in[len(player)+4+7:])
-			fmt.Println("IsChatSay (dead) - found player that said, player:", player)			
+			fmt.Println("IsChatSay (dead) - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
 		}
 	}
