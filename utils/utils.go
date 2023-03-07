@@ -171,7 +171,7 @@ func GetCommandAndArgs(content string) (string, string) {
 func AddPlayer(players *[]string, elem string) {
     if !SliceContains(*players, elem) {		
         *players = append(*players, elem)
-		fmt.Println("adding:", elem, *players)
+		//fmt.Println("adding:", elem, *players)
     }
 }
 
@@ -182,17 +182,6 @@ func SliceContains(slice []string, elem string) bool {
         }
     }
     return false
-}
-
-func ExtractUsername(in string) string {
-	re := regexp.MustCompile(`(\w+)" \[U:\d:[0-9]+\]`)
-	match := re.FindStringSubmatch(in)
-
-	if len(match) > 1 {
-		return match[1]
-	}
-
-	return ""
 }
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
