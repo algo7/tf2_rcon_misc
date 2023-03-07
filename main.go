@@ -45,6 +45,7 @@ func main() {
 
 			// erase local player storage
 			copy(players, []string{})
+
 		} else if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
 
 			// Convert Steam 32 ID to Steam 64 ID
