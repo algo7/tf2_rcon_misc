@@ -70,7 +70,10 @@ func main() {
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
 
-		if isSay, user, text := utils.GetChatSay(players, line.Text); isSay {
+		// Command logic
+		isSay, user, text := utils.GetChatSay(players, line.Text)
+
+		if isSay && string(text[0]) == "!" {
 
 			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
 
@@ -78,64 +81,11 @@ func main() {
 
 			case playerName:
 				fmt.Println("ChatSay, it is me!", user)
+				commands.RunCommands(text, playerName, false)
 
-				// check if it starts with "!"
-				if string(text[0]) == "!" {
-
-					// command string, e.g. !gpt
-					completeCommand := line.Text[len(playerName)+4:]
-					fmt.Println("Command:", completeCommand)
-
-					// when command is too long, we skip
-					if len(completeCommand) > 128 {
-						continue
-					}
-
-					// Split parsed string into actual !command and arguments
-					command, args := utils.GetCommandAndArgs(completeCommand)
-
-					// Get the function for the given command
-					cmdFunc := commands.SelfCommandMap[command]
-					fmt.Println("Command:", command)
-
-					// Command is not configured
-					if cmdFunc == nil {
-						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-						continue
-					}
-
-					// Call func for given command
-					fmt.Print("Args: ", args)
-					cmdFunc(args)
-				}
 			default:
 				fmt.Println("ChatSay, it is not me!", user)
-
-				// check if it starts with "!"
-				if string(text[0]) == "!" {
-					// command string, e.g. !gpt
-					completeCommand := line.Text[len(playerName)+4:]
-					fmt.Println("Command:", completeCommand)
-					// when command is too long, we skip
-					if len(completeCommand) > 128 {
-						continue
-					}
-
-					// Split parsed string into actual !command and arguments
-					command, args := utils.GetCommandAndArgs(completeCommand)
-					cmdFunc := commands.OtherUsersCommandMap[command]
-					fmt.Println("Command:", command)
-
-					// Command is not configured
-					if cmdFunc == nil {
-						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-						continue
-					}
-
-					// call func for given command
-					fmt.Print("Args: ", args)
-					cmdFunc(args)
-				}
+				commands.RunCommands(text, playerName, true)
 			}
 		}
 
