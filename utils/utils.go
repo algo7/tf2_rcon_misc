@@ -182,7 +182,7 @@ func GetCommandAndArgs(content string) (string, string) {
 func AddPlayer(players *[]string, elem string) {
 	if !SliceContains(*players, elem) {
 		*players = append(*players, elem)
-		fmt.Println("adding:", elem, *players)
+		fmt.Printf("Adding %s to %q\n", elem, *players)
 	}
 }
 
