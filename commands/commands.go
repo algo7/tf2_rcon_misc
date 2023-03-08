@@ -38,8 +38,8 @@ var OtherUsersCommandMap = map[string]func(args string){
 	},
 }
 
-// RunCommands is a function that runs the commands. The function takes in the text, the playername and a boolean if the user itself called the command or not
-func RunCommands(text string, playerName string, isSelf bool) {
+// RunCommands is a function that runs the commands. The function takes in the text, and a boolean that tells if the user itself called the command or not
+func RunCommands(text string, isSelf bool) {
 
 	// Get the command string, e.g. !gpt
 	commandArgsParsed := strings.Fields(text)
@@ -83,7 +83,6 @@ func RunCommands(text string, playerName string, isSelf bool) {
 
 			// Command is not configured
 			fmt.Printf("\nCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-
 		}
 	}
 }
