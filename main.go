@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"tf2-rcon/commands"
 	"tf2-rcon/db"
-	"tf2-rcon/gpt"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 	"time"
@@ -95,7 +95,7 @@ func main() {
 					command, args := utils.GetCommandAndArgs(completeCommand)
 
 					// Get the function for the given command
-					cmdFunc := gpt.SelfCommandMap[command]
+					cmdFunc := commands.SelfCommandMap[command]
 					fmt.Println("Command:", command)
 
 					// Command is not configured
@@ -123,7 +123,7 @@ func main() {
 
 					// Split parsed string into actual !command and arguments
 					command, args := utils.GetCommandAndArgs(completeCommand)
-					cmdFunc := gpt.OtherUsersCommandMap[command]
+					cmdFunc := commands.OtherUsersCommandMap[command]
 					fmt.Println("Command:", command)
 
 					// Command is not configured
