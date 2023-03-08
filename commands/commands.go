@@ -62,6 +62,7 @@ func RunCommands(text string, playerName string, isSelf bool) {
 
 	// Call different functions from the respective command maps depending on if the user itself called the command or not
 	switch isSelf {
+
 	case true:
 
 		fmt.Println("Self Command:", command)
