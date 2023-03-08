@@ -27,6 +27,10 @@ var SelfCommandMap = map[string]func(args string){
 		time.Sleep(1000 * time.Millisecond)
 		gpt.GetInsult(args)
 	},
+	"!nice": func(args string) {
+		time.Sleep(1000 * time.Millisecond)
+		gpt.GetCompliment(args)
+	},
 }
 
 // OtherUsersCommandMap is a map of functions for chat-commands that everyone (but you) is allowed to execute
@@ -35,6 +39,10 @@ var OtherUsersCommandMap = map[string]func(args string){
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
 		gpt.Ask(args)
+	},
+	"!nice": func(args string) {
+		time.Sleep(1000 * time.Millisecond)
+		gpt.GetCompliment(args)
 	},
 }
 

@@ -37,6 +37,6 @@ func GetCompliment(target string) {
 
 	time.Sleep(1000 * time.Millisecond)
 
-	network.RconExecute("say \"" + compliment + "\"")
-	fmt.Println("Insult: " + compliment)
+	network.RconExecute("say \"" + target + " " + compliment + "\"")
+	fmt.Println("Compliment: " + compliment)
 }
