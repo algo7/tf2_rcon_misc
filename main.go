@@ -18,9 +18,6 @@ var players []string
 
 func main() {
 
-	// Connect to the DB
-	client := db.Connect()
-
 	// Get the current player name
 	res := network.RconExecute("name")
 	playerName := strings.Split(res, " ")[2]
@@ -62,7 +59,7 @@ func main() {
 			}
 
 			// Add the player to the DB
-			db.AddPlayer(client, steamID, user)
+			db.AddPlayer(steamID, user)
 
 			// Add the player to the cache
 			utils.AddPlayer(&players, user)
