@@ -83,7 +83,12 @@ func rconConnect(rconHost string) *rcon.Conn {
 	utils.ErrorHandler(err)
 
 	_, err = conn.Execute("status")
-	utils.ErrorHandler(err)
+
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Connection failed, retrying...")
+		rconConnect(rconHost)
+	}
 
 	fmt.Println("Connected")
 
