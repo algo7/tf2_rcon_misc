@@ -91,7 +91,7 @@ func Ask(question string) {
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: question,
+					Content: "Answer in one sentence: " + question,
 				},
 			},
 		},
