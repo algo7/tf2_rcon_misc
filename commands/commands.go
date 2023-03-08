@@ -14,7 +14,7 @@ var SelfCommandMap = map[string]func(args string){
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
 		fmt.Println(args)
-		gpt.Ask("Explain in 1 sentence:" + args)
+		gpt.Ask("In 1 sentence:" + args)
 	},
 	// Just a test command
 	"!test": func(args string) {
@@ -38,7 +38,7 @@ var OtherUsersCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
-		gpt.Ask(args)
+		gpt.Ask("In 1 sentence:" + args)
 	},
 	"!nice": func(args string) {
 		time.Sleep(1000 * time.Millisecond)
