@@ -16,8 +16,8 @@ import (
 // Custom (error) messages
 var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
-	steam3IDRegEx      = `\[U:[0-9]:\d{1,11}\]`
-	steam3AccIDRegEx   = `\d{1,11}`
+	steam3IDRegEx      = `\[U:[0-9]:\d{6,11}\]`
+	steam3AccIDRegEx   = `\d{6,11}`
 	userNameRegEx      = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 )
 
@@ -118,6 +118,7 @@ func Steam3IDFindString(text string) string {
 
 // Steam3IDToSteam64 converts a steam3 id to a steam64 id
 func Steam3IDToSteam64(givenSteam3ID string) int64 {
+	fmt.Println("Steam3ID: ", givenSteam3ID)
 	re := regexp.MustCompile(steam3AccIDRegEx)
 	baseSteamID, _ := new(big.Int).SetString("76561197960265728", 0)
 	steam3ID, _ := new(big.Int).SetString(re.FindString(givenSteam3ID), 0)
