@@ -1,9 +1,11 @@
 package utils
 
-import "testing"
-import "os"
-import "bufio"
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"testing"
+)
 
 func TestSteam3IDToSteam64(t *testing.T) {
 	t.Log("Testing [U:1:1524567963]")
@@ -13,26 +15,26 @@ func TestSteam3IDToSteam64(t *testing.T) {
 	Steam3IDToSteam64("[U:1:259772]")
 }
 
-func TestGetPlayernameFromLine(t *testing.T) {
+func TestGetPlayerNameFromLine(t *testing.T) {
 	const testString1 = "#   2006 \"atomy\"             [U:1:259772]        04:44       45    0 active"
 	t.Log(testString1)
-	if result := GetPlayernameFromLine(testString1); result != "atomy" {
+	if result := GetPlayerNameFromLine(testString1); result != "atomy" {
 		t.Errorf("Expected 'atomy' as return, but got '%s'", result)
 	}
 
 	const testString2 = "#   3206 \"RussianVesper\"     [U:1:303060879]     01:33       63   75 spawning"
 	t.Log(testString2)
-	if result := GetPlayernameFromLine(testString2); result != "RussianVesper" {
+	if result := GetPlayerNameFromLine(testString2); result != "RussianVesper" {
 		t.Errorf("Expected 'RussianVesper' as return, but got '%s'", result)
-	}	
+	}
 }
 
 func TestGetChatSay(t *testing.T) {
 	// open fixture console.log file for usage
 	file, err := os.Open("../test/fixtures/console.log")
 	if err != nil {
-        t.Errorf("Got error while opening fixture file: '%s'", err)
-    }
+		t.Errorf("Got error while opening fixture file: '%s'", err)
+	}
 
 	var players = []string{"The.Real.Genesis", "gibb (official)"}
 	var chatLines = []string{}
