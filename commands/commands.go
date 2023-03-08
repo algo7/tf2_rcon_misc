@@ -5,7 +5,6 @@ import (
 	"strings"
 	"tf2-rcon/gpt"
 	"tf2-rcon/network"
-	"tf2-rcon/utils"
 	"time"
 )
 
@@ -15,7 +14,7 @@ var SelfCommandMap = map[string]func(args string){
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
 		fmt.Println(args)
-		gpt.Ask(args)
+		gpt.Ask("Explain in 1 sentence:" + args)
 	},
 	// Just a test command
 	"!test": func(args string) {
@@ -49,13 +48,12 @@ var OtherUsersCommandMap = map[string]func(args string){
 func RunCommands(text string, playerName string, isSelf bool) {
 
 	// Get the command string, e.g. !gpt
-	completeCommand := strings.Fields(text)[0]
-	fmt.Println("Command:", completeCommand)
+	commandArgsParsed := strings.Fields(text)
+	command := commandArgsParsed[0]
+	args := strings.Join(commandArgsParsed[1:], " ")
 
 	// when command is too long, we skip
-	if len(completeCommand) < 128 {
-		// Split parsed string into actual !command and arguments
-		command, args := utils.GetCommandAndArgs(completeCommand)
+	if len(commandArgsParsed) < 128 {
 
 		// Call different functions from the respective command maps depending on if the user itself called the command or not
 		switch isSelf {
@@ -74,7 +72,7 @@ func RunCommands(text string, playerName string, isSelf bool) {
 			}
 
 			// Command is not configured
-			fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+			fmt.Printf("\nCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 
 		case false:
 
@@ -82,7 +80,6 @@ func RunCommands(text string, playerName string, isSelf bool) {
 			fmt.Print("Other's Args: ", args)
 
 			// Split parsed string into actual !command and arguments
-			command, args := utils.GetCommandAndArgs(completeCommand)
 			cmdFunc := OtherUsersCommandMap[command]
 
 			if cmdFunc == nil {
@@ -91,7 +88,7 @@ func RunCommands(text string, playerName string, isSelf bool) {
 			}
 
 			// Command is not configured
-			fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+			fmt.Printf("\nCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 
 		}
 	}

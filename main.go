@@ -78,11 +78,11 @@ func main() {
 
 			case playerName:
 				fmt.Println("ChatSay, it is me!", user)
-				commands.RunCommands(text, playerName, false)
+				commands.RunCommands(text, playerName, true)
 
 			default:
 				fmt.Println("ChatSay, it is not me!", user)
-				commands.RunCommands(text, playerName, true)
+				commands.RunCommands(text, playerName, false)
 			}
 		}
 
