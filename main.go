@@ -73,7 +73,7 @@ func main() {
 		// Command logic
 		isSay, user, text := utils.GetChatSay(players, line.Text)
 
-		if isSay && string(text[0]) == "!" {
+		if isSay && text != "" && string(text[0]) == "!" {
 
 			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
 
@@ -101,7 +101,7 @@ func main() {
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
-		fmt.Println("Unknown:", line.Text)
+		// fmt.Println("Unknown:", line.Text)
 
 	}
 }
