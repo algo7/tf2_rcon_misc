@@ -64,7 +64,7 @@ func main() {
 			// Add the player to the cache
 			utils.AddPlayer(&players, user)
 
-			fmt.Println("SteamID: ", steamID, " UserName: ", user)
+			fmt.Println(string("\033[31m"), "SteamID: ", steamID, string("\033[32m"), " UserName: ", user)
 		}
 
 		// Command logic

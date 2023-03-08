@@ -34,13 +34,7 @@ var OtherUsersCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
-		fmt.Println(args)
 		gpt.Ask(args)
-	},
-	// Roast someone
-	"!roast": func(args string) {
-		time.Sleep(1000 * time.Millisecond)
-		gpt.GetInsult(args)
 	},
 }
 
@@ -61,7 +55,7 @@ func RunCommands(text string, playerName string, isSelf bool) {
 		case true:
 
 			fmt.Println("Self Command:", command)
-			fmt.Print(" Self Args: ", args)
+			fmt.Println(" Self Args: ", args)
 
 			// Get the function for the given command
 			cmdFunc := SelfCommandMap[command]
@@ -77,12 +71,7 @@ func RunCommands(text string, playerName string, isSelf bool) {
 		case false:
 
 			fmt.Println("Other's Command:", command)
-			fmt.Print("Other's Args: ", args)
-
-			// Prevent self-roasting
-			if command == "!roast" && args == playerName {
-				network.RconExecute("say \"You can't roast me!\"")
-			}
+			fmt.Println("Other's Args: ", args)
 
 			// Split parsed string into actual !command and arguments
 			cmdFunc := OtherUsersCommandMap[command]
