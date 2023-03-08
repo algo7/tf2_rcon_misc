@@ -79,6 +79,11 @@ func RunCommands(text string, playerName string, isSelf bool) {
 			fmt.Println("Other's Command:", command)
 			fmt.Print("Other's Args: ", args)
 
+			// Prevent self-roasting
+			if command == "!roast" && args == playerName {
+				network.RconExecute("say \"You can't roast me!\"")
+			}
+
 			// Split parsed string into actual !command and arguments
 			cmdFunc := OtherUsersCommandMap[command]
 
