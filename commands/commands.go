@@ -84,7 +84,7 @@ func RunCommands(text string, isSelf bool) {
 			// Split parsed string into actual !command and arguments
 			cmdFunc := OtherUsersCommandMap[command]
 
-			if cmdFunc == nil {
+			if cmdFunc != nil {
 				// Call func for given command
 				cmdFunc(args)
 			}
