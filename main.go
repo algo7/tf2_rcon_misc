@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"tf2-rcon/commands"
 	"tf2-rcon/db"
-	"tf2-rcon/gpt"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 	"time"
@@ -18,13 +18,11 @@ var players []string
 
 func main() {
 
-	// Connect to the DB
-	client := db.Connect()
-
 	// Get the current player name
 	res := network.RconExecute("name")
-	playerName := strings.Split(res, " ")[2]
-	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
+	// res sample => "name" = "Algo7" ( def. "unnamed" )
+	playerNameRaw := strings.Fields(res)
+	playerName := strings.TrimSuffix(strings.TrimPrefix(playerNameRaw[2], `"`), `"`)
 	fmt.Println("Player name:", playerName)
 
 	// Get log path
@@ -50,7 +48,6 @@ func main() {
 
 		// Save to DB logic
 		if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
-
 			// Convert Steam 32 ID to Steam 64 ID
 			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
@@ -62,7 +59,7 @@ func main() {
 			}
 
 			// Add the player to the DB
-			db.AddPlayer(client, steamID, user)
+			db.AddPlayer(steamID, user)
 
 			// Add the player to the cache
 			utils.AddPlayer(&players, user)
@@ -70,7 +67,10 @@ func main() {
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
 
-		if isSay, user, text := utils.GetChatSay(players, line.Text); isSay {
+		// Command logic
+		isSay, user, text := utils.GetChatSay(players, line.Text)
+
+		if isSay && text != "" && string(text[0]) == "!" {
 
 			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
 
@@ -78,64 +78,11 @@ func main() {
 
 			case playerName:
 				fmt.Println("ChatSay, it is me!", user)
+				commands.RunCommands(text, true)
 
-				// check if it starts with "!"
-				if string(text[0]) == "!" {
-
-					// command string, e.g. !gpt
-					completeCommand := line.Text[len(playerName)+4:]
-					fmt.Println("Command:", completeCommand)
-
-					// when command is too long, we skip
-					if len(completeCommand) > 128 {
-						continue
-					}
-
-					// Split parsed string into actual !command and arguments
-					command, args := utils.GetCommandAndArgs(completeCommand)
-
-					// Get the function for the given command
-					cmdFunc := gpt.SelfCommandMap[command]
-					fmt.Println("Command:", command)
-
-					// Command is not configured
-					if cmdFunc == nil {
-						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-						continue
-					}
-
-					// Call func for given command
-					fmt.Print("Args: ", args)
-					cmdFunc(args)
-				}
 			default:
 				fmt.Println("ChatSay, it is not me!", user)
-
-				// check if it starts with "!"
-				if string(text[0]) == "!" {
-					// command string, e.g. !gpt
-					completeCommand := line.Text[len(playerName)+4:]
-					fmt.Println("Command:", completeCommand)
-					// when command is too long, we skip
-					if len(completeCommand) > 128 {
-						continue
-					}
-
-					// Split parsed string into actual !command and arguments
-					command, args := utils.GetCommandAndArgs(completeCommand)
-					cmdFunc := gpt.OtherUsersCommandMap[command]
-					fmt.Println("Command:", command)
-
-					// Command is not configured
-					if cmdFunc == nil {
-						fmt.Printf("Command '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
-						continue
-					}
-
-					// call func for given command
-					fmt.Print("Args: ", args)
-					cmdFunc(args)
-				}
+				commands.RunCommands(text, false)
 			}
 		}
 
@@ -151,7 +98,7 @@ func main() {
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
-		fmt.Println("Unknown:", line.Text)
+		// fmt.Println("Unknown:", line.Text)
 
 	}
 }
