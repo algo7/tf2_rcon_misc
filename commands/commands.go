@@ -49,7 +49,7 @@ var OtherUsersCommandMap = map[string]func(args string){
 func RunCommands(text string, playerName string, isSelf bool) {
 
 	// Get the command string, e.g. !gpt
-	completeCommand := text[len(playerName)+4:]
+	completeCommand := strings.Fields(text)[0]
 	fmt.Println("Command:", completeCommand)
 
 	// when command is too long, we skip

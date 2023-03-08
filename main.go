@@ -98,7 +98,7 @@ func main() {
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
-		fmt.Println("Unknown:", line.Text)
+		// fmt.Println("Unknown:", line.Text)
 
 	}
 }
