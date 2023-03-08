@@ -15,10 +15,11 @@ import (
 
 // Custom (error) messages
 var (
-	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
-	steam3IDRegEx      = `\[U:[0-9]:\d{6,11}\]`
-	steam3AccIDRegEx   = `\d{6,11}`
-	userNameRegEx      = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	ErrMissingRconHost                = errors.New("TF2 Not Running / RCON Not Enabled")
+	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
+	steam3AccIDRegEx                  = `\d{6,11}`
+	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 )
 
 /**
@@ -138,6 +139,12 @@ func PlayerNameMatcher(text string) bool {
 func CommandMatcher(playerName string, text string) bool {
 	re := regexp.MustCompile(playerName + ` :\s{1,2}!\w+`)
 	return re.MatchString(text)
+}
+
+// FindCurrentPlayerName returns the string that matches the given regex
+func FindCurrentPlayerName(text string) string {
+	re := regexp.MustCompile(rconNameCommandGetPlayerNameRegex)
+	return re.FindString(text)
 }
 
 // RemoveEmptyLines takes the supplied content and filter out empty lines, then return resulting string

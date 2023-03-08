@@ -20,8 +20,9 @@ func main() {
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	playerName := strings.Split(res, " ")[2]
-	playerName = strings.TrimSuffix(strings.TrimPrefix(playerName, `"`), `"`)
+	// res sample => "name" = "Algo7" ( def. "unnamed" )
+	playerNameRaw := strings.Fields(res)
+	playerName := strings.TrimSuffix(strings.TrimPrefix(playerNameRaw[2], `"`), `"`)
 	fmt.Println("Player name:", playerName)
 
 	// Get log path
@@ -97,7 +98,7 @@ func main() {
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
-		// fmt.Println("Unknown:", line.Text)
+		fmt.Println("Unknown:", line.Text)
 
 	}
 }
