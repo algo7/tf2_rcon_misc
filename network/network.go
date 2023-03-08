@@ -83,12 +83,7 @@ func rconConnect(rconHost string) *rcon.Conn {
 	utils.ErrorHandler(err)
 
 	_, err = conn.Execute("status")
-
-	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Connection failed, retrying...")
-		rconConnect(rconHost)
-	}
+	utils.ErrorHandler(err)
 
 	fmt.Println("Connected")
 
@@ -100,7 +95,13 @@ func RconExecute(command string) string {
 
 	// fmt.Println("Executing: " + command)
 	response, err := conn.Execute(command)
-	utils.ErrorHandler(err)
+
+	// Reconnect if the connection is lost (usually when joining a server)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Connection failed, retrying...")
+		rconConnect(rconHost)
+	}
 
 	return response
 }
