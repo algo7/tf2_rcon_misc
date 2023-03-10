@@ -19,7 +19,7 @@ $ ./run.bat
 ---
 You should launch your TF2 with the following launch options:
 ```bash
--conclearlog -console -novid -condebug -usercon -ip 0.0.0.0 +rcon_password 123 +net_start
+-flushlog -rpt -novid -usercon -ip 0.0.0.0 +rcon_password 123 +net_start
 ```
 ![Launch Options](https://github.com/algo7/TF2-RCON-MISC/blob/main/launch_options.png?raw=true)
 
