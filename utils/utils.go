@@ -15,10 +15,11 @@ import (
 
 // Custom (error) messages
 var (
-	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
-	steam3IDRegEx      = `\[U:[0-9]:\d{1,11}\]`
-	steam3AccIDRegEx   = `\d{1,11}`
-	userNameRegEx      = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	ErrMissingRconHost                = errors.New("TF2 Not Running / RCON Not Enabled")
+	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
+	steam3AccIDRegEx                  = `\d{6,11}`
+	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
+	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 )
 
 /**
@@ -118,6 +119,7 @@ func Steam3IDFindString(text string) string {
 
 // Steam3IDToSteam64 converts a steam3 id to a steam64 id
 func Steam3IDToSteam64(givenSteam3ID string) int64 {
+
 	re := regexp.MustCompile(steam3AccIDRegEx)
 	baseSteamID, _ := new(big.Int).SetString("76561197960265728", 0)
 	steam3ID, _ := new(big.Int).SetString(re.FindString(givenSteam3ID), 0)
@@ -139,6 +141,12 @@ func CommandMatcher(playerName string, text string) bool {
 	return re.MatchString(text)
 }
 
+// FindCurrentPlayerName returns the string that matches the given regex
+func FindCurrentPlayerName(text string) string {
+	re := regexp.MustCompile(rconNameCommandGetPlayerNameRegex)
+	return re.FindString(text)
+}
+
 // RemoveEmptyLines takes the supplied content and filter out empty lines, then return resulting string
 func RemoveEmptyLines(content string) string {
 	lines := strings.Split(content, "\n")
@@ -155,6 +163,7 @@ func RemoveEmptyLines(content string) string {
 
 // GetCommandAndArgs sokts supplied func-argument (from rcon log) into command and argument, argument can be empty if there's none
 func GetCommandAndArgs(content string) (string, string) {
+
 	// Find the index of the next space character
 	index := strings.IndexByte(content, ' ')
 
@@ -164,42 +173,57 @@ func GetCommandAndArgs(content string) (string, string) {
 	}
 
 	// argument found, return both command and arg
-	return strings.TrimSuffix(strings.TrimSuffix(content[0:index], "\n"), "\r"), strings.TrimSuffix(strings.TrimSuffix(content[index:], "\n"), "\r")
+	commands := strings.TrimSuffix(strings.TrimSuffix(content[0:index], "\n"), "\r")
+	arguments := strings.TrimSuffix(strings.TrimSuffix(content[index:], "\n"), "\r")
 
+	return commands, arguments
 }
 
 func AddPlayer(players *[]string, elem string) {
-    if !SliceContains(*players, elem) {		
-        *players = append(*players, elem)
-		//fmt.Println("adding:", elem, *players)
-    }
+	if !SliceContains(*players, elem) {
+		*players = append(*players, elem)
+		fmt.Printf("Adding %s to %q\n", elem, *players)
+	}
 }
 
+// SliceContains checks if a slice contains a specific element
 func SliceContains(slice []string, elem string) bool {
-    for _, s := range slice {
-        if s == elem {
-            return true
-        }
-    }
-    return false
+	for _, s := range slice {
+		if s == elem {
+			return true
+		}
+	}
+	return false
+}
+
+// ExtractUsername extracts the username from the supplied string
+func ExtractUsername(in string) string {
+	re := regexp.MustCompile(`(\w+)" \[U:\d:[0-9]+\]`)
+	match := re.FindStringSubmatch(in)
+
+	if len(match) > 1 {
+		return match[1]
+	}
+
+	return ""
 }
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
 func GetChatSay(players []string, in string) (bool, string, string) {
-	//fmt.Println("players:", players)
-	for _, player := range players {		
+
+	for _, player := range players {
 		// check if we found a player saying that in our playerlist
 		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" { // %TODO, +1 is probably not right
 			fmt.Println("IsChatSay - found player that said:", in[len(player)+4:])
-			fmt.Println("IsChatSay - found player that said, player:", player)			
+			fmt.Println("IsChatSay - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
 		}
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
-		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* " + player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
+		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
 			fmt.Println("IsChatSay (dead) - found player that said:", in[len(player)+4+7:])
-			fmt.Println("IsChatSay (dead) - found player that said, player:", player)			
+			fmt.Println("IsChatSay (dead) - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
 		}
 	}
@@ -207,12 +231,13 @@ func GetChatSay(players []string, in string) (bool, string, string) {
 	return false, "", ""
 }
 
+// TrimCommon trims the common line endings from a string
 func TrimCommon(in string) string {
 	return strings.TrimSuffix(strings.TrimSuffix(in, "\n"), "\r")
 }
 
-func GetPlayernameFromLine(in string) string {
-	//fmt.Println("GetPlayernameFromLine()", in)
+// GetPlayerNameFromLine extracts the playername from the supplied string
+func GetPlayerNameFromLine(in string) string {
 
 	re := regexp.MustCompile(`# + \d+ "(.*)" +\[U:\d:\d+\] +[0-9:]+ + \d+ + \d+ (active|spawning)`)
 	match := re.FindStringSubmatch(in)
