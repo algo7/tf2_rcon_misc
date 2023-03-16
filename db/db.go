@@ -14,8 +14,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// Connect to the database
-func Connect() *mongo.Client {
+// Connect to the DB
+var client = connect()
+
+// connect to the database
+func connect() *mongo.Client {
 	fmt.Println("Connecting to MongoDB...")
 
 	// Get the MongoDB URI from the environment
@@ -56,7 +59,7 @@ func Connect() *mongo.Client {
 }
 
 // AddPlayer adds a player to the database
-func AddPlayer(client *mongo.Client, playerID int64, playerName string) *mongo.UpdateResult {
+func AddPlayer(playerID int64, playerName string) *mongo.UpdateResult {
 
 	// Database  name
 	mongoDBName := os.Getenv("MONGODB_NAME")
