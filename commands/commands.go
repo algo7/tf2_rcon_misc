@@ -14,7 +14,7 @@ var SelfCommandMap = map[string]func(args string){
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
 		fmt.Println(args)
-		gpt.Ask("In 1 sentence:" + args)
+		gpt.Ask(args)
 	},
 	// Just a test command
 	"!test": func(args string) {
@@ -38,7 +38,7 @@ var OtherUsersCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
-		gpt.Ask("In 1 sentence:" + args)
+		gpt.Ask(args)
 	},
 	"!nice": func(args string) {
 		time.Sleep(1000 * time.Millisecond)
@@ -74,7 +74,7 @@ func RunCommands(text string, isSelf bool) {
 			}
 
 			// Command is not configured
-			fmt.Printf("\nCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+			fmt.Printf("\nSelfCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 
 		case false:
 
@@ -90,7 +90,7 @@ func RunCommands(text string, isSelf bool) {
 			}
 
 			// Command is not configured
-			fmt.Printf("\nCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
+			fmt.Printf("\nOthersCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 		}
 	}
 }
