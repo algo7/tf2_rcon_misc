@@ -7,6 +7,7 @@ import (
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 	"time"
+	"strings"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -55,9 +56,10 @@ func Ask(question string) {
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: question,
+					Content: "Always limit your response to maximum of 121 characters, try to formulate a short answer that always fits that criteria. The question is: " + question,
 				},
 			},
+			MaxTokens: int(121),
 		},
 	)
 
@@ -67,33 +69,26 @@ func Ask(question string) {
 	}
 
 	// Return Content node, remove empty lines from it beforehand
-	responses := utils.RemoveEmptyLines(resp.Choices[0].Message.Content)
-
-	fmt.Println("!gpt - requesting:", question, "- Response:", responses)
-
-	// Split the original string into chunks of 121 characters, the overall chat-say limit is 126, subtract any chars needed for prefix
-	// Have at max 2 interations cause we dont want to spam chat
-	chunk := ""
-	for i := 0; i < len(responses); i += 121 {
-		end := i + 121
-
-		if end > len(responses) {
-			end = len(responses)
-		}
-
-		chunk = responses[i:end]
-
-		// If no the 1st try, delay 1000 ms cause else we may get supressed
-		if i != 0 {
-			time.Sleep(1000 * time.Millisecond)
-
-			network.RconExecute("say \"GPT> " + chunk + "\"")
-			break // only execute this once, we dont want to spam
-
-		}
-
-		// on first run only delay 500 ms
-		time.Sleep(500 * time.Millisecond)
-		network.RconExecute("say \"GPT> " + chunk + "\"")
+	responseText := utils.RemoveEmptyLines(resp.Choices[0].Message.Content)
+	
+	fmt.Println("!gpt - requesting:", question, "- Response:", responseText)
+	
+	// Remove any newlines and limit response to 121 characters
+	responseText = strings.Replace(responseText, "\n", " ", -1)
+	if len(responseText) > 121 {
+		responseText = strings.TrimSpace(responseText)[:121]
+		lastSpace := strings.LastIndex(responseText, " ")
+		
+		if lastSpace != -1 {
+			responseText = responseText[:lastSpace] + "..."
+		} else {
+			responseText += "..."
+		}		
+	} else {
+		responseText = strings.TrimSpace(responseText)
 	}
+
+	// on first run only delay 500 ms
+	time.Sleep(500 * time.Millisecond)
+	network.RconExecute("say \"GPT> " + responseText + "\"")
 }
