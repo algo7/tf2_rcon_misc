@@ -40,7 +40,7 @@ do
 	fi	
 
 # Set the env vars and build the binary
-	env GOOS=$GOOS GOARCH=$GOARCH go build -o ./build/$output_name main.go
+	env GOOS=$GOOS GOARCH=$GOARCH CGO_ENABLED=0 go build -ldflags="-s -w" -o ./build/$output_name main.go
 
 	# Exit if the build failed
 	if [ $? -ne 0 ]; then
