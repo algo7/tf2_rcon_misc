@@ -1,3 +1,4 @@
+[![CI](https://github.com/algo7/TF2-RCON-MISC/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/algo7/TF2-RCON-MISC/actions/workflows/ci.yml)
 # TF2-RCON-MISC
 Go program that performs various commands via RCON base on local TF2 console output.
 Get all the players' name and steamID on the server and store them into the local MongoDB instance.
