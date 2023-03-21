@@ -23,5 +23,7 @@ jobs:
 
       - name: Pack with UPX
         run: |
-          ls -la
-          upx --best -o main_packed main
+          ls -lah | grep tf2-rcon
+          upx --best -o packed_binary tf2-rcon
+          mv packed_binary tf2-rcon
+          ls -lah | grep tf2-rcon
