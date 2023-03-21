@@ -17,9 +17,7 @@ jobs:
       commit: ${{ steps.ldflags.outputs.commit }}
       version: ${{ steps.ldflags.outputs.version }}
       tree-state: ${{ steps.ldflags.outputs.tree-state }}
-      major: ${{ steps.major.outputs.major }}
-      minor: ${{ steps.minor.outputs.minor }}
-      patch: ${{ steps.patch.outputs.patch }}
+
     steps:
       - id: checkout
         uses: actions/checkout@v3
@@ -31,9 +29,6 @@ jobs:
           echo "commit=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
           echo "version=$(git describe --tags --always --dirty | cut -c2-)" >> "$GITHUB_OUTPUT"
           echo "tree-state=$(if git diff --quiet; then echo "clean"; else echo "dirty"; fi)" >> "$GITHUB_OUTPUT"
-          echo "major=$(git describe --tags --always --dirty | cut -d '.' -f1 | cut -c2-)" >> "$GITHUB_OUTPUT"
-          echo "minor=$(git describe --tags --always --dirty | cut -d '.' -f2)" >> "$GITHUB_OUTPUT"
-          echo "patch=$(git describe --tags --always --dirty | cut -d '.' -f3 | cut -d '-' -f1 | cut -d '+' -f1)" >> "$GITHUB_OUTPUT"
 
   # Trusted builder.
 
@@ -56,6 +51,6 @@ jobs:
       go-version: 1.18.3
       config-file: .slsa-goreleaser/${{matrix.os}}-${{matrix.arch}}.yml
       # Optional: only needed if using ldflags.
-      evaluated-envs: 'COMMIT_DATE:${{needs.args.outputs.commit-date}}, COMMIT:${{needs.args.outputs.commit}}, VERSION:${{needs.args.outputs.version}}, TREE_STATE:${{needs.args.outputs.tree-state}}, MAJOR:${{needs.args.outputs.major}}, MINOR:${{needs.args.outputs.minor}}, PATCH:${{needs.args.outputs.patch}}'
+      evaluated-envs: 'COMMIT_DATE:${{needs.args.outputs.commit-date}}, COMMIT:${{needs.args.outputs.commit}}, VERSION:${{needs.args.outputs.version}}, TREE_STATE:${{needs.args.outputs.tree-state}}'
       upload-assets: true
       # upload-tag-name: ${{ github.ref }}
