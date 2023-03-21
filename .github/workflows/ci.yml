@@ -16,7 +16,7 @@ jobs:
 
       - name: Setup UPX
         run: |
-          apt install upx
+          sudo apt install upx -y
 
       - name: Build
         run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
