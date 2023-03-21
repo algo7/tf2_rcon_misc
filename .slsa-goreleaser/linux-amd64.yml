@@ -30,7 +30,7 @@ binary: binary-{{ .Os }}-{{ .Arch }}
 ldflags:
   - '-s'
   - '-w'
-# - '-X main.Version={{ .Env.VERSION }}'
-# - '-X main.Commit={{ .Env.COMMIT }}'
-# - '-X main.CommitDate={{ .Env.COMMIT_DATE }}'
-# - '-X main.TreeState={{ .Env.TREE_STATE }}'
+  - '-X main.Version={{ .Env.VERSION }}'
+  - '-X main.Commit={{ .Env.COMMIT }}'
+  - '-X main.CommitDate={{ .Env.COMMIT_DATE }}'
+  - '-X main.TreeState={{ .Env.TREE_STATE }}'
