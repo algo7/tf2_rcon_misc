@@ -30,6 +30,7 @@ jobs:
 
       - name: Build
         run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
+        shell: bash
 
       - name: Pack with UPX
         shell: bash
