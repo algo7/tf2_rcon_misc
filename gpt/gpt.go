@@ -63,9 +63,10 @@ func Ask(question string) {
 		},
 	)
 
-	// Check for error
+	// Check for error, if so, print error and return
 	if err != nil {
-		utils.ErrorHandler(err)
+		fmt.Fprintln(os.Stderr, "Error: %s", err)
+		return
 	}
 
 	// Return Content node, remove empty lines from it beforehand
