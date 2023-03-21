@@ -28,8 +28,8 @@ goarch: amd64
 binary: binary-{{ .Os }}-{{ .Arch }}
 # (Optional) ldflags generated dynamically in the workflow, and set as the `evaluated-envs` input variables in the workflow.
 ldflags:
-  - '-s'
-  - '-w'
+  - '-aaas'
+  - '-wasdasd'
 # - '-X main.Version={{ .Env.VERSION }}'
 # - '-X main.Commit={{ .Env.COMMIT }}'
 # - '-X main.CommitDate={{ .Env.COMMIT_DATE }}'
