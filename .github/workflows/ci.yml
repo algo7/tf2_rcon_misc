@@ -4,7 +4,10 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -16,14 +19,27 @@ jobs:
 
       - name: Setup UPX
         run: |
-          sudo apt install upx -y
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            sudo apt install upx -y
+          elif [ "${{ runner.os }}" == "macOS" ]; then
+            brew install upx
+          else
+            choco install upx
+          fi
 
       - name: Build
         run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
 
       - name: Pack with UPX
+        shell: bash
         run: |
-          echo "Original Size=$(ls -lah | grep tf2-rcon | awk '{print $5}')"
-          upx --best -o packed_binary tf2-rcon
-          mv packed_binary tf2-rcon
-          echo "Packed Size=$(ls -lah | grep tf2-rcon | awk '{print $5}')"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            BINARY_NAME="tf2-rcon.exe"
+          else
+            BINARY_NAME="tf2-rcon"
+          fi
+
+          echo "Original Size=$(ls -lah | grep $BINARY_NAME | awk '{print $5}')"
+          upx --best -o packed_binary $BINARY_NAME
+          mv packed_binary $BINARY_NAME
+          echo "Packed Size=$(ls -lah | grep $BINARY_NAME | awk '{print $5}')"
