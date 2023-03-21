@@ -23,7 +23,7 @@ jobs:
 
       - name: Pack with UPX
         run: |
-          ls -lah | grep tf2-rcon
+          Origina Size=$(ls -lah | grep tf2-rcon | awk '{print $5}')
           upx --best -o packed_binary tf2-rcon
           mv packed_binary tf2-rcon
-          ls -lah | grep tf2-rcon
+          Packed Size=$(ls -lah | grep tf2-rcon | awk '{print $5}')
