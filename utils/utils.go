@@ -27,7 +27,7 @@ var (
 **/
 
 // ErrorHandler print the err, stop the program if err is not nil, and exit on user input
-func ErrorHandler(err error, bool exit) {	
+func ErrorHandler(err error, exit bool) {	
 	// when no error, return
 	if err == nil {
 		return
