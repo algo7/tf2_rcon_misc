@@ -8,6 +8,7 @@ import (
 	"tf2-rcon/utils"
 	"time"
 	"strings"
+	"errors"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -64,8 +65,7 @@ func Ask(question string) {
 
 	// Check for error, if so, print error and return
 	if err != nil {
-		utils.error
-		fmt.Fprintln(os.Stderr, "Error: %s", err)
+		utils.ErrorHandler(err, false)
 		return
 	}
 
