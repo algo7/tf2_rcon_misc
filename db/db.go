@@ -39,7 +39,7 @@ func connect() *mongo.Client {
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
-		utils.ErrorHandler(err)
+		utils.ErrorHandler(err, true)
 	}
 
 	// defer func() {
@@ -50,7 +50,7 @@ func connect() *mongo.Client {
 
 	// Send a ping to confirm a successful connection
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		utils.ErrorHandler(err)
+		utils.ErrorHandler(err, true)
 	}
 
 	fmt.Println("Connected to MongoDB!")
@@ -88,7 +88,7 @@ func AddPlayer(playerID int64, playerName string) *mongo.UpdateResult {
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 
 	if err != nil {
-		utils.ErrorHandler(err)
+		utils.ErrorHandler(err, false)
 	}
 
 	// fmt.Printf("Number of documents upserted: %v\n", result)

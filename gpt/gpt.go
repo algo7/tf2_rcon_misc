@@ -23,8 +23,7 @@ func openAIConnect() (*openai.Client, bool) {
 
 	// Check if apikey is available, error if not
 	if openAiApikey == "" {
-		// utils.ErrorHandler(errors.New("Apikey is not set! (env: *OPENAI_APIKEY*)"))
-		fmt.Println("OpenAI API Key Key Not Set")
+		utils.ErrorHandler(errors.New("Apikey is not set! (env: *OPENAI_APIKEY*)"), false)
 		return nil, false
 	}
 
@@ -65,6 +64,7 @@ func Ask(question string) {
 
 	// Check for error, if so, print error and return
 	if err != nil {
+		utils.error
 		fmt.Fprintln(os.Stderr, "Error: %s", err)
 		return
 	}

@@ -26,13 +26,13 @@ func GetCompliment(target string) {
 
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		utils.ErrorHandler(err)
+		utils.ErrorHandler(err, false)
 	}
 
 	// Extract insult from response data
 	compliment, ok := data["compliment"].(string)
 	if !ok {
-		utils.ErrorHandler(errors.New("Could not parse insult from response data"))
+		utils.ErrorHandler(errors.New("Could not parse insult from response data"), false)
 	}
 
 	time.Sleep(1000 * time.Millisecond)

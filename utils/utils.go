@@ -27,9 +27,17 @@ var (
 **/
 
 // ErrorHandler print the err, stop the program if err is not nil, and exit on user input
-func ErrorHandler(err error) {
-	if err != nil {
-		fmt.Println(err)
+func ErrorHandler(err error, bool exit) {	
+	// when no error, return
+	if err == nil {
+		return
+	}
+
+	// Print error to console
+	fmt.Println(err)		
+	
+	// when exit-flag set, exit the program
+	if exit {
 		fmt.Println("Press Any Key to Exit...")
 		fmt.Scanln()
 		os.Exit(0)
@@ -39,7 +47,7 @@ func ErrorHandler(err error) {
 // EmptyLog empties the tf2 log file
 func EmptyLog(path string) {
 	err := os.Truncate(path, 0)
-	ErrorHandler(err)
+	ErrorHandler(err, true)
 }
 
 // LogPathDection
@@ -70,7 +78,7 @@ func LogPathDection() string {
 			// Get current os user name
 			user, err := user.Current()
 			if err != nil {
-				ErrorHandler(err)
+				ErrorHandler(err, true)
 			}
 			osUSerName := user.Username
 
@@ -100,7 +108,7 @@ func TailLog(tf2LogPath string) *tail.Tail {
 			Poll:      true,
 		})
 
-	ErrorHandler(err)
+	ErrorHandler(err, true)
 
 	return t
 }
