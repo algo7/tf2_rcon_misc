@@ -33,11 +33,11 @@ func scanPort(protocol, hostname string, port int) bool {
 func getHostInfo() []string {
 	// Get host name
 	host, err := os.Hostname()
-	utils.ErrorHandler(err)
+	utils.ErrorHandler(err, true)
 
 	// Get host's ipv4 and ipv6 addresses
 	addrs, err := net.LookupIP(host)
-	utils.ErrorHandler(err)
+	utils.ErrorHandler(err, true)
 
 	// Slice to hold ipv4 and ipv6 addresses
 	var ips []string
@@ -68,7 +68,7 @@ func determineRconHost() string {
 
 	// Check if rconHost is still "Nothing" and error if so
 	if rconHost == "Nothing" {
-		utils.ErrorHandler(utils.ErrMissingRconHost)
+		utils.ErrorHandler(utils.ErrMissingRconHost, true)
 	}
 
 	fmt.Printf("Rcon Host: %s\n", rconHost)
@@ -80,10 +80,10 @@ func determineRconHost() string {
 func rconConnect(rconHost string) *rcon.Conn {
 
 	conn, err := rcon.Dial(rconHost+":27015", "123")
-	utils.ErrorHandler(err)
+	utils.ErrorHandler(err, true)
 
 	_, err = conn.Execute("status")
-	utils.ErrorHandler(err)
+	utils.ErrorHandler(err, true)
 
 	fmt.Println("Connected")
 
