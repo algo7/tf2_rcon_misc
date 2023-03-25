@@ -67,29 +67,24 @@ func main() {
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
 
-		// Command logic
-		isSay, user, text := utils.GetChatSay(players, line.Text)
+		// Command logic - TF2
+		isSay, user, text := utils.GetChatSayTF2(players, line.Text)
 
 		if isSay && text != "" && string(text[0]) == "!" {
+			HandleUserSay(text, user, playerName)
+		} else {
+			// Command logic - Dystopia
+			isSay, user, text = utils.GetChatSayDystopia(players, line.Text)
 
-			fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
-
-			switch user {
-
-			case playerName:
-				fmt.Println("ChatSay, it is me!", user)
-				commands.RunCommands(text, true)
-
-			default:
-				fmt.Println("ChatSay, it is not me!", user)
-				commands.RunCommands(text, false)
+			if isSay && text != "" && string(text[0]) == "!" {
+				HandleUserSay(text, user, playerName)
 			}
 		}
 
 		// To be decided if this is needed
-		if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
+		// if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
 
-		}
+		// }
 
 		// Autobalance comment logic
 		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
@@ -108,6 +103,21 @@ func IsAutobalanceCommentEnabled() bool {
 	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
 
 	return enabled == "1"
+}
+
+func HandleUserSay(text string, user string, playerName string) {
+	fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
+
+	switch user {
+
+	case playerName:
+		fmt.Println("ChatSay, it is me!", user)
+		commands.RunCommands(text, true)
+
+	default:
+		fmt.Println("ChatSay, it is not me!", user)
+		commands.RunCommands(text, false)
+	}
 }
 
 // // Function 3

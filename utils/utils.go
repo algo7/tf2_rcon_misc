@@ -27,15 +27,15 @@ var (
 **/
 
 // ErrorHandler print the err, stop the program if err is not nil, and exit on user input
-func ErrorHandler(err error, exit bool) {	
+func ErrorHandler(err error, exit bool) {
 	// when no error, return
 	if err == nil {
 		return
 	}
 
 	// Print error to console
-	fmt.Println(err)		
-	
+	fmt.Println(err)
+
 	// when exit-flag set, exit the program
 	if exit {
 		fmt.Println("Press Any Key to Exit...")
@@ -217,11 +217,11 @@ func ExtractUsername(in string) string {
 }
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-func GetChatSay(players []string, in string) (bool, string, string) {
+func GetChatSayTF2(players []string, in string) (bool, string, string) {
 
 	for _, player := range players {
 		// check if we found a player saying that in our playerlist
-		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" { // %TODO, +1 is probably not right
+		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" {
 			fmt.Println("IsChatSay - found player that said:", in[len(player)+4:])
 			fmt.Println("IsChatSay - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
@@ -229,10 +229,29 @@ func GetChatSay(players []string, in string) (bool, string, string) {
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
-		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" { // %TODO, +1 is probably not right
+		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" {
 			fmt.Println("IsChatSay (dead) - found player that said:", in[len(player)+4+7:])
 			fmt.Println("IsChatSay (dead) - found player that said, player:", player)
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
+		}
+	}
+
+	return false, "", ""
+}
+
+// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
+// Game specific for dystopia
+func GetChatSayDystopia(players []string, in string) (bool, string, string) {
+
+	for _, player := range players {
+		fmt.Println("in:", in[1:len(player)+1])
+		fmt.Println("in2:", in[len(player)+1:len(player)+2])
+
+		// check if we found a player saying that in our playerlist
+		if len(in) > len(player)+5 && in[1:len(player)+1] == player && in[len(player)+1:len(player)+2] == ":" {
+			fmt.Println("IsChatSay - found player that said:", in[len(player)+3:])
+			fmt.Println("IsChatSay - found player that said, player:", player)
+			return true, TrimCommon(player), TrimCommon(in[len(player)+3:])
 		}
 	}
 
