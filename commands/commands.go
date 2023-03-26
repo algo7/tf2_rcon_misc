@@ -71,10 +71,10 @@ func RunCommands(text string, isSelf bool) {
 			if cmdFunc != nil {
 				// Call func for given command
 				cmdFunc(args)
+			} else {
+				// Command is not configured
+				fmt.Printf("\nSelfCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 			}
-
-			// Command is not configured
-			fmt.Printf("\nSelfCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 
 		case false:
 
@@ -87,10 +87,10 @@ func RunCommands(text string, isSelf bool) {
 			if cmdFunc != nil {
 				// Call func for given command
 				cmdFunc(args)
+			} else {
+				// Command is not configured
+				fmt.Printf("\nOthersCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 			}
-
-			// Command is not configured
-			fmt.Printf("\nOthersCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 		}
 	}
 }
