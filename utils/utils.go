@@ -190,7 +190,7 @@ func GetCommandAndArgs(content string) (string, string) {
 func AddPlayer(players *[]string, elem string) {
 	if !SliceContains(*players, elem) {
 		*players = append(*players, elem)
-		fmt.Printf("Adding %s to %q\n", elem, *players)
+		//fmt.Printf("Adding %s to %q\n", elem, *players)
 	}
 }
 
@@ -222,16 +222,14 @@ func GetChatSayTF2(players []string, in string) (bool, string, string) {
 	for _, player := range players {
 		// check if we found a player saying that in our playerlist
 		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Println("IsChatSay - found player that said:", in[len(player)+4:])
-			fmt.Println("IsChatSay - found player that said, player:", player)
+			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4:])
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
 		}
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
 		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" {
-			fmt.Println("IsChatSay (dead) - found player that said:", in[len(player)+4+7:])
-			fmt.Println("IsChatSay (dead) - found player that said, player:", player)
+			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4+7:])
 			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
 		}
 	}
@@ -247,8 +245,7 @@ func GetChatSayDystopia(players []string, in string) (bool, string, string) {
 
 		// check if we found a player saying that in our playerlist
 		if len(in) > len(player)+5 && in[1:len(player)+1] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Println("IsChatSay - found player that said:", in[len(player)+3:])
-			fmt.Println("IsChatSay - found player that said, player:", player)
+			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+3:])
 			return true, TrimCommon(player), TrimCommon(in[len(player)+3:])
 		}
 	}
