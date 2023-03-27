@@ -11,22 +11,25 @@ import (
 	"github.com/gorcon/rcon"
 )
 
-// Get the rcon host
-var rconHost = determineRconHost()
+// global variables
+var rconHost string
+var conn *rcon.Conn
 
-// Connect to the rcon host
-var conn = rconConnect(rconHost)
+const rconPort = 27015
 
 // scanPort scans for the given port on the host
 func scanPort(protocol, hostname string, port int) bool {
 
-	fmt.Printf("Scanning: %s\n", hostname)
+	fmt.Printf("Connecting to: %s:%d\n", hostname, port)
 	address := hostname + ":" + strconv.Itoa(port)
 	conn, err := net.DialTimeout(protocol, address, 60*time.Second)
+
 	if err != nil {
 		return false
 	}
+
 	defer conn.Close()
+
 	return true
 }
 
@@ -59,7 +62,7 @@ func determineRconHost() string {
 
 	// Scan all the ip address opened rcon port and return the ip addr with an opened rcon port
 	for _, ip := range getHostInfo() {
-		open := scanPort("tcp", ip, 27015)
+		open := scanPort("tcp", ip, rconPort)
 		if open {
 			rconHost = ip
 			break
@@ -68,10 +71,10 @@ func determineRconHost() string {
 
 	// Check if rconHost is still "Nothing" and error if so
 	if rconHost == "Nothing" {
-		utils.ErrorHandler(utils.ErrMissingRconHost, true)
+		return ""
 	}
 
-	fmt.Printf("Rcon Host: %s\n", rconHost)
+	fmt.Printf("Rcon Host: %s:%d\n", rconHost, rconPort)
 
 	return rconHost
 }
@@ -80,10 +83,16 @@ func determineRconHost() string {
 func rconConnect(rconHost string) *rcon.Conn {
 
 	conn, err := rcon.Dial(rconHost+":27015", "123")
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		utils.ErrorHandler(err, false)
+		return nil
+	}
 
 	_, err = conn.Execute("status")
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		utils.ErrorHandler(err, false)
+		return nil
+	}
 
 	fmt.Println("Connected")
 
@@ -104,4 +113,53 @@ func RconExecute(command string) string {
 	}
 
 	return response
+}
+
+func Connect() {
+	// Set the loop duration to 5 minutes
+	duration := 5 * time.Minute
+	// Set the pause interval to 5 seconds
+	interval := 5 * time.Second
+	maxRetries := 20
+
+	// Get the current time
+	start := time.Now()
+	try := 1
+
+	for time.Since(start) < duration && try <= maxRetries {
+		rconHost = determineRconHost()
+
+		if rconHost == "" {
+			// Do something here
+			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			time.Sleep(interval)
+		} else {
+			break
+		}
+
+		try++
+	}
+
+	// Get the current time, reset timer
+	start = time.Now()
+	try = 1
+
+	for time.Since(start) < duration && try <= maxRetries {
+		// Connect to the rcon host
+		conn = rconConnect(rconHost)
+
+		if conn == nil {
+			// Do something here
+			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			time.Sleep(interval)
+		} else {
+			break
+		}
+
+		try++
+	}
+}
+
+func IsReady() bool {
+	return conn != nil
 }

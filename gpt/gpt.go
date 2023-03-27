@@ -2,13 +2,13 @@ package gpt
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"tf2-rcon/network"
 	"tf2-rcon/utils"
 	"time"
-	"strings"
-	"errors"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -71,20 +71,20 @@ func Ask(question string) {
 
 	// Return Content node, remove empty lines from it beforehand
 	responseText := utils.RemoveEmptyLines(resp.Choices[0].Message.Content)
-	
+
 	fmt.Println("!gpt - requesting:", question, "- Response:", responseText)
-	
+
 	// Remove any newlines and limit response to 121 characters
 	responseText = strings.Replace(responseText, "\n", " ", -1)
 	if len(responseText) > 121 {
 		responseText = strings.TrimSpace(responseText)[:121]
 		lastSpace := strings.LastIndex(responseText, " ")
-		
+
 		if lastSpace != -1 {
 			responseText = responseText[:lastSpace] + "..."
 		} else {
 			responseText += "..."
-		}		
+		}
 	} else {
 		responseText = strings.TrimSpace(responseText)
 	}

@@ -34,7 +34,7 @@ func ErrorHandler(err error, exit bool) {
 	}
 
 	// Print error to console
-	fmt.Println(err)
+	PrintStackTrace(err)
 
 	// when exit-flag set, exit the program
 	if exit {
@@ -42,6 +42,16 @@ func ErrorHandler(err error, exit bool) {
 		fmt.Scanln()
 		os.Exit(0)
 	}
+}
+
+func PrintStackTrace(err error) {
+	// Print the error message
+	fmt.Println(err)
+
+	// Print the stack trace
+	buf := make([]byte, 4096)
+	runtime.Stack(buf, false)
+	fmt.Println(string(buf))
 }
 
 // EmptyLog empties the tf2 log file

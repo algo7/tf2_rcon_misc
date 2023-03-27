@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -17,6 +18,12 @@ const teamSwitchMessage = "You have switched to team BLU and will receive 500 ex
 var players []string
 
 func main() {
+
+	network.Connect()
+
+	if network.IsReady() == false {
+		utils.ErrorHandler(errors.New("Finally unable to establish rcon-connection!"), true)
+	}
 
 	// Get the current player name
 	res := network.RconExecute("name")
