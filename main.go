@@ -27,8 +27,6 @@ func main() {
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	fmt.Println("res:", res)
-
 	// res sample => "name" = "Algo7" ( def. "unnamed" )
 	//res = "\"name\" = \"atomy\"" // hardcode name for testing
 	playerNameRaw := strings.Fields(res)
