@@ -33,14 +33,15 @@ func ErrorHandler(err error, exit bool) {
 		return
 	}
 
-	// Print error to console
-	PrintStackTrace(err)
-
-	// when exit-flag set, exit the program
+	// when exit-flag set, exit the program and print stack trace
 	if exit {
+		// Print error to console
+		PrintStackTrace(err)
 		fmt.Println("Press Any Key to Exit...")
 		fmt.Scanln()
 		os.Exit(0)
+	} else { // else only print error message
+		fmt.Println(err)
 	}
 }
 

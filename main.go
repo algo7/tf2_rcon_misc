@@ -22,13 +22,21 @@ func main() {
 	network.Connect()
 
 	if network.IsReady() == false {
-		utils.ErrorHandler(errors.New("Finally unable to establish rcon-connection!"), true)
+		utils.ErrorHandler(errors.New("finally unable to establish rcon-connection"), true)
 	}
 
 	// Get the current player name
 	res := network.RconExecute("name")
+	fmt.Println("res:", res)
+
 	// res sample => "name" = "Algo7" ( def. "unnamed" )
+	//res = "\"name\" = \"atomy\"" // hardcode name for testing
 	playerNameRaw := strings.Fields(res)
+
+	if len(playerNameRaw) == 0 {
+		utils.ErrorHandler(errors.New("unable to parse empty response to 'name' command"), true)
+	}
+
 	playerName := strings.TrimSuffix(strings.TrimPrefix(playerNameRaw[2], `"`), `"`)
 	fmt.Println("Player name:", playerName)
 
@@ -39,13 +47,19 @@ func main() {
 	utils.EmptyLog(tf2LogPath)
 
 	// Tail the log
+	fmt.Println("Tailing Logfile at:", tf2LogPath)
 	t := utils.TailLog(tf2LogPath)
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
+		// Debug, turn on to print every line we read from file
+		//fmt.Printf("[+] %s\n", line.Text)
+
 		// Refresh player list logic
-		if strings.Contains(line.Text, "Lobby updated") || strings.Contains(line.Text, "connected") {
+		// Dont assume status headlines as player connects
+		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
+			fmt.Println("Executing *status* rcon command after line:", line.Text)
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 
@@ -87,11 +101,6 @@ func main() {
 				HandleUserSay(text, user, playerName)
 			}
 		}
-
-		// To be decided if this is needed
-		// if len(line.Text) > len(playerName)+5 && line.Text[0:len(playerName)] == playerName { // that's my own say stuff
-
-		// }
 
 		// Autobalance comment logic
 		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
