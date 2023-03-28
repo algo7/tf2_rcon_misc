@@ -25,7 +25,7 @@ goarch: amd64
 # Binary output name.
 # {{ .Os }} will be replaced by goos field in the config file.
 # {{ .Arch }} will be replaced by goarch field in the config file.
-binary: tf2-rcon-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}
+binary: tf2-rcon-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}.bin
 # (Optional) ldflags generated dynamically in the workflow, and set as the `evaluated-envs` input variables in the workflow.
 ldflags:
   - '-s'

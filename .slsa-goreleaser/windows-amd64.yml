@@ -6,7 +6,7 @@ flags:
   - -tags=netgo
 goos: windows
 goarch: amd64
-binary: tf2-rcon-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}
+binary: tf2-rcon-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}.exe
 ldflags:
   - '-s'
   - '-w'
