@@ -16,7 +16,9 @@ $ ./auto_build.sh
 $ ./run.bat
 ```
 
-### Launch Options:
+## Configuration
+
+### (required) Launch Options:
 ---
 You should launch your TF2 with the following launch options:
 ```bash
@@ -25,3 +27,9 @@ You should launch your TF2 with the following launch options:
 ![Launch Options](https://github.com/algo7/TF2-RCON-MISC/blob/main/launch_options.png?raw=true)
 
 The password really doesn't matter as nobody will be accessing it except for you. At the moment the password use to connect to RCON is hardcoded as `123` so please don't change it; otherwise, the program will not work.
+
+### (optional) ChatGPT support:
+If you want your client to respond to !gpt commands you need to get an openai api key.
+Go to openai page and create an API-Key: https://platform.openai.com/account/api-keys
+
+Edit run.bat and set the key into environment variable **OPENAI_APIKEY**.
