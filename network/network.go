@@ -131,7 +131,7 @@ func Connect() {
 
 		if rconHost == "" {
 			// Do something here
-			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			fmt.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
 			break
