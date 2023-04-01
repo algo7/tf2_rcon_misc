@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"tf2-rcon/commands"
 	"tf2-rcon/db"
@@ -111,13 +110,6 @@ func main() {
 		// fmt.Println("Unknown:", line.Text)
 
 	}
-}
-
-// IsAutobalanceCommentEnabled Check if autobalance-response is enabled or not, specified by ENV var
-func IsAutobalanceCommentEnabled() bool {
-	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
-
-	return enabled == "1"
 }
 
 func HandleUserSay(text string, user string, playerName string) {

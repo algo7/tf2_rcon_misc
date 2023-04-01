@@ -248,22 +248,6 @@ func GetChatSayTF2(players []string, in string) (bool, string, string) {
 	return false, "", ""
 }
 
-// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-// Game specific for dystopia
-func GetChatSayDystopia(players []string, in string) (bool, string, string) {
-
-	for _, player := range players {
-
-		// check if we found a player saying that in our playerlist
-		if len(in) > len(player)+5 && in[1:len(player)+1] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+3:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+3:])
-		}
-	}
-
-	return false, "", ""
-}
-
 // TrimCommon trims the common line endings from a string
 func TrimCommon(in string) string {
 	return strings.TrimSuffix(strings.TrimSuffix(in, "\n"), "\r")
@@ -284,6 +268,13 @@ func GetPlayerNameFromLine(in string) string {
 
 func StripRconChars(in string) string {
 	return strings.ReplaceAll(in, ";", ":")
+}
+
+// IsAutobalanceCommentEnabled Check if autobalance-response is enabled or not, specified by ENV var
+func IsAutobalanceCommentEnabled() bool {
+	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
+
+	return enabled == "1"
 }
 
 // Old shit
