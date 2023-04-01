@@ -101,7 +101,7 @@ func main() {
 		}
 
 		// Autobalance comment logic
-		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+		if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
 		}
