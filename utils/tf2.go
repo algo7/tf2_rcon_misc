@@ -13,7 +13,7 @@ import (
 	"github.com/nxadm/tail"
 )
 
-// Custom (error) messages
+// Global variables
 var (
 	ErrMissingRconHost                = errors.New("TF2 Not Running / RCON Not Enabled")
 	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
