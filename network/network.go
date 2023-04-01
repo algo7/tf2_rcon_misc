@@ -87,7 +87,7 @@ func determineRconHost() string {
 // rconConnect connects to a rcon host
 func rconConnect(rconHost string) *rcon.Conn {
 
-	conn, err := rcon.Dial(rconHost+":27015", "123")
+	conn, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
 	if err != nil {
 		utils.ErrorHandler(err, false)
 		return nil
@@ -120,7 +120,7 @@ func RconExecute(command string) string {
 	return response
 }
 
-// Connect connects to the rcon host
+// Connect tries to determine the rcon host and connect to it
 func Connect() {
 
 	// Set the loop duration to 5 minutes
@@ -128,8 +128,11 @@ func Connect() {
 
 	// Set the pause interval to 5 seconds
 	interval := 5 * time.Second
+
+	// Set the max retries to 20
 	maxRetries := 20
 
+	// Try to determine the rcon host for 5 minutes
 	// Get the current time
 	start := time.Now()
 	try := 1
@@ -138,7 +141,6 @@ func Connect() {
 		rconHost = determineRconHost()
 
 		if rconHost == "" {
-			// Do something here
 			fmt.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
@@ -148,16 +150,17 @@ func Connect() {
 		try++
 	}
 
+	// Try to connect to the rcon host for 5 minutes
 	// Get the current time, reset timer
 	start = time.Now()
 	try = 1
 
 	for time.Since(start) < duration && try <= maxRetries {
+
 		// Connect to the rcon host
 		conn = rconConnect(rconHost)
 
 		if conn == nil {
-			// Do something here
 			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
