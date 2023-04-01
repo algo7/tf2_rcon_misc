@@ -11,11 +11,15 @@ import (
 	"github.com/gorcon/rcon"
 )
 
-// global variables
-var rconHost string
-var conn *rcon.Conn
+// Global variables
+var (
+	rconHost string
+	conn     *rcon.Conn
+)
 
-const rconPort = 27015
+const (
+	rconPort = 27015
+)
 
 // scanPort scans for the given port on the host
 func scanPort(protocol, hostname string, port int) bool {
@@ -33,6 +37,7 @@ func scanPort(protocol, hostname string, port int) bool {
 	return true
 }
 
+// getHostInfo gets the host's internal ip addresses
 func getHostInfo() []string {
 	// Get host name
 	host, err := os.Hostname()
@@ -115,9 +120,12 @@ func RconExecute(command string) string {
 	return response
 }
 
+// Connect connects to the rcon host
 func Connect() {
+
 	// Set the loop duration to 5 minutes
 	duration := 5 * time.Minute
+
 	// Set the pause interval to 5 seconds
 	interval := 5 * time.Second
 	maxRetries := 20
@@ -160,6 +168,7 @@ func Connect() {
 	}
 }
 
+// IsReady returns true if the connection is ready
 func IsReady() bool {
 	return conn != nil
 }
