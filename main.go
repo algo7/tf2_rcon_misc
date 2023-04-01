@@ -90,13 +90,13 @@ func main() {
 		isSay, user, text := utils.GetChatSayTF2(players, line.Text)
 
 		if isSay && text != "" && string(text[0]) == "!" {
-			HandleUserSay(text, user, playerName)
+			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
 			isSay, user, text = utils.GetChatSayDystopia(players, line.Text)
 
 			if isSay && text != "" && string(text[0]) == "!" {
-				HandleUserSay(text, user, playerName)
+				commands.HandleUserSay(text, user, playerName)
 			}
 		}
 
@@ -111,65 +111,3 @@ func main() {
 
 	}
 }
-
-func HandleUserSay(text string, user string, playerName string) {
-	fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
-
-	switch user {
-
-	case playerName:
-		fmt.Println("ChatSay, it is me!", user)
-		commands.RunCommands(text, true)
-
-	default:
-		fmt.Println("ChatSay, it is not me!", user)
-		commands.RunCommands(text, false)
-	}
-}
-
-// // Function 3
-// if strings.Contains(line.Text, "killed") &&
-// 	strings.Contains(line.Text, "(crit)") &&
-// 	strings.Contains(line.Text, playerName) {
-
-// 	killer := strings.Split(line.Text, "killed")
-// 	theKiller := killer[0]
-
-// 	if theKiller == playerName {
-// 		theKiller = ""
-// 	}
-
-// 	msg := utils.PickRandomMessage("crit")
-// 	network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
-
-// }
-
-// if utils.Steam3IDMatcher(line.Text) {
-// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
-// 	fmt.Println(steamID)
-// 	db.DBAddPlayer(client, steamID)
-// }
-
-// if utils.UserNameMatcher(line.Text) {
-// 	userName := utils.UserNameFindString(line.Text)
-// 	fmt.Println(userName)
-// }
-
-// if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
-// if len(strings.Fields(line.Text)) >= 4 {
-// 	command := strings.Fields(line.Text)[2:3][0]
-// 	args := strings.Fields(line.Text)[3:4][0]
-// 	cmdFunc := gpt.SelfCommandMap[command]
-// 	fmt.Println("Command:", command)
-
-// 	// Command is not configured
-// 	if cmdFunc == nil {
-// 		continue
-// 	}
-
-// 	fmt.Print("Args: ", args)
-
-// 	// call func for given command
-// 	cmdFunc(args)
-// }
-// }
