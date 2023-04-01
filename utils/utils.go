@@ -282,6 +282,10 @@ func GetPlayerNameFromLine(in string) string {
 	return ""
 }
 
+func StripRconChars(in string) string {
+	return strings.ReplaceAll(in, ";", ":")
+}
+
 // Old shit
 
 // WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"

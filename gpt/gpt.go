@@ -91,5 +91,5 @@ func Ask(question string) {
 
 	// on first run only delay 500 ms
 	time.Sleep(500 * time.Millisecond)
-	network.RconExecute("say \"GPT> " + responseText + "\"")
+	network.RconExecute("say \"GPT> " + utils.StripRconChars(responseText) + "\"")
 }
