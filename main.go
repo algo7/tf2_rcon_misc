@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"tf2-rcon/commands"
 	"tf2-rcon/db"
@@ -102,7 +103,8 @@ func main() {
 		// Command logic - TF2
 		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
-		if isSay && text != "" {
+		// Add chat logic. prob better to do this in a separate function
+		if isSay && strings.TrimSpace(text) == "" {
 			// Find the steam ID of the player who sent the message
 			var steamID int64
 			for _, player := range playersCache {
@@ -114,7 +116,7 @@ func main() {
 
 			if steamID == 0 {
 				fmt.Println("Failed to find steam ID for user:", user)
-				continue // or return, or any other appropriate action
+				os.Exit(1)
 			}
 
 			chat := db.Chat{
@@ -127,14 +129,15 @@ func main() {
 			db.AddChat(chat)
 		}
 
-		if isSay && text != "" && string(text[0]) == "!" {
+		// Command logic - TF2
+		if isSay && strings.TrimSpace(text) == "" && string(text[0]) == "!" {
 
 			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
 			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
 
-			if isSay && text != "" && string(text[0]) == "!" {
+			if isSay && strings.TrimSpace(text) == "" && string(text[0]) == "!" {
 				commands.HandleUserSay(text, user, playerName)
 			}
 		}
