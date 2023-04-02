@@ -22,6 +22,12 @@ var (
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 )
 
+// String slice for caching current players
+type PlayerInfoCache struct {
+	SteamID int64
+	Name    string
+}
+
 /**
 * Exported functions need to start with a capital letter
 **/
@@ -198,21 +204,17 @@ func GetCommandAndArgs(content string) (string, string) {
 	return commands, arguments
 }
 
-func AddPlayer(players *[]string, elem string) {
-	if !SliceContains(*players, elem) {
-		*players = append(*players, elem)
-		//fmt.Printf("Adding %s to %q\n", elem, *players)
-	}
-}
-
-// SliceContains checks if a slice contains a specific element
-func SliceContains(slice []string, elem string) bool {
-	for _, s := range slice {
-		if s == elem {
-			return true
+// AddPlayerCache adds a player to the cache if it doesn't already exist
+func AddPlayerCache(players *[]PlayerInfoCache, player PlayerInfoCache) {
+	// Check if the player already exists in the cache
+	for _, p := range *players {
+		if p.SteamID == player.SteamID {
+			return
 		}
 	}
-	return false
+
+	// Add the player to the cache
+	*players = append(*players, player)
 }
 
 // ExtractUsername extracts the username from the supplied string
@@ -228,20 +230,20 @@ func ExtractUsername(in string) string {
 }
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-func GetChatSayTF2(players []string, in string) (bool, string, string) {
+func GetChatSayTF2(players []PlayerInfoCache, in string) (bool, string, string) {
 
 	for _, player := range players {
 		// check if we found a player saying that in our playerlist
-		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
+		if len(in) > len(player.Name)+5 && in[0:len(player.Name)] == player.Name && in[len(player.Name)+1:len(player.Name)+2] == ":" {
+			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4:])
+			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4:])
 		}
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
-		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4+7:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
+		if len(in) > len(player.Name)+5+7 && in[0:len(player.Name)+7] == "*DEAD* "+player.Name && in[len(player.Name)+7+1:len(player.Name)+7+2] == ":" {
+			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4+7:])
+			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4+7:])
 		}
 	}
 

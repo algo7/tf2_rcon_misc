@@ -14,8 +14,8 @@ import (
 // Const console message that informs you about forceful autobalance
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
-// String slice for caching current players
-var players []string
+// Slice of player info cache struct that holds the player info
+var playersCache []utils.PlayerInfoCache
 
 func main() {
 
@@ -61,8 +61,8 @@ func main() {
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 
-			// erase local player storage
-			copy(players, []string{})
+			// Refresh the player cache
+			playersCache = []utils.PlayerInfoCache{}
 		}
 
 		// Save to DB logic
@@ -87,14 +87,20 @@ func main() {
 			// Add the player to the DB
 			db.AddPlayer(player)
 
+			// Player cache logic
+			playerInfoCachce := utils.PlayerInfoCache{
+				SteamID: steamID,
+				Name:    user,
+			}
+
 			// Add the player to the cache
-			utils.AddPlayer(&players, user)
+			utils.AddPlayerCache(&playersCache, playerInfoCachce)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
 
 		// Command logic - TF2
-		isSay, user, text := utils.GetChatSayTF2(players, line.Text)
+		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
 		if isSay && text != "" && string(text[0]) == "!" {
 
@@ -108,7 +114,7 @@ func main() {
 			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
-			isSay, user, text = utils.GetChatSayDystopia(players, line.Text)
+			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
 
 			if isSay && text != "" && string(text[0]) == "!" {
 				commands.HandleUserSay(text, user, playerName)
