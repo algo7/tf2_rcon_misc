@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"tf2-rcon/commands"
 	"tf2-rcon/db"
@@ -105,19 +104,7 @@ func main() {
 
 		// Add chat logic. prob better to do this in a separate function
 		if isSay && strings.TrimSpace(text) == "" {
-			// Find the steam ID of the player who sent the message
-			var steamID int64
-			for _, player := range playersCache {
-				if player.Name == user {
-					steamID = player.SteamID
-					break
-				}
-			}
-
-			if steamID == 0 {
-				fmt.Println("Failed to find steam ID for user:", user)
-				os.Exit(1)
-			}
+			steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
 
 			chat := db.Chat{
 				SteamID:   steamID,

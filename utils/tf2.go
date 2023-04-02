@@ -279,6 +279,25 @@ func IsAutobalanceCommentEnabled() bool {
 	return enabled == "1"
 }
 
+// GetSteamIDFromPlayerCache returns the steam ID of the supplied player name from the current player cache
+func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
+	// Find the steam ID of the player who sent the message
+	var steamID int64
+	for _, player := range currentPlayerCache {
+		if player.Name == userName {
+			steamID = player.SteamID
+			break
+		}
+	}
+
+	if steamID == 0 {
+		fmt.Println("Failed to find steam ID for user:", userName)
+		os.Exit(1)
+	}
+
+	return steamID
+}
+
 // Old shit
 
 // WinTf2LogPath      string = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
