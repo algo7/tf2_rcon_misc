@@ -13,7 +13,7 @@ import (
 	"github.com/nxadm/tail"
 )
 
-// Custom (error) messages
+// Global variables
 var (
 	ErrMissingRconHost                = errors.New("TF2 Not Running / RCON Not Enabled")
 	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
@@ -21,6 +21,12 @@ var (
 	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 )
+
+// String slice for caching current players
+type PlayerInfoCache struct {
+	SteamID int64
+	Name    string
+}
 
 /**
 * Exported functions need to start with a capital letter
@@ -198,21 +204,17 @@ func GetCommandAndArgs(content string) (string, string) {
 	return commands, arguments
 }
 
-func AddPlayer(players *[]string, elem string) {
-	if !SliceContains(*players, elem) {
-		*players = append(*players, elem)
-		//fmt.Printf("Adding %s to %q\n", elem, *players)
-	}
-}
-
-// SliceContains checks if a slice contains a specific element
-func SliceContains(slice []string, elem string) bool {
-	for _, s := range slice {
-		if s == elem {
-			return true
+// AddPlayerCache adds a player to the cache if it doesn't already exist
+func AddPlayerCache(players *[]PlayerInfoCache, player PlayerInfoCache) {
+	// Check if the player already exists in the cache
+	for _, p := range *players {
+		if p.SteamID == player.SteamID {
+			return
 		}
 	}
-	return false
+
+	// Add the player to the cache
+	*players = append(*players, player)
 }
 
 // ExtractUsername extracts the username from the supplied string
@@ -228,36 +230,20 @@ func ExtractUsername(in string) string {
 }
 
 // Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-func GetChatSayTF2(players []string, in string) (bool, string, string) {
+func GetChatSayTF2(players []PlayerInfoCache, in string) (bool, string, string) {
 
 	for _, player := range players {
 		// check if we found a player saying that in our playerlist
-		if len(in) > len(player)+5 && in[0:len(player)] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+4:])
+		if len(in) > len(player.Name)+5 && in[0:len(player.Name)] == player.Name && in[len(player.Name)+1:len(player.Name)+2] == ":" {
+			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4:])
+			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4:])
 		}
 
 		// detect dead playertalk
 		// +6 is the len of string "*DEAD* "
-		if len(in) > len(player)+5+7 && in[0:len(player)+7] == "*DEAD* "+player && in[len(player)+7+1:len(player)+7+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+4+7:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+4+7:])
-		}
-	}
-
-	return false, "", ""
-}
-
-// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-// Game specific for dystopia
-func GetChatSayDystopia(players []string, in string) (bool, string, string) {
-
-	for _, player := range players {
-
-		// check if we found a player saying that in our playerlist
-		if len(in) > len(player)+5 && in[1:len(player)+1] == player && in[len(player)+1:len(player)+2] == ":" {
-			fmt.Printf("CHAT: [%s] %s\n", player, in[len(player)+3:])
-			return true, TrimCommon(player), TrimCommon(in[len(player)+3:])
+		if len(in) > len(player.Name)+5+7 && in[0:len(player.Name)+7] == "*DEAD* "+player.Name && in[len(player.Name)+7+1:len(player.Name)+7+2] == ":" {
+			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4+7:])
+			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4+7:])
 		}
 	}
 
@@ -284,6 +270,32 @@ func GetPlayerNameFromLine(in string) string {
 
 func StripRconChars(in string) string {
 	return strings.ReplaceAll(in, ";", ":")
+}
+
+// IsAutobalanceCommentEnabled Check if autobalance-response is enabled or not, specified by ENV var
+func IsAutobalanceCommentEnabled() bool {
+	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
+
+	return enabled == "1"
+}
+
+// GetSteamIDFromPlayerCache returns the steam ID of the supplied player name from the current player cache
+func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
+	// Find the steam ID of the player who sent the message
+	var steamID int64
+	for _, player := range currentPlayerCache {
+		if player.Name == userName {
+			steamID = player.SteamID
+			break
+		}
+	}
+
+	if steamID == 0 {
+		fmt.Println("Failed to find steam ID for user:", userName)
+		os.Exit(1)
+	}
+
+	return steamID
 }
 
 // Old shit

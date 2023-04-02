@@ -33,8 +33,8 @@ var SelfCommandMap = map[string]func(args string){
 	},
 }
 
-// OtherUsersCommandMap is a map of functions for chat-commands that everyone (but you) is allowed to execute
-var OtherUsersCommandMap = map[string]func(args string){
+// otherUsersCommandMap is a map of functions for chat-commands that everyone (but you) is allowed to execute
+var otherUsersCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Ask gpt API and print reponse
 	"!gpt": func(args string) {
@@ -46,8 +46,8 @@ var OtherUsersCommandMap = map[string]func(args string){
 	},
 }
 
-// RunCommands is a function that runs the commands. The function takes in the text, and a boolean that tells if the user itself called the command or not
-func RunCommands(text string, isSelf bool) {
+// runCommands is a function that runs the commands. The function takes in the text, and a boolean that tells if the user itself called the command or not
+func runCommands(text string, isSelf bool) {
 
 	// Get the command string, e.g. !gpt
 	commandArgsParsed := strings.Fields(text)
@@ -82,7 +82,7 @@ func RunCommands(text string, isSelf bool) {
 			fmt.Println("Other's Args: ", args)
 
 			// Split parsed string into actual !command and arguments
-			cmdFunc := OtherUsersCommandMap[command]
+			cmdFunc := otherUsersCommandMap[command]
 
 			if cmdFunc != nil {
 				// Call func for given command
@@ -92,5 +92,21 @@ func RunCommands(text string, isSelf bool) {
 				fmt.Printf("\nOthersCommand '%s' unconfigured!\n", strings.TrimSuffix(strings.TrimSuffix(command, "\n"), "\r"))
 			}
 		}
+	}
+}
+
+// HandleUserSay is a function that handles the chat messages and runs the commands if detected
+func HandleUserSay(text string, user string, playerName string) {
+	fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
+
+	switch user {
+
+	case playerName:
+		fmt.Println("ChatSay, it is me!", user)
+		runCommands(text, true)
+
+	default:
+		fmt.Println("ChatSay, it is not me!", user)
+		runCommands(text, false)
 	}
 }

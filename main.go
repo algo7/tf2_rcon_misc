@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"tf2-rcon/commands"
 	"tf2-rcon/db"
@@ -15,7 +14,8 @@ import (
 // Const console message that informs you about forceful autobalance
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
-var players []string
+// Slice of player info cache struct that holds the player info
+var playersCache []utils.PlayerInfoCache
 
 func main() {
 
@@ -61,8 +61,8 @@ func main() {
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 
-			// erase local player storage
-			copy(players, []string{})
+			// Refresh the player cache
+			playersCache = []utils.PlayerInfoCache{}
 		}
 
 		// Save to DB logic
@@ -77,31 +77,60 @@ func main() {
 				fmt.Println("Failed to parse user! line.Text:", line.Text)
 			}
 
+			// Create a player struct
+			player := db.Player{
+				SteamID:   steamID,
+				Name:      user,
+				UpdatedAt: time.Now().UnixNano(),
+			}
+
 			// Add the player to the DB
-			db.AddPlayer(steamID, user)
+			db.AddPlayer(player)
+
+			// Player cache logic
+			playerInfoCachce := utils.PlayerInfoCache{
+				SteamID: steamID,
+				Name:    user,
+			}
 
 			// Add the player to the cache
-			utils.AddPlayer(&players, user)
+			utils.AddPlayerCache(&playersCache, playerInfoCachce)
 
 			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
 
 		// Command logic - TF2
-		isSay, user, text := utils.GetChatSayTF2(players, line.Text)
+		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
-		if isSay && text != "" && string(text[0]) == "!" {
-			HandleUserSay(text, user, playerName)
+		// Add chat logic. prob better to do this in a separate function
+		if isSay && strings.TrimSpace(text) != "" {
+			steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
+
+			chat := db.Chat{
+				SteamID:   steamID,
+				Name:      user,
+				Message:   text,
+				UpdatedAt: time.Now().UnixNano(),
+			}
+
+			db.AddChat(chat)
+		}
+
+		// Command logic - TF2
+		if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
+
+			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
-			isSay, user, text = utils.GetChatSayDystopia(players, line.Text)
+			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
 
-			if isSay && text != "" && string(text[0]) == "!" {
-				HandleUserSay(text, user, playerName)
+			if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
+				commands.HandleUserSay(text, user, playerName)
 			}
 		}
 
 		// Autobalance comment logic
-		if strings.Contains(line.Text, teamSwitchMessage) && IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+		if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
 		}
@@ -111,72 +140,3 @@ func main() {
 
 	}
 }
-
-// IsAutobalanceCommentEnabled Check if autobalance-response is enabled or not, specified by ENV var
-func IsAutobalanceCommentEnabled() bool {
-	enabled := os.Getenv("ENABLE_AUTOBALANCE_COMMENT")
-
-	return enabled == "1"
-}
-
-func HandleUserSay(text string, user string, playerName string) {
-	fmt.Printf("ChatSay - user: '%s' - text: '%s'\n", user, text)
-
-	switch user {
-
-	case playerName:
-		fmt.Println("ChatSay, it is me!", user)
-		commands.RunCommands(text, true)
-
-	default:
-		fmt.Println("ChatSay, it is not me!", user)
-		commands.RunCommands(text, false)
-	}
-}
-
-// // Function 3
-// if strings.Contains(line.Text, "killed") &&
-// 	strings.Contains(line.Text, "(crit)") &&
-// 	strings.Contains(line.Text, playerName) {
-
-// 	killer := strings.Split(line.Text, "killed")
-// 	theKiller := killer[0]
-
-// 	if theKiller == playerName {
-// 		theKiller = ""
-// 	}
-
-// 	msg := utils.PickRandomMessage("crit")
-// 	network.RconExecute(conn, ("say" + " " + "\"" + " " + msg + "\""))
-
-// }
-
-// if utils.Steam3IDMatcher(line.Text) {
-// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
-// 	fmt.Println(steamID)
-// 	db.DBAddPlayer(client, steamID)
-// }
-
-// if utils.UserNameMatcher(line.Text) {
-// 	userName := utils.UserNameFindString(line.Text)
-// 	fmt.Println(userName)
-// }
-
-// if utils.CommandMatcher(playerName, line.Text) { // that's my own say stuff
-// if len(strings.Fields(line.Text)) >= 4 {
-// 	command := strings.Fields(line.Text)[2:3][0]
-// 	args := strings.Fields(line.Text)[3:4][0]
-// 	cmdFunc := gpt.SelfCommandMap[command]
-// 	fmt.Println("Command:", command)
-
-// 	// Command is not configured
-// 	if cmdFunc == nil {
-// 		continue
-// 	}
-
-// 	fmt.Print("Args: ", args)
-
-// 	// call func for given command
-// 	cmdFunc(args)
-// }
-// }

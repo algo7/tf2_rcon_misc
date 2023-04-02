@@ -11,11 +11,15 @@ import (
 	"github.com/gorcon/rcon"
 )
 
-// global variables
-var rconHost string
-var conn *rcon.Conn
+// Global variables
+var (
+	rconHost string
+	conn     *rcon.Conn
+)
 
-const rconPort = 27015
+const (
+	rconPort = 27015
+)
 
 // scanPort scans for the given port on the host
 func scanPort(protocol, hostname string, port int) bool {
@@ -33,6 +37,7 @@ func scanPort(protocol, hostname string, port int) bool {
 	return true
 }
 
+// getHostInfo gets the host's internal ip addresses
 func getHostInfo() []string {
 	// Get host name
 	host, err := os.Hostname()
@@ -82,7 +87,7 @@ func determineRconHost() string {
 // rconConnect connects to a rcon host
 func rconConnect(rconHost string) *rcon.Conn {
 
-	conn, err := rcon.Dial(rconHost+":27015", "123")
+	conn, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
 	if err != nil {
 		utils.ErrorHandler(err, false)
 		return nil
@@ -115,13 +120,19 @@ func RconExecute(command string) string {
 	return response
 }
 
+// Connect tries to determine the rcon host and connect to it
 func Connect() {
+
 	// Set the loop duration to 5 minutes
 	duration := 5 * time.Minute
+
 	// Set the pause interval to 5 seconds
 	interval := 5 * time.Second
+
+	// Set the max retries to 20
 	maxRetries := 20
 
+	// Try to determine the rcon host for 5 minutes
 	// Get the current time
 	start := time.Now()
 	try := 1
@@ -130,7 +141,6 @@ func Connect() {
 		rconHost = determineRconHost()
 
 		if rconHost == "" {
-			// Do something here
 			fmt.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
@@ -140,16 +150,17 @@ func Connect() {
 		try++
 	}
 
+	// Try to connect to the rcon host for 5 minutes
 	// Get the current time, reset timer
 	start = time.Now()
 	try = 1
 
 	for time.Since(start) < duration && try <= maxRetries {
+
 		// Connect to the rcon host
 		conn = rconConnect(rconHost)
 
 		if conn == nil {
-			// Do something here
 			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
@@ -160,6 +171,7 @@ func Connect() {
 	}
 }
 
+// IsReady returns true if the connection is ready
 func IsReady() bool {
 	return conn != nil
 }
