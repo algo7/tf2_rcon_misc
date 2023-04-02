@@ -102,14 +102,32 @@ func main() {
 		// Command logic - TF2
 		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
-		if isSay && text != "" && string(text[0]) == "!" {
+		if isSay && text != "" {
+			// Find the steam ID of the player who sent the message
+			var steamID int64
+			for _, player := range playersCache {
+				if player.Name == user {
+					steamID = player.SteamID
+					break
+				}
+			}
+
+			if steamID == 0 {
+				fmt.Println("Failed to find steam ID for user:", user)
+				continue // or return, or any other appropriate action
+			}
 
 			chat := db.Chat{
+				SteamID:   steamID,
+				Name:      user,
 				Message:   text,
 				UpdatedAt: time.Now().UnixNano(),
 			}
 
 			db.AddChat(chat)
+		}
+
+		if isSay && text != "" && string(text[0]) == "!" {
 
 			commands.HandleUserSay(text, user, playerName)
 		} else {

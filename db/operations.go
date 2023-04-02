@@ -23,6 +23,8 @@ type Player struct {
 }
 
 type Chat struct {
+	SteamID   int64  `bson:"SteamID"`
+	Name      string `bson:"Name"`
 	Message   string `bson:"message,omitempty"`
 	UpdatedAt int64  `bson:"updatedAt"`
 }
@@ -63,7 +65,7 @@ func AddPlayer(player Player) *mongo.UpdateResult {
 
 }
 
-// AddPlayer adds the given chat message to the database
+// AddChat adds a chat message to the database
 func AddChat(chat Chat) *mongo.InsertOneResult {
 
 	// If the URI is empty, use the default
@@ -75,10 +77,12 @@ func AddChat(chat Chat) *mongo.InsertOneResult {
 	collection := client.Database(mongoDBName).Collection("Chats")
 
 	// The information to be updated
-	insert := bson.D{{Key: "$set", Value: bson.D{
+	insert := bson.D{
+		{Key: "SteamID", Value: chat.SteamID},
+		{Key: "Name", Value: chat.Name},
 		{Key: "Message", Value: chat.Message},
 		{Key: "UpdatedAt", Value: chat.UpdatedAt},
-	}}}
+	}
 
 	// Update the document
 	result, err := collection.InsertOne(context.TODO(), insert)
