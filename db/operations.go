@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"tf2-rcon/utils"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,8 +23,8 @@ type Player struct {
 }
 
 type Chat struct {
-	message   string `bson:"message"`
-	updatedAt int64  `bson:"updatedAt"`
+	Message   string `bson:"message,omitempty"`
+	UpdatedAt int64  `bson:"updatedAt"`
 }
 
 // AddPlayer adds a player to the database
@@ -46,7 +45,7 @@ func AddPlayer(player Player) *mongo.UpdateResult {
 	update := bson.D{{Key: "$set", Value: bson.D{
 		{Key: "SteamID", Value: player.SteamID},
 		{Key: "Name", Value: player.Name},
-		{Key: "UpdatedAt", Value: time.Now().UnixNano()},
+		{Key: "UpdatedAt", Value: player.UpdatedAt},
 	}}}
 
 	// Upsert the document if it doesn't exist
@@ -65,7 +64,7 @@ func AddPlayer(player Player) *mongo.UpdateResult {
 }
 
 // AddPlayer adds the given chat message to the database
-func AddChat(playerID int64, playerName string) *mongo.UpdateResult {
+func AddChat(chat Chat) *mongo.InsertOneResult {
 
 	// If the URI is empty, use the default
 	if mongoDBName == "" {
@@ -75,21 +74,14 @@ func AddChat(playerID int64, playerName string) *mongo.UpdateResult {
 	// Get a handle for your collection
 	collection := client.Database(mongoDBName).Collection("Chats")
 
-	// Filter by the steamID (64)
-	filter := bson.D{{Key: "SteamID", Value: playerID}}
-
 	// The information to be updated
-	update := bson.D{{Key: "$set", Value: bson.D{
-		{Key: "SteamID", Value: playerID},
-		{Key: "Name", Value: playerName},
-		{Key: "UpdatedAt", Value: time.Now().UnixNano()},
+	insert := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "Message", Value: chat.Message},
+		{Key: "UpdatedAt", Value: chat.UpdatedAt},
 	}}}
 
-	// Upsert the document if it doesn't exist
-	opts := options.InsertOne()
-
 	// Update the document
-	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
+	result, err := collection.InsertOne(context.TODO(), insert)
 
 	if err != nil {
 		utils.ErrorHandler(err, false)
@@ -97,5 +89,4 @@ func AddChat(playerID int64, playerName string) *mongo.UpdateResult {
 
 	// fmt.Printf("Number of documents upserted: %v\n", result)
 	return result
-
 }

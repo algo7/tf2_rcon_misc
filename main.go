@@ -79,8 +79,9 @@ func main() {
 
 			// Create a player struct
 			player := db.Player{
-				SteamID: steamID,
-				Name:    user,
+				SteamID:   steamID,
+				Name:      user,
+				UpdatedAt: time.Now().UnixNano(),
 			}
 
 			// Add the player to the DB
@@ -96,6 +97,14 @@ func main() {
 		isSay, user, text := utils.GetChatSayTF2(players, line.Text)
 
 		if isSay && text != "" && string(text[0]) == "!" {
+
+			chat := db.Chat{
+				Message:   text,
+				UpdatedAt: time.Now().UnixNano(),
+			}
+
+			db.AddChat(chat)
+
 			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
