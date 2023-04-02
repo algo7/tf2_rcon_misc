@@ -103,7 +103,7 @@ func main() {
 		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
 		// Add chat logic. prob better to do this in a separate function
-		if isSay && strings.TrimSpace(text) == "" {
+		if isSay && strings.TrimSpace(text) != "" {
 			steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
 
 			chat := db.Chat{
@@ -117,14 +117,14 @@ func main() {
 		}
 
 		// Command logic - TF2
-		if isSay && strings.TrimSpace(text) == "" && string(text[0]) == "!" {
+		if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
 
 			commands.HandleUserSay(text, user, playerName)
 		} else {
 			// Command logic - Dystopia
 			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
 
-			if isSay && strings.TrimSpace(text) == "" && string(text[0]) == "!" {
+			if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
 				commands.HandleUserSay(text, user, playerName)
 			}
 		}
