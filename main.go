@@ -77,8 +77,14 @@ func main() {
 				fmt.Println("Failed to parse user! line.Text:", line.Text)
 			}
 
+			// Create a player struct
+			player := db.Player{
+				SteamID: steamID,
+				Name:    user,
+			}
+
 			// Add the player to the DB
-			db.AddPlayer(steamID, user)
+			db.AddPlayer(player)
 
 			// Add the player to the cache
 			utils.AddPlayer(&players, user)

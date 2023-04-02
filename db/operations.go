@@ -16,8 +16,20 @@ var (
 	mongoDBName = os.Getenv("MONGODB_NAME")
 )
 
+// Document structs
+type Player struct {
+	SteamID   int64  `bson:"SteamID"`
+	Name      string `bson:"Name"`
+	UpdatedAt int64  `bson:"UpdatedAt"`
+}
+
+type Chat struct {
+	message   string `bson:"message"`
+	updatedAt int64  `bson:"updatedAt"`
+}
+
 // AddPlayer adds a player to the database
-func AddPlayer(playerID int64, playerName string) *mongo.UpdateResult {
+func AddPlayer(player Player) *mongo.UpdateResult {
 
 	// If the URI is empty, use the default
 	if mongoDBName == "" {
@@ -28,12 +40,12 @@ func AddPlayer(playerID int64, playerName string) *mongo.UpdateResult {
 	collection := client.Database(mongoDBName).Collection("Players")
 
 	// Filter by the steamID (64)
-	filter := bson.D{{Key: "SteamID", Value: playerID}}
+	filter := bson.D{{Key: "SteamID", Value: player.SteamID}}
 
 	// The information to be updated
 	update := bson.D{{Key: "$set", Value: bson.D{
-		{Key: "SteamID", Value: playerID},
-		{Key: "Name", Value: playerName},
+		{Key: "SteamID", Value: player.SteamID},
+		{Key: "Name", Value: player.Name},
 		{Key: "UpdatedAt", Value: time.Now().UnixNano()},
 	}}}
 
