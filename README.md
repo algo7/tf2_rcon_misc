@@ -33,3 +33,15 @@ If you want your client to respond to !gpt commands you need to get an openai ap
 Go to openai page and create an API-Key: https://platform.openai.com/account/api-keys
 
 Edit run.bat and set the key into environment variable **OPENAI_APIKEY**.
+
+## Test
+
+```
+go test -v utils/utils_test.go 
+```
+
+## Misc
+
+### Counterstrike, Dystopia
+To run this app using other source relevant games like dystopia, use the runDystopia.bat, or runCounterstrike.bat.
+There it is just about the console.log path, the app is capable of detecting dystopia consolelog. Counterstrike is only barely working.
