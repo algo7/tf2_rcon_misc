@@ -83,7 +83,7 @@ func TestGetChatSay(t *testing.T) {
 
 func TestIsStatusResponseHostname(t *testing.T) {
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////// hostname detection is expected to detect all lines _NOT_ matching ////////////////
+	//////////////// hostname detection is expected to detect all lines _NOT_ matching //////////
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	// open fixture console.log file for usage
@@ -117,7 +117,7 @@ func TestIsStatusResponseHostname(t *testing.T) {
 	// Create a new scanner to read the file line by line
 	scanner = bufio.NewScanner(file)
 
-	// Loop through each line in the file
+	// Loop through each line in the file.
 	for scanner.Scan() {
 		testLine := scanner.Text()
 
