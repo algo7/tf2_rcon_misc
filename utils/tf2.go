@@ -20,6 +20,7 @@ var (
 	steam3AccIDRegEx                  = `\d{6,11}`
 	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
+	statusResponseHostnameRegEx       = `hostname: .{4,}`
 )
 
 // String slice for caching current players
@@ -296,6 +297,12 @@ func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoC
 	}
 
 	return steamID
+}
+
+// Check if the given parameter matches a classical status response starting with the "hostname: bla bla bla" line
+func IsStatusResponseHostname(consoleLine string) bool {
+	re := regexp.MustCompile(statusResponseHostnameRegEx)
+	return re.MatchString(consoleLine)
 }
 
 // Old shit

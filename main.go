@@ -60,9 +60,6 @@ func main() {
 			fmt.Println("Executing *status* rcon command after line:", line.Text)
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
-
-			// Refresh the player cache
-			playersCache = []utils.PlayerInfoCache{}
 		}
 
 		// Save to DB logic
@@ -133,6 +130,11 @@ func main() {
 		if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
 			time.Sleep(1000 * time.Millisecond)
 			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
+		}
+
+		if utils.IsStatusResponseHostname(line.Text) {
+			// Refresh the player cache
+			playersCache = []utils.PlayerInfoCache{}
 		}
 
 		// Input text is not being parsed since there's no logic for parsing it (yet)
