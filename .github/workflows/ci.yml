@@ -50,8 +50,9 @@ jobs:
       #     mv packed_binary $BINARY_NAME
       #     echo "Packed Size=$(ls -lah | grep $BINARY_NAME | awk '{print $5}')"
 
-  # Run tests for all platforms
+  # Run tests for all platforms after build is successful
   test:
+    needs: build
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
