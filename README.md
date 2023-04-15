@@ -1,4 +1,8 @@
 [![CI](https://github.com/algo7/TF2-RCON-MISC/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/algo7/TF2-RCON-MISC/actions/workflows/ci.yml)
+# Prerequisite
+1. MongoDB installed locally: https://www.mongodb.com/try/download/community
+2. OpenAI API Key (if you want to use the ChatGPT integration): https://platform.openai.com/account/api-keys
+
 # TF2-RCON-MISC
 Go program that performs various commands via RCON base on local TF2 console output.
 Get all the players' name and steamID on the server and store them into the local MongoDB instance.
