@@ -40,7 +40,7 @@ func main() {
 	tf2LogPath := utils.LogPathDection()
 
 	// Empty the log file
-	err := utils.EmptyLog(tf2LogPath)
+	err = utils.EmptyLog(tf2LogPath)
 
 	if err != nil {
 		log.Fatalf("Unable to empty the log file: %v", err)
