@@ -79,7 +79,7 @@ func GrokParse(line string) (*PlayerInfo, error) {
 
 	playerData := PlayerInfo{
 		SteamID:       steamID32,
-		Name:          parsed["userName"],
+		Name:          removeQuotes(parsed["userName"]),
 		UserID:        userID,
 		SteamAccType:  parsed["steamAccType"],
 		SteamUniverse: steamUniverse,
@@ -175,4 +175,9 @@ func Steam3IDToSteam64(steam3ID int64) int64 {
 	num := steam64ID.Int64()
 
 	return num
+}
+
+// removeQuotes removes all quotes from a string
+func removeQuotes(str string) string {
+	return strings.ReplaceAll(str, "\"", "")
 }
