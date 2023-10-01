@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"os"
 	"os/user"
@@ -136,7 +137,7 @@ func LogPathDection() string {
 			// Get current os user name
 			user, err := user.Current()
 			if err != nil {
-				ErrorHandler(err, true)
+				log.Fatalf("Unable to determin the current OS User: %v", err)
 			}
 			osUSerName := user.Username
 
