@@ -18,13 +18,8 @@ import (
 
 // Global variables
 const (
-	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
-	steam3AccIDRegEx                  = `\d{6,11}`
-	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
-	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
-	statusResponseHostnameRegEx       = `hostname: .{4,}`
-	grokPattern                       = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
-	grokPlayerNamePatten              = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
+	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
+	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
 )
 
 var (
