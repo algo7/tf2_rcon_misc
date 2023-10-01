@@ -22,7 +22,7 @@ const (
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 	statusResponseHostnameRegEx       = `hostname: .{4,}`
 	grokPattern                       = `^# +%{NUMBER:userid} %{QS:name} +\[U:%{NUMBER:steamuidfirst}:%{NUMBER:steamuidsec}\] +%{MINUTE:min}:%{SECOND:sec} +%{NUMBER:ping} +%{NUMBER:loss} +%{WORD:status}$`
-	grokPlayerNamePatten              = `%{QS}=%{QS:captured_value}\(def\.%{QS}\)%{GREEDYDATA}`
+	grokPlayerNamePatten              = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
 )
 
 var (

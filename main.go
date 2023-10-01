@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"strings"
+	"log"
 
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
@@ -17,27 +17,26 @@ var playersCache []utils.PlayerInfoCache
 
 func main() {
 
+	// Init the grok patterns
 	utils.GrokInit()
+
+	// Connect to the rcon server
 	network.Connect()
 
-	if network.IsReady() == false {
+	if !network.IsReady() {
 		utils.ErrorHandler(errors.New("finally unable to establish rcon-connection"), true)
 	}
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	// res sample => "name" = "Algo7" ( def. "unnamed" )
-	//res = "\"name\" = \"atomy\"" // hardcode name for testing
+	parsedResponse := utils.GrokParsePlayerName(res)
+	playerName := parsedResponse["playerName"]
 
-	utils.GrokParsePlayerName(res)
-	playerNameRaw := strings.Fields(res)
-
-	if len(playerNameRaw) == 0 {
+	if len(playerName) == 0 {
 		utils.ErrorHandler(errors.New("unable to parse empty response to 'name' command"), true)
 	}
 
-	playerName := strings.TrimSuffix(strings.TrimPrefix(playerNameRaw[2], `"`), `"`)
-	fmt.Println("Player name:", playerName)
+	log.Printf("Player Name: %s", playerName)
 
 	// Get log path
 	tf2LogPath := utils.LogPathDection()
