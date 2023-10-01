@@ -64,7 +64,7 @@ func main() {
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
-			log.Printf("Executing *status* rcon command after line: %s", line.Text)
+			log.Printf("Executing *status* command after line: %s", line.Text)
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 		}
