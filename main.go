@@ -14,7 +14,7 @@ import (
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 // Slice of player info cache struct that holds the player info
-// var playersCache []utils.PlayerInfoCache
+var playersCache []utils.PlayerInfo
 
 func main() {
 
@@ -60,7 +60,7 @@ func main() {
 
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
-			log.Printf("GrokParse error: %s at %v", line.Text, err)
+			// log.Printf("GrokParse error: %s at %v", line.Text, err)
 		}
 
 		// Refresh player list logic
