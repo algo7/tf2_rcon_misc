@@ -8,6 +8,7 @@ import (
 	"os/user"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"github.com/nxadm/tail"
@@ -34,18 +35,13 @@ var (
 	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
 )
 
-// PlayerInfoCache is a String slice for caching current players
-type PlayerInfoCache struct {
-	SteamID int64
-	Name    string
-}
-
-// PlayerFullInfo is a struct containing all the info we need about a player
-type PlayerFullInfo struct {
-	player        PlayerInfoCache
-	userID        int
-	steamAccType  string
-	steamUniverse int
+// PlayerInfo is a struct containing all the info we need about a player
+type PlayerInfo struct {
+	SteamID       int32
+	Name          string
+	UserID        int
+	SteamAccType  string
+	SteamUniverse int
 }
 
 /**
@@ -64,8 +60,40 @@ func GrokInit() {
 }
 
 // GrokParse parses the given line with the main grok pattern
-func GrokParse(line string) map[string]string {
-	return gc.ParseString(line)
+func GrokParse(line string) (*PlayerInfo, error) {
+
+	parsed := gc.ParseString(line)
+
+	if len(parsed) == 0 {
+		return nil, errors.New("failed to parse line")
+	}
+
+	// Parse the steamID32 from the steamID3
+	userID, err := strconv.Atoi(parsed["userId"])
+	if err != nil {
+		return nil, errors.New("failed to parse userID")
+	}
+
+	steamUniverse, err := strconv.Atoi(parsed["steamUniverse"])
+	if err != nil {
+		return nil, errors.New("failed to parse steamUniverse")
+	}
+
+	steamID32, err := strconv.ParseInt(parsed["steamID32"], 10, 32)
+	if err != nil {
+		return nil, errors.New("failed to parse SteamID32")
+	}
+	i32 := int32(steamID32)
+
+	playerData := PlayerInfo{
+		SteamID:       i32,
+		Name:          parsed["userName"],
+		UserID:        userID,
+		SteamAccType:  parsed["steamAccType"],
+		SteamUniverse: steamUniverse,
+	}
+
+	return &playerData, nil
 }
 
 // GrokParsePlayerName parses the given line with the playerName grok pattern
@@ -322,23 +350,23 @@ func IsAutobalanceCommentEnabled() bool {
 }
 
 // GetSteamIDFromPlayerCache returns the steam ID of the supplied player name from the current player cache
-func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
-	// Find the steam ID of the player who sent the message
-	var steamID int64
-	for _, player := range currentPlayerCache {
-		if player.Name == userName {
-			steamID = player.SteamID
-			break
-		}
-	}
+// func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
+// 	// Find the steam ID of the player who sent the message
+// 	var steamID int64
+// 	for _, player := range currentPlayerCache {
+// 		if player.Name == userName {
+// 			steamID = player.SteamID
+// 			break
+// 		}
+// 	}
 
-	if steamID == 0 {
-		fmt.Println("Failed to find steam ID for user:", userName)
-		os.Exit(1)
-	}
+// 	if steamID == 0 {
+// 		fmt.Println("Failed to find steam ID for user:", userName)
+// 		os.Exit(1)
+// 	}
 
-	return steamID
-}
+// 	return steamID
+// }
 
 // Check if the given parameter matches a classical status response starting with the "hostname: bla bla bla" line
 func IsStatusResponseHostname(consoleLine string) bool {
