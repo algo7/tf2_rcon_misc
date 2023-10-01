@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
@@ -52,16 +53,14 @@ func main() {
 	for line := range t.Lines {
 
 		utils.GrokParse(line.Text)
-		// Debug, turn on to print every line we read from file
-		//fmt.Printf("[+] %s\n", line.Text)
 
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
-		// if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
-		// 	fmt.Println("Executing *status* rcon command after line:", line.Text)
-		// 	// Run the status command when the lobby is updated or a player connects
-		// 	network.RconExecute("status")
-		// }
+		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
+			log.Printf("Executing *status* rcon command after line: %s", line.Text)
+			// Run the status command when the lobby is updated or a player connects
+			network.RconExecute("status")
+		}
 
 		// // Save to DB logic
 		// if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
