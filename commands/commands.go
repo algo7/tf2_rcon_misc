@@ -2,10 +2,10 @@ package commands
 
 import (
 	"fmt"
-	"github.com/algo7/tf2_rcon_misc/gpt"
-	"github.com/algo7/tf2_rcon_misc/network"
 	"strings"
 	"time"
+
+	"github.com/algo7/tf2_rcon_misc/network"
 )
 
 // SelfCommandMap is a map of functions for chat-commands that only you are allowed to execute

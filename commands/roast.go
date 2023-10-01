@@ -1,4 +1,4 @@
-package gpt
+package commands
 
 import (
 	"encoding/json"
