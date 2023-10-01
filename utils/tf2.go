@@ -40,6 +40,14 @@ type PlayerInfoCache struct {
 	Name    string
 }
 
+// PlayerFullInfo is a struct containing all the info we need about a player
+type PlayerFullInfo struct {
+	player        PlayerInfoCache
+	userID        int
+	steamAccType  string
+	steamUniverse int
+}
+
 /**
 * Exported functions need to start with a capital letter
 **/
