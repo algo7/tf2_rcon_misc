@@ -14,7 +14,7 @@ import (
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 // Slice of player info cache struct that holds the player info
-var playersCache []utils.PlayerInfo
+var playersInGame []*utils.PlayerInfo
 
 func main() {
 
@@ -65,13 +65,20 @@ func main() {
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
 			log.Printf("Executing *status* command after line: %s", line.Text)
+
+			// Clear the player list
+			playersInGame = []*utils.PlayerInfo{}
+
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 		}
 
 		// Save to DB logic
 		if playerInfo != nil {
+
 			log.Printf("%+v\n", *playerInfo)
+			// Append the player to the player list
+			playersInGame = append(playersInGame, playerInfo)
 
 			// Create a player document for inserting into MongoDB
 			player := db.Player{
