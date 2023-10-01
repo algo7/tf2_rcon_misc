@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/algo7/tf2_rcon_misc/utils"
+	"log"
 	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,13 +15,14 @@ var (
 	mongoDBName = os.Getenv("MONGODB_NAME")
 )
 
-// Document structs
+// Player document struct
 type Player struct {
 	SteamID   int64  `bson:"SteamID"`
 	Name      string `bson:"Name"`
 	UpdatedAt int64  `bson:"UpdatedAt"`
 }
 
+// Chat document struct
 type Chat struct {
 	SteamID   int64  `bson:"SteamID"`
 	Name      string `bson:"Name"`
@@ -57,7 +58,7 @@ func AddPlayer(player Player) *mongo.UpdateResult {
 	result, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Error adding player to the DB: %v", err)
 	}
 
 	// fmt.Printf("Number of documents upserted: %v\n", result)
@@ -88,7 +89,7 @@ func AddChat(chat Chat) *mongo.InsertOneResult {
 	result, err := collection.InsertOne(context.TODO(), insert)
 
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Error adding chat to the DB: %v", err)
 	}
 
 	// fmt.Printf("Number of documents upserted: %v\n", result)
