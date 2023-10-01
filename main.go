@@ -58,9 +58,22 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
+		// Parse the line for player info
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
 			// log.Printf("GrokParse error: %s at %v", line.Text, err)
+		}
+
+		// Parse the line for chat info
+		chat, err := utils.GrokParseChat(line.Text)
+		if err != nil {
+			// log.Printf("GrokParseChat error: %s at %v", line.Text, err)
+		}
+
+		// Parse the line for dead player chat info
+		deadChat, err := utils.GrokParseDeadChat(line.Text)
+		if err != nil {
+			// log.Printf("GrokParseDeadChat error: %s at %v", line.Text, err)
 		}
 
 		// Refresh player list logic
@@ -73,6 +86,14 @@ func main() {
 
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
+		}
+
+		if chat != nil {
+			log.Printf("Chat: %+v\n", *chat)
+		}
+
+		if deadChat != nil {
+			log.Printf("Dead Chat: %+v\n", *deadChat)
 		}
 
 		// Save to DB logic
