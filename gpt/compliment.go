@@ -2,23 +2,21 @@ package gpt
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/algo7/tf2_rcon_misc/network"
-	"github.com/algo7/tf2_rcon_misc/utils"
 )
 
 // GetCompliment returns a compliment for the given target
 func GetCompliment(target string) {
-	fmt.Println("Getting compliment for " + target)
+	log.Println("Getting compliment for " + target)
 
 	// Send GET request to API
 	resp, err := http.Get("https://complimentr.com/api")
 	if err != nil {
-		panic(err)
+		log.Panicf("Error while calling the Compliment API: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -27,17 +25,17 @@ func GetCompliment(target string) {
 
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Error while decoding the Compliment API response: %v", err)
 	}
 
 	// Extract insult from response data
 	compliment, ok := data["compliment"].(string)
 	if !ok {
-		utils.ErrorHandler(errors.New("Could not parse insult from response data"), false)
+		log.Println("Error while parsing the Compliment API response")
 	}
 
 	time.Sleep(1000 * time.Millisecond)
 
 	network.RconExecute("say \"" + target + " " + compliment + "\"")
-	fmt.Println("Compliment: " + compliment)
+	log.Println("Compliment: " + compliment)
 }
