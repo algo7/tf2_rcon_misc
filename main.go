@@ -92,51 +92,6 @@ func main() {
 
 			// Add the player to the DB
 			db.AddPlayer(player)
-
-			// // Command logic - TF2
-			// isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
-
-			// // Add chat logic. prob better to do this in a separate function
-			// if isSay && strings.TrimSpace(text) != "" {
-			// 	steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
-
-			// 	chat := db.Chat{
-			// 		SteamID:   steamID,
-			// 		Name:      user,
-			// 		Message:   text,
-			// 		UpdatedAt: time.Now().UnixNano(),
-			// 	}
-
-			// 	db.AddChat(chat)
-			// }
-
-			// // Command logic - TF2
-			// if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
-
-			// 	commands.HandleUserSay(text, user, playerName)
-			// } else {
-			// 	// Command logic - Dystopia
-			// 	isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
-
-			// 	if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
-			// 		commands.HandleUserSay(text, user, playerName)
-			// 	}
-			// }
-
-			// // Autobalance comment logic
-			// if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
-			// 	time.Sleep(1000 * time.Millisecond)
-			// 	network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-			// }
-
-			// if utils.IsStatusResponseHostname(line.Text) {
-			// 	// Refresh the player cache
-			// 	playersCache = []utils.PlayerInfoCache{}
-			// }
-
-			// // Input text is not being parsed since there's no logic for parsing it (yet)
-			// // fmt.Println("Unknown:", line.Text)
-
 		}
 	}
 }
