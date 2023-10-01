@@ -121,23 +121,13 @@ func ErrorHandler(err error, exit bool) {
 	}
 }
 
-func PrintStackTrace(err error) {
-	// Print the error message
-	fmt.Println(err)
-
-	// Print the stack trace
-	buf := make([]byte, 4096)
-	runtime.Stack(buf, false)
-	fmt.Println(string(buf))
-}
-
 // EmptyLog empties the tf2 log file
 func EmptyLog(path string) {
 	err := os.Truncate(path, 0)
 	ErrorHandler(err, true)
 }
 
-// LogPathDection
+// LogPathDection detects the tf2 log path
 func LogPathDection() string {
 
 	// Get TF2 log path from env variable
@@ -273,19 +263,6 @@ func GetCommandAndArgs(content string) (string, string) {
 	return commands, arguments
 }
 
-// AddPlayerCache adds a player to the cache if it doesn't already exist
-// func AddPlayerCache(players *[]PlayerInfoCache, player PlayerInfoCache) {
-// 	// Check if the player already exists in the cache
-// 	for _, p := range *players {
-// 		if p.SteamID == player.SteamID {
-// 			return
-// 		}
-// 	}
-
-// 	// Add the player to the cache
-// 	*players = append(*players, player)
-// }
-
 // ExtractUsername extracts the username from the supplied string
 func ExtractUsername(in string) string {
 	re := regexp.MustCompile(`(\w+)" \[U:\d:[0-9]+\]`)
@@ -297,27 +274,6 @@ func ExtractUsername(in string) string {
 
 	return ""
 }
-
-// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
-// func GetChatSayTF2(players []PlayerInfoCache, in string) (bool, string, string) {
-
-// 	for _, player := range players {
-// 		// check if we found a player saying that in our playerlist
-// 		if len(in) > len(player.Name)+5 && in[0:len(player.Name)] == player.Name && in[len(player.Name)+1:len(player.Name)+2] == ":" {
-// 			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4:])
-// 			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4:])
-// 		}
-
-// 		// detect dead playertalk
-// 		// +6 is the len of string "*DEAD* "
-// 		if len(in) > len(player.Name)+5+7 && in[0:len(player.Name)+7] == "*DEAD* "+player.Name && in[len(player.Name)+7+1:len(player.Name)+7+2] == ":" {
-// 			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4+7:])
-// 			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4+7:])
-// 		}
-// 	}
-
-// 	return false, "", ""
-// }
 
 // TrimCommon trims the common line endings from a string
 func TrimCommon(in string) string {
@@ -347,25 +303,6 @@ func IsAutobalanceCommentEnabled() bool {
 
 	return enabled == "1"
 }
-
-// GetSteamIDFromPlayerCache returns the steam ID of the supplied player name from the current player cache
-// func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
-// 	// Find the steam ID of the player who sent the message
-// 	var steamID int64
-// 	for _, player := range currentPlayerCache {
-// 		if player.Name == userName {
-// 			steamID = player.SteamID
-// 			break
-// 		}
-// 	}
-
-// 	if steamID == 0 {
-// 		fmt.Println("Failed to find steam ID for user:", userName)
-// 		os.Exit(1)
-// 	}
-
-// 	return steamID
-// }
 
 // Check if the given parameter matches a classical status response starting with the "hostname: bla bla bla" line
 func IsStatusResponseHostname(consoleLine string) bool {
@@ -401,4 +338,67 @@ func IsStatusResponseHostname(consoleLine string) bool {
 // 	}
 
 // 	return msg
+// }
+
+// GetSteamIDFromPlayerCache returns the steam ID of the supplied player name from the current player cache
+// func GetSteamIDFromPlayerCache(userName string, currentPlayerCache []PlayerInfoCache) int64 {
+// 	// Find the steam ID of the player who sent the message
+// 	var steamID int64
+// 	for _, player := range currentPlayerCache {
+// 		if player.Name == userName {
+// 			steamID = player.SteamID
+// 			break
+// 		}
+// 	}
+
+// 	if steamID == 0 {
+// 		fmt.Println("Failed to find steam ID for user:", userName)
+// 		os.Exit(1)
+// 	}
+
+// 	return steamID
+// }
+
+// Check if supplied argument *in* is a chatline, if so, return: <true>, <the player that said it>, <what did he say>
+// func GetChatSayTF2(players []PlayerInfoCache, in string) (bool, string, string) {
+
+// 	for _, player := range players {
+// 		// check if we found a player saying that in our playerlist
+// 		if len(in) > len(player.Name)+5 && in[0:len(player.Name)] == player.Name && in[len(player.Name)+1:len(player.Name)+2] == ":" {
+// 			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4:])
+// 			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4:])
+// 		}
+
+// 		// detect dead playertalk
+// 		// +6 is the len of string "*DEAD* "
+// 		if len(in) > len(player.Name)+5+7 && in[0:len(player.Name)+7] == "*DEAD* "+player.Name && in[len(player.Name)+7+1:len(player.Name)+7+2] == ":" {
+// 			fmt.Printf("CHAT: [%s] %s\n", player.Name, in[len(player.Name)+4+7:])
+// 			return true, TrimCommon(player.Name), TrimCommon(in[len(player.Name)+4+7:])
+// 		}
+// 	}
+
+// 	return false, "", ""
+// }
+
+// AddPlayerCache adds a player to the cache if it doesn't already exist
+// func AddPlayerCache(players *[]PlayerInfoCache, player PlayerInfoCache) {
+// 	// Check if the player already exists in the cache
+// 	for _, p := range *players {
+// 		if p.SteamID == player.SteamID {
+// 			return
+// 		}
+// 	}
+
+// 	// Add the player to the cache
+// 	*players = append(*players, player)
+// }
+
+// func PrintStackTrace(err error) {
+// 	// Print the error message
+// 	fmt.Println(err)
+
+// 	// Print the stack trace
+// 	buf := make([]byte, 4096)
+// 	runtime.Stack(buf, false)
+// 	fmt.Println(string(buf))
 // }
