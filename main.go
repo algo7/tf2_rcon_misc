@@ -60,7 +60,7 @@ func main() {
 
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
-			log.Print("GrokParse error: %s at %v", line.Text, err)
+			log.Printf("GrokParse error: %s at %v", line.Text, err)
 		}
 
 		// Refresh player list logic
