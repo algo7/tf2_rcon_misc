@@ -2,7 +2,7 @@ package network
 
 import (
 	"fmt"
-	"github.com/algo7/tf2_rcon_misc/utils"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -41,11 +41,15 @@ func scanPort(protocol, hostname string, port int) bool {
 func getHostInfo() []string {
 	// Get host name
 	host, err := os.Hostname()
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		log.Fatalf("Unable to obtain the Hostname: %v", err)
+	}
 
 	// Get host's ipv4 and ipv6 addresses
 	addrs, err := net.LookupIP(host)
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		log.Fatalf("Unable to obtain the Host IP Addresses: %v", err)
+	}
 
 	// Slice to hold ipv4 and ipv6 addresses
 	var ips []string
@@ -89,17 +93,17 @@ func rconConnect(rconHost string) *rcon.Conn {
 
 	conn, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Unable to connect to the RCON host: %v", err)
 		return nil
 	}
 
 	_, err = conn.Execute("status")
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Unable to execute the initial `status` command: %v", err)
 		return nil
 	}
 
-	fmt.Println("Connected")
+	log.Println("RCON connection established")
 
 	return conn
 }
@@ -112,8 +116,8 @@ func RconExecute(command string) string {
 
 	// Reconnect if the connection is lost (usually when joining a server)
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Connection failed, retrying...")
+		log.Printf("Unable to execute the command: %s because %v", command, err)
+		log.Println("Connection failed, retrying...")
 		rconConnect(rconHost)
 	}
 
@@ -141,7 +145,7 @@ func Connect() {
 		rconHost = determineRconHost()
 
 		if rconHost == "" {
-			fmt.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			log.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
 			break
@@ -161,7 +165,7 @@ func Connect() {
 		conn = rconConnect(rconHost)
 
 		if conn == nil {
-			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			log.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
 			break
