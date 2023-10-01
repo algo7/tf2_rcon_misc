@@ -62,10 +62,10 @@ func main() {
 			network.RconExecute("status")
 		}
 
-		// // Save to DB logic
-		// if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
-		// 	// Convert Steam 32 ID to Steam 64 ID
-		// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
+		// Save to DB logic
+		if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
+			// Convert Steam 32 ID to Steam 64 ID
+			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
 		// 	// Find the player's userName
 		// 	user := utils.GetPlayerNameFromLine(line.Text)
