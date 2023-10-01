@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"strings"
+	"time"
 
+	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
 )
@@ -73,30 +74,17 @@ func main() {
 		// Save to DB logic
 		// Convert Steam 32 ID to Steam 64 ID
 		if playerInfo != nil {
-			fmt.Printf("%+v\n", *playerInfo)
-			// Find the player's userName
+			log.Printf("%+v\n", *playerInfo)
 
-			// Create a player struct
-			// player := db.Player{
-			// 	SteamID:   steamID,
-			// 	Name:      user,
-			// 	UpdatedAt: time.Now().UnixNano(),
-			// }
+			// Create a player document for inserting into MongoDB
+			player := db.Player{
+				SteamID:   playerInfo.SteamID,
+				Name:      playerInfo.Name,
+				UpdatedAt: time.Now().UnixNano(),
+			}
 
-			// 	// Add the player to the DB
-			// 	db.AddPlayer(player)
-
-			// 	// Player cache logic
-			// 	playerInfoCachce := utils.PlayerInfoCache{
-			// 		SteamID: steamID,
-			// 		Name:    user,
-			// 	}
-
-			// 	// Add the player to the cache
-			// 	utils.AddPlayerCache(&playersCache, playerInfoCachce)
-
-			// 	fmt.Println("SteamID: ", steamID, " UserName: ", user)
-			// }
+			// Add the player to the DB
+			db.AddPlayer(player)
 
 			// // Command logic - TF2
 			// isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
