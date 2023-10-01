@@ -18,7 +18,7 @@ import (
 const (
 	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
 	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
-	chatPattern          = `%{GREEDYDATA:player_name}%{SPACE}{1}:\s{2}%{GREEDYDATA:message}`
+	chatPattern          = `%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}`
 	deadChatPattern      = `\*DEAD\*%{SPACE}{1}%{GREEDYDATA:player_name}%{SPACE}{1}:%{SPACE}{2}%{GREEDYDATA:message}`
 )
 
