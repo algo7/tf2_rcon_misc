@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"tf2-rcon/utils"
+	"github.com/algo7/tf2_rcon_misc/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

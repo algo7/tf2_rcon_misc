@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"os"
-	"tf2-rcon/utils"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

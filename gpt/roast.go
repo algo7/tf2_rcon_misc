@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/network"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"net/http"
 	"net/url"
-	"tf2-rcon/network"
-	"tf2-rcon/utils"
 	"time"
 )
 

@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/network"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"os"
 	"strings"
-	"tf2-rcon/network"
-	"tf2-rcon/utils"
 	"time"
 
 	openai "github.com/sashabaranov/go-openai"

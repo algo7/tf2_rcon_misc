@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"tf2-rcon/network"
-	"tf2-rcon/utils"
 	"time"
+
+	"github.com/algo7/tf2_rcon_misc/network"
+	"github.com/algo7/tf2_rcon_misc/utils"
 )
 
 // GetCompliment returns a compliment for the given target

@@ -2,10 +2,10 @@ package network
 
 import (
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"net"
 	"os"
 	"strconv"
-	"tf2-rcon/utils"
 	"time"
 
 	"github.com/gorcon/rcon"

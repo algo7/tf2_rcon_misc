@@ -3,11 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/commands"
+	"github.com/algo7/tf2_rcon_misc/db"
+	"github.com/algo7/tf2_rcon_misc/network"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"strings"
-	"tf2-rcon/commands"
-	"tf2-rcon/db"
-	"tf2-rcon/network"
-	"tf2-rcon/utils"
 	"time"
 )
 

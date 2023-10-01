@@ -40,9 +40,9 @@ jobs:
       #   shell: bash
       #   run: |
       #     if [[ "${{ runner.os }}" == "Windows" ]]; then
-      #       BINARY_NAME="tf2-rcon.exe"
+      #       BINARY_NAME="github.com/algo7/tf2_rcon_misc.exe"
       #     else
-      #       BINARY_NAME="tf2-rcon"
+      #       BINARY_NAME="github.com/algo7/tf2_rcon_misc"
       #     fi
 
       #     echo "Original Size=$(ls -lah | grep $BINARY_NAME | awk '{print $5}')"

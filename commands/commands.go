@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/gpt"
+	"github.com/algo7/tf2_rcon_misc/network"
 	"strings"
-	"tf2-rcon/gpt"
-	"tf2-rcon/network"
 	"time"
 )
 

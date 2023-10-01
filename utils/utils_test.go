@@ -3,9 +3,9 @@ package utils_test
 import (
 	"bufio"
 	"fmt"
+	"github.com/algo7/tf2_rcon_misc/utils"
 	"os"
 	"testing"
-	"tf2-rcon/utils"
 )
 
 func TestSteam3IDToSteam64(t *testing.T) {
