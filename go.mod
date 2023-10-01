@@ -5,7 +5,6 @@ go 1.21.1
 require (
 	github.com/gorcon/rcon v1.3.4
 	github.com/nxadm/tail v1.4.8
-	github.com/sashabaranov/go-openai v1.15.4
 	github.com/trivago/grok v1.0.0
 	go.mongodb.org/mongo-driver v1.12.1
 )
