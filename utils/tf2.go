@@ -18,6 +18,8 @@ import (
 const (
 	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
 	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
+	chatPattern          = `\*DEAD\*%{SPACE}{1}%{GREEDYDATA:player_name}%{SPACE}{1}:%{SPACE}{2}%{GREEDYDATA:message}`
+	deadChatPattern      = `%{GREEDYDATA:player_name}%{SPACE}{1}:%{SPACE}{2}%{GREEDYDATA:message}`
 )
 
 var (
@@ -25,6 +27,10 @@ var (
 	gc           *grok.CompiledGrok
 	gPlayerName  *grok.Grok
 	gcPlayerName *grok.CompiledGrok
+	gChat        *grok.Grok
+	gcChat       *grok.CompiledGrok
+	gDeadChat    *grok.Grok
+	gDeadcChat   *grok.CompiledGrok
 )
 
 // PlayerInfo is a struct containing all the info we need about a player
@@ -34,6 +40,12 @@ type PlayerInfo struct {
 	UserID        int
 	SteamAccType  string
 	SteamUniverse int
+}
+
+// ChatInfo is a struct containing all the info we need about a chat message
+type ChatInfo struct {
+	PlayerName string
+	Message    string
 }
 
 /**
@@ -49,6 +61,14 @@ func GrokInit() {
 	// Compile the player name grok pattern
 	gPlayerName, _ = grok.New(grok.Config{NamedCapturesOnly: true})
 	gcPlayerName, _ = gPlayerName.Compile(grokPlayerNamePatten)
+
+	// Compile the chat grok pattern
+	gChat, _ = grok.New(grok.Config{NamedCapturesOnly: true})
+	gcChat, _ = gChat.Compile(chatPattern)
+
+	// Compile the dead chat grok pattern
+	gDeadChat, _ = grok.New(grok.Config{NamedCapturesOnly: true})
+	gDeadcChat, _ = gDeadChat.Compile(deadChatPattern)
 }
 
 // GrokParse parses the given line with the main grok pattern
@@ -97,6 +117,44 @@ func GrokParsePlayerName(rconNameResponse string) (string, error) {
 	}
 	playerName := removeQuotes(playerNameMap["playerName"])
 	return playerName, nil
+}
+
+// GrokParseChat parses the given line with the chat grok pattern
+func GrokParseChat(line string) (*ChatInfo, error) {
+
+	parsed := gcChat.ParseString(line)
+
+	if len(parsed) == 0 {
+		return nil, errors.New("failed to parse chat line")
+	}
+
+	playerName := parsed["player_name"]
+	message := parsed["message"]
+	chatInfo := ChatInfo{
+		PlayerName: playerName,
+		Message:    message,
+	}
+
+	return &chatInfo, nil
+}
+
+// GrokParseDeadChat parses the given line with the dead chat grok pattern
+func GrokParseDeadChat(line string) (*ChatInfo, error) {
+
+	parsed := gDeadcChat.ParseString(line)
+
+	if len(parsed) == 0 {
+		return nil, errors.New("failed to parse chat line")
+	}
+
+	playerName := parsed["player_name"]
+	message := parsed["message"]
+	chatInfo := ChatInfo{
+		PlayerName: playerName,
+		Message:    message,
+	}
+
+	return &chatInfo, nil
 }
 
 // EmptyLog empties the tf2 log file
