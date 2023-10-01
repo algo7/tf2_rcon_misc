@@ -13,8 +13,8 @@ import (
 
 // Global variables
 var (
-	rconHost string
-	conn     *rcon.Conn
+	rconHost       string
+	RCONConnection *rcon.Conn
 )
 
 const (
@@ -26,13 +26,13 @@ func scanPort(protocol, hostname string, port int) bool {
 
 	fmt.Printf("Connecting to: %s:%d\n", hostname, port)
 	address := hostname + ":" + strconv.Itoa(port)
-	conn, err := net.DialTimeout(protocol, address, 60*time.Second)
+	RCONConnection, err := net.DialTimeout(protocol, address, 60*time.Second)
 
 	if err != nil {
 		return false
 	}
 
-	defer conn.Close()
+	defer RCONConnection.Close()
 
 	return true
 }
@@ -91,13 +91,13 @@ func determineRconHost() string {
 // rconConnect connects to a rcon host
 func rconConnect(rconHost string) *rcon.Conn {
 
-	conn, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
+	RCONConnection, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
 	if err != nil {
 		log.Printf("Unable to connect to the RCON host: %v", err)
 		return nil
 	}
 
-	_, err = conn.Execute("status")
+	_, err = RCONConnection.Execute("status")
 	if err != nil {
 		log.Printf("Unable to execute the initial `status` command: %v", err)
 		return nil
@@ -105,14 +105,14 @@ func rconConnect(rconHost string) *rcon.Conn {
 
 	log.Println("RCON connection established")
 
-	return conn
+	return RCONConnection
 }
 
 // RconExecute executes a rcon command
 func RconExecute(command string) string {
 
 	// fmt.Println("Executing: " + command)
-	response, err := conn.Execute(command)
+	response, err := RCONConnection.Execute(command)
 
 	// Reconnect if the connection is lost (usually when joining a server)
 	if err != nil {
@@ -162,9 +162,9 @@ func Connect() {
 	for time.Since(start) < duration && try <= maxRetries {
 
 		// Connect to the rcon host
-		conn = rconConnect(rconHost)
+		RCONConnection = rconConnect(rconHost)
 
-		if conn == nil {
+		if RCONConnection == nil {
 			log.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
@@ -173,9 +173,4 @@ func Connect() {
 
 		try++
 	}
-}
-
-// IsReady returns true if the connection is ready
-func IsReady() bool {
-	return conn != nil
 }

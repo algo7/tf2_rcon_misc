@@ -24,8 +24,8 @@ func main() {
 	// Connect to the rcon server
 	network.Connect()
 
-	if !network.IsReady() {
-		utils.ErrorHandler(errors.New("finally unable to establish rcon-connection"), true)
+	if network.RCONConnection == nil {
+		log.Println("Connection to RCON failed")
 	}
 
 	// Get the current player name
@@ -54,7 +54,7 @@ func main() {
 
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
-			log.Printf("GrokParse error: %s at %v", line.Text, err)
+			log.Print("GrokParse error: %s at %v", line.Text, err)
 		}
 
 		// Refresh player list logic
