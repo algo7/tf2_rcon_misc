@@ -2,18 +2,17 @@ package gpt
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"github.com/algo7/tf2_rcon_misc/network"
-	"github.com/algo7/tf2_rcon_misc/utils"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/algo7/tf2_rcon_misc/network"
 )
 
 // GetInsult returns an insult for the given target
 func GetInsult(target string) {
-	fmt.Println("Getting insult for " + target)
+	log.Println("Getting insult for " + target)
 	// Set up query parameters
 	query := url.Values{}
 	query.Set("plural", "true")
@@ -22,7 +21,7 @@ func GetInsult(target string) {
 	// Send GET request to API
 	resp, err := http.Get("https://insult.mattbas.org/api/insult.json?" + query.Encode())
 	if err != nil {
-		panic(err)
+		log.Printf("Error while calling the Insult API: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -31,17 +30,17 @@ func GetInsult(target string) {
 
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Error while decoding the Insult API response: %v", err)
 	}
 
 	// Extract insult from response data
 	insult, ok := data["insult"].(string)
 	if !ok {
-		utils.ErrorHandler(errors.New("Could not parse insult from response data"), false)
+		log.Println("Error while parsing the Insult API response")
 	}
 
 	time.Sleep(1000 * time.Millisecond)
 
 	network.RconExecute("say \"" + insult + "\"")
-	fmt.Println("Insult: " + insult)
+	log.Println("Insult: " + insult)
 }
