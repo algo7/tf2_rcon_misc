@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -34,7 +33,7 @@ func main() {
 	playerName := parsedResponse["playerName"]
 
 	if len(playerName) == 0 {
-		utils.ErrorHandler(errors.New("unable to parse empty response to 'name' command"), true)
+		log.Fatalln("Unable to get the player name. Please restart the program")
 	}
 
 	log.Printf("Player Name: %s", playerName)
@@ -43,11 +42,17 @@ func main() {
 	tf2LogPath := utils.LogPathDection()
 
 	// Empty the log file
-	utils.EmptyLog(tf2LogPath)
+	err := utils.EmptyLog(tf2LogPath)
+	if err != nil {
+		log.Fatalf("Unable to empty the log file: %v", err)
+	}
 
 	// Tail the log
-	fmt.Println("Tailing Logfile at:", tf2LogPath)
-	t := utils.TailLog(tf2LogPath)
+	log.Println("Tailing Logfile at:", tf2LogPath)
+	t, err := utils.TailLog(tf2LogPath)
+	if err != nil {
+		log.Fatalf("Unable to tail the log file: %v", err)
+	}
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
