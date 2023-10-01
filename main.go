@@ -77,6 +77,7 @@ func main() {
 		if playerInfo != nil {
 
 			log.Printf("%+v\n", *playerInfo)
+
 			// Append the player to the player list
 			playersInGame = append(playersInGame, playerInfo)
 
