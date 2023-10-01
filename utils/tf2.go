@@ -27,8 +27,6 @@ var (
 	gc           *grok.CompiledGrok
 	gPlayerName  *grok.Grok
 	gcPlayerName *grok.CompiledGrok
-	// ErrMissingRconHost is returned when the TF2 server is not running or RCON is not enabled
-	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
 )
 
 // PlayerInfo is a struct containing all the info we need about a player
