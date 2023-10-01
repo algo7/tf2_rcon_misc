@@ -31,9 +31,11 @@ func main() {
 	// Get the current player name
 	res := network.RconExecute("name")
 	playerName, err := utils.GrokParsePlayerName(res)
+
 	if err != nil {
 		log.Fatalf("%v Please restart the program", err)
 	}
+
 	log.Printf("Player Name: %s", playerName)
 
 	// Get log path
