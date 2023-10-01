@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"math/big"
 	"os"
@@ -117,16 +116,16 @@ func LogPathDection() string {
 
 		// Get operating system name
 		osName := runtime.GOOS
-		fmt.Println("OS: ", osName)
+		log.Println("OS: ", osName)
 		switch osName {
 
 		case "windows":
 			tf2LogPath = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Team Fortress 2\\tf\\console.log"
-			fmt.Println("Windows Detected. Log Path Defaulting to: ", tf2LogPath)
+			log.Println("Windows Detected. Log Path Defaulting to: ", tf2LogPath)
 
 		case "darwin":
 			tf2LogPath = "/Users/Shared/Steam/steamapps/common/Team\\ Fortress\\ 2/tf/console.log"
-			fmt.Println("macOS Detected. Log Path Defaulting to: ", tf2LogPath)
+			log.Println("macOS Detected. Log Path Defaulting to: ", tf2LogPath)
 			os.Exit(0)
 
 		case "linux":
@@ -138,13 +137,13 @@ func LogPathDection() string {
 			}
 			osUSerName := user.Username
 
-			fmt.Println("OS User: ", osUSerName)
+			log.Println("OS User: ", osUSerName)
 			tf2LogPath = `/home/` + osUSerName + `/.local/share/Steam/steamapps/common/Team Fortress 2/tf/console.log`
-			fmt.Printf("Linux Detected. Log Path Defaulting to: \n%s\n", tf2LogPath)
+			log.Printf("Linux Detected. Log Path Defaulting to: \n%s\n", tf2LogPath)
 
 		default:
-			fmt.Println("OS: ", osName)
-			fmt.Println("Custom Log Path Not Provided or OS Not Supported Yet")
+			log.Println("OS: ", osName)
+			log.Println("Custom Log Path Not Provided or OS Not Supported Yet")
 			os.Exit(0)
 		}
 	}
