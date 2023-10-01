@@ -103,9 +103,9 @@ func GrokParsePlayerName(rconNameResponse string) map[string]string {
 }
 
 // EmptyLog empties the tf2 log file
-func EmptyLog(path string) {
+func EmptyLog(path string) error {
 	err := os.Truncate(path, 0)
-	ErrorHandler(err, true)
+	return err
 }
 
 // LogPathDection detects the tf2 log path
@@ -155,7 +155,7 @@ func LogPathDection() string {
 }
 
 // TailLog tails the tf2 log file
-func TailLog(tf2LogPath string) *tail.Tail {
+func TailLog(tf2LogPath string) (*tail.Tail, error) {
 
 	// Tail tf2 console log
 	t, err := tail.TailFile(
@@ -166,9 +166,11 @@ func TailLog(tf2LogPath string) *tail.Tail {
 			Poll:      true,
 		})
 
-	ErrorHandler(err, true)
+	if err != nil {
+		return nil, err
+	}
 
-	return t
+	return t, nil
 }
 
 // Steam3IDMatcher returns a boolean indicating if the given string matches the regex
