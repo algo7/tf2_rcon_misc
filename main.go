@@ -4,10 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
-	"github.com/algo7/tf2_rcon_misc/commands"
-	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
 )
@@ -20,6 +17,7 @@ var playersCache []utils.PlayerInfoCache
 
 func main() {
 
+	utils.GrokInit()
 	network.Connect()
 
 	if network.IsReady() == false {
@@ -30,6 +28,8 @@ func main() {
 	res := network.RconExecute("name")
 	// res sample => "name" = "Algo7" ( def. "unnamed" )
 	//res = "\"name\" = \"atomy\"" // hardcode name for testing
+
+	utils.GrokParsePlayerName(res)
 	playerNameRaw := strings.Fields(res)
 
 	if len(playerNameRaw) == 0 {
@@ -52,94 +52,95 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
+		utils.GrokParse(line.Text)
 		// Debug, turn on to print every line we read from file
 		//fmt.Printf("[+] %s\n", line.Text)
 
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
-		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
-			fmt.Println("Executing *status* rcon command after line:", line.Text)
-			// Run the status command when the lobby is updated or a player connects
-			network.RconExecute("status")
-		}
+		// if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
+		// 	fmt.Println("Executing *status* rcon command after line:", line.Text)
+		// 	// Run the status command when the lobby is updated or a player connects
+		// 	network.RconExecute("status")
+		// }
 
-		// Save to DB logic
-		if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
-			// Convert Steam 32 ID to Steam 64 ID
-			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
+		// // Save to DB logic
+		// if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
+		// 	// Convert Steam 32 ID to Steam 64 ID
+		// 	steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
 
-			// Find the player's userName
-			user := utils.GetPlayerNameFromLine(line.Text)
+		// 	// Find the player's userName
+		// 	user := utils.GetPlayerNameFromLine(line.Text)
 
-			if user == "" {
-				fmt.Println("Failed to parse user! line.Text:", line.Text)
-			}
+		// 	if user == "" {
+		// 		fmt.Println("Failed to parse user! line.Text:", line.Text)
+		// 	}
 
-			// Create a player struct
-			player := db.Player{
-				SteamID:   steamID,
-				Name:      user,
-				UpdatedAt: time.Now().UnixNano(),
-			}
+		// 	// Create a player struct
+		// 	player := db.Player{
+		// 		SteamID:   steamID,
+		// 		Name:      user,
+		// 		UpdatedAt: time.Now().UnixNano(),
+		// 	}
 
-			// Add the player to the DB
-			db.AddPlayer(player)
+		// 	// Add the player to the DB
+		// 	db.AddPlayer(player)
 
-			// Player cache logic
-			playerInfoCachce := utils.PlayerInfoCache{
-				SteamID: steamID,
-				Name:    user,
-			}
+		// 	// Player cache logic
+		// 	playerInfoCachce := utils.PlayerInfoCache{
+		// 		SteamID: steamID,
+		// 		Name:    user,
+		// 	}
 
-			// Add the player to the cache
-			utils.AddPlayerCache(&playersCache, playerInfoCachce)
+		// 	// Add the player to the cache
+		// 	utils.AddPlayerCache(&playersCache, playerInfoCachce)
 
-			fmt.Println("SteamID: ", steamID, " UserName: ", user)
-		}
+		// 	fmt.Println("SteamID: ", steamID, " UserName: ", user)
+		// }
 
-		// Command logic - TF2
-		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
+		// // Command logic - TF2
+		// isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
 
-		// Add chat logic. prob better to do this in a separate function
-		if isSay && strings.TrimSpace(text) != "" {
-			steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
+		// // Add chat logic. prob better to do this in a separate function
+		// if isSay && strings.TrimSpace(text) != "" {
+		// 	steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
 
-			chat := db.Chat{
-				SteamID:   steamID,
-				Name:      user,
-				Message:   text,
-				UpdatedAt: time.Now().UnixNano(),
-			}
+		// 	chat := db.Chat{
+		// 		SteamID:   steamID,
+		// 		Name:      user,
+		// 		Message:   text,
+		// 		UpdatedAt: time.Now().UnixNano(),
+		// 	}
 
-			db.AddChat(chat)
-		}
+		// 	db.AddChat(chat)
+		// }
 
-		// Command logic - TF2
-		if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
+		// // Command logic - TF2
+		// if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
 
-			commands.HandleUserSay(text, user, playerName)
-		} else {
-			// Command logic - Dystopia
-			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
+		// 	commands.HandleUserSay(text, user, playerName)
+		// } else {
+		// 	// Command logic - Dystopia
+		// 	isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
 
-			if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
-				commands.HandleUserSay(text, user, playerName)
-			}
-		}
+		// 	if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
+		// 		commands.HandleUserSay(text, user, playerName)
+		// 	}
+		// }
 
-		// Autobalance comment logic
-		if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
-			time.Sleep(1000 * time.Millisecond)
-			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-		}
+		// // Autobalance comment logic
+		// if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
+		// 	time.Sleep(1000 * time.Millisecond)
+		// 	network.RconExecute("say \"Thanks gaben for bonusxp!\"")
+		// }
 
-		if utils.IsStatusResponseHostname(line.Text) {
-			// Refresh the player cache
-			playersCache = []utils.PlayerInfoCache{}
-		}
+		// if utils.IsStatusResponseHostname(line.Text) {
+		// 	// Refresh the player cache
+		// 	playersCache = []utils.PlayerInfoCache{}
+		// }
 
-		// Input text is not being parsed since there's no logic for parsing it (yet)
-		// fmt.Println("Unknown:", line.Text)
+		// // Input text is not being parsed since there's no logic for parsing it (yet)
+		// // fmt.Println("Unknown:", line.Text)
 
 	}
 }

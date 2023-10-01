@@ -15,17 +15,26 @@ import (
 )
 
 // Global variables
-var (
-	ErrMissingRconHost                = errors.New("TF2 Not Running / RCON Not Enabled")
+const (
 	steam3IDRegEx                     = `\[U:[0-9]:\d{6,11}\]`
 	steam3AccIDRegEx                  = `\d{6,11}`
 	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 	statusResponseHostnameRegEx       = `hostname: .{4,}`
 	grokPattern                       = `^# +%{NUMBER:userid} %{QS:name} +\[U:%{NUMBER:steamuidfirst}:%{NUMBER:steamuidsec}\] +%{MINUTE:min}:%{SECOND:sec} +%{NUMBER:ping} +%{NUMBER:loss} +%{WORD:status}$`
+	grokPlayerNamePatten              = `%{QS}=%{QS:captured_value}\(def\.%{QS}\)%{GREEDYDATA}`
 )
 
-// String slice for caching current players
+var (
+	g            *grok.Grok
+	gc           *grok.CompiledGrok
+	gPlayerName  *grok.Grok
+	gcPlayerName *grok.CompiledGrok
+	// ErrMissingRconHost is returned when the TF2 server is not running or RCON is not enabled
+	ErrMissingRconHost = errors.New("TF2 Not Running / RCON Not Enabled")
+)
+
+// PlayerInfoCache is a String slice for caching current players
 type PlayerInfoCache struct {
 	SteamID int64
 	Name    string
@@ -35,16 +44,27 @@ type PlayerInfoCache struct {
 * Exported functions need to start with a capital letter
 **/
 
-// GrokParse parses the given line with the grok pattern
-func GrokParse(line string) {
-	g, _ := grok.New(grok.Config{NamedCapturesOnly: true})
+// GrokInit initializes and compiles the grok patterns
+func GrokInit() {
+	// Compile the main grok pattern
+	g, _ = grok.New(grok.Config{NamedCapturesOnly: true})
+	gc, _ = g.Compile(grokPattern)
 
-	gc, _ := g.Compile(grokPattern)
+	// Compile the player name grok pattern
+	gPlayerName, _ = grok.New(grok.Config{NamedCapturesOnly: true})
+	gcPlayerName, _ = gPlayerName.Compile(grokPlayerNamePatten)
+}
 
-	x := gc.ParseString(line)
-	for k, v := range x {
-		fmt.Printf("%+15s: %s\n", k, v)
-	}
+// GrokParse parses the given line with the main grok pattern
+func GrokParse(line string) map[string]string {
+	return gc.ParseString(line)
+}
+
+// GrokParsePlayerName parses the given line with the playerName grok pattern
+func GrokParsePlayerName(rconNameResponse string) map[string]string {
+	// Remove all newlines and spaces from the string
+	processed := strings.ReplaceAll(strings.ReplaceAll(rconNameResponse, "\n", ""), " ", "")
+	return gcPlayerName.ParseString(processed)
 }
 
 // ErrorHandler print the err, stop the program if err is not nil, and exit on user input
