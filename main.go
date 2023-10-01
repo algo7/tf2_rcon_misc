@@ -70,7 +70,6 @@ func main() {
 		}
 
 		// Save to DB logic
-		// Convert Steam 32 ID to Steam 64 ID
 		if playerInfo != nil {
 			log.Printf("%+v\n", *playerInfo)
 

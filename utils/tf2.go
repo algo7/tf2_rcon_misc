@@ -77,7 +77,7 @@ func GrokParse(line string) (*PlayerInfo, error) {
 	}
 
 	playerData := PlayerInfo{
-		SteamID:       steamID32,
+		SteamID:       Steam3IDToSteam64(steamID32),
 		Name:          removeQuotes(parsed["userName"]),
 		UserID:        userID,
 		SteamAccType:  parsed["steamAccType"],
