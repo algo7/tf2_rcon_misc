@@ -102,25 +102,6 @@ func GrokParsePlayerName(rconNameResponse string) map[string]string {
 	return gcPlayerName.ParseString(processed)
 }
 
-// ErrorHandler print the err, stop the program if err is not nil, and exit on user input
-func ErrorHandler(err error, exit bool) {
-	// when no error, return
-	if err == nil {
-		return
-	}
-
-	// when exit-flag set, exit the program and print stack trace
-	if exit {
-		// Print error to console
-		PrintStackTrace(err)
-		fmt.Println("Press Any Key to Exit...")
-		fmt.Scanln()
-		os.Exit(0)
-	} else { // else only print error message
-		fmt.Println(err)
-	}
-}
-
 // EmptyLog empties the tf2 log file
 func EmptyLog(path string) {
 	err := os.Truncate(path, 0)
