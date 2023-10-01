@@ -180,9 +180,8 @@ func Steam3IDFindString(text string) string {
 // Steam3IDToSteam64 converts a steam3 id to a steam64 id
 func Steam3IDToSteam64(givenSteam3ID string) int64 {
 
-	re := regexp.MustCompile(steam3AccIDRegEx)
 	baseSteamID, _ := new(big.Int).SetString("76561197960265728", 0)
-	steam3ID, _ := new(big.Int).SetString(re.FindString(givenSteam3ID), 0)
+	steam3ID, _ := new(big.Int).SetString(givenSteam3ID, 0)
 	steam64ID := new(big.Int).Add(baseSteamID, steam3ID)
 	num := steam64ID.Int64()
 
