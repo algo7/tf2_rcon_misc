@@ -37,7 +37,7 @@ var (
 
 // PlayerInfo is a struct containing all the info we need about a player
 type PlayerInfo struct {
-	SteamID       int32
+	SteamID       int64
 	Name          string
 	UserID        int
 	SteamAccType  string
@@ -83,10 +83,9 @@ func GrokParse(line string) (*PlayerInfo, error) {
 	if err != nil {
 		return nil, errors.New("failed to parse SteamID32")
 	}
-	i32 := int32(steamID32)
 
 	playerData := PlayerInfo{
-		SteamID:       i32,
+		SteamID:       steamID32,
 		Name:          parsed["userName"],
 		UserID:        userID,
 		SteamAccType:  parsed["steamAccType"],
@@ -214,11 +213,11 @@ func Steam3IDFindString(text string) string {
 }
 
 // Steam3IDToSteam64 converts a steam3 id to a steam64 id
-func Steam3IDToSteam64(givenSteam3ID string) int64 {
+func Steam3IDToSteam64(steam3ID int64) int64 {
 
 	baseSteamID, _ := new(big.Int).SetString("76561197960265728", 0)
-	steam3ID, _ := new(big.Int).SetString(givenSteam3ID, 0)
-	steam64ID := new(big.Int).Add(baseSteamID, steam3ID)
+	steam3IDBigInt := big.NewInt(steam3ID)
+	steam64ID := new(big.Int).Add(baseSteamID, steam3IDBigInt)
 	num := steam64ID.Int64()
 
 	return num

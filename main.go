@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
-	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
 )
@@ -54,7 +52,10 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		playerParsed := utils.GrokParse(line.Text)
+		playerInfo, err := utils.GrokParse(line.Text)
+		if err != nil {
+			log.Println("GrokParse error: %s at %v", line.Text, err)
+		}
 
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
@@ -66,24 +67,18 @@ func main() {
 
 		// Save to DB logic
 		// Convert Steam 32 ID to Steam 64 ID
-		if playerParsed["steamID32"] != "" {
-			steamID := utils.Steam3IDToSteam64(playerParsed["steamID32"])
+		if playerInfo != nil {
 
 			// Find the player's userName
-			user := playerParsed["userName"]
-
-			if user == "" {
-				fmt.Println("Failed to parse user! line.Text:", line.Text)
-			}
+			user := playerInfo.Name
+			steamID := utils.Steam3IDToSteam64(playerInfo.SteamID)
 
 			// Create a player struct
-			player := db.Player{
-				SteamID:   steamID,
-				Name:      user,
-				UpdatedAt: time.Now().UnixNano(),
-			}
-
-			log.Println(player)
+			// player := db.Player{
+			// 	SteamID:   steamID,
+			// 	Name:      user,
+			// 	UpdatedAt: time.Now().UnixNano(),
+			// }
 
 			// 	// Add the player to the DB
 			// 	db.AddPlayer(player)
