@@ -7,7 +7,6 @@ import (
 	"math/big"
 	"os"
 	"os/user"
-	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -165,18 +164,6 @@ func TailLog(tf2LogPath string) (*tail.Tail, error) {
 	}
 
 	return t, nil
-}
-
-// Steam3IDMatcher returns a boolean indicating if the given string matches the regex
-func Steam3IDMatcher(text string) bool {
-	re := regexp.MustCompile(steam3IDRegEx)
-	return re.MatchString(text)
-}
-
-// Steam3IDFindString returns the string that matches the given regex
-func Steam3IDFindString(text string) string {
-	re := regexp.MustCompile(steam3IDRegEx)
-	return re.FindString(text)
 }
 
 // Steam3IDToSteam64 converts a steam3 id to a steam64 id
