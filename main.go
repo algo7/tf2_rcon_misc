@@ -14,7 +14,7 @@ import (
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 // Slice of player info cache struct that holds the player info
-var playersCache []utils.PlayerInfoCache
+// var playersCache []utils.PlayerInfoCache
 
 func main() {
 
@@ -54,7 +54,7 @@ func main() {
 
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
-			log.Println("GrokParse error: %s at %v", line.Text, err)
+			log.Printf("GrokParse error: %s at %v", line.Text, err)
 		}
 
 		// Refresh player list logic
@@ -68,10 +68,8 @@ func main() {
 		// Save to DB logic
 		// Convert Steam 32 ID to Steam 64 ID
 		if playerInfo != nil {
-
+			fmt.Printf("%+v\n", *playerInfo)
 			// Find the player's userName
-			user := playerInfo.Name
-			steamID := utils.Steam3IDToSteam64(playerInfo.SteamID)
 
 			// Create a player struct
 			// player := db.Player{

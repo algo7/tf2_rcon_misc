@@ -1,11 +1,12 @@
-package utils_test
+package deprecated
 
 import (
 	"bufio"
 	"fmt"
-	"github.com/algo7/tf2_rcon_misc/utils"
 	"os"
 	"testing"
+
+	"github.com/algo7/tf2_rcon_misc/utils"
 )
 
 func TestSteam3IDToSteam64(t *testing.T) {
