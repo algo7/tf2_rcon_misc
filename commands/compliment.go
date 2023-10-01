@@ -9,8 +9,8 @@ import (
 	"github.com/algo7/tf2_rcon_misc/network"
 )
 
-// GetCompliment returns a compliment for the given target
-func GetCompliment(target string) {
+// getCompliment returns a compliment for the given target
+func getCompliment(target string) {
 	log.Println("Getting compliment for " + target)
 
 	// Send GET request to API

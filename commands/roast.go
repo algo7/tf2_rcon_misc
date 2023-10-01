@@ -10,8 +10,8 @@ import (
 	"github.com/algo7/tf2_rcon_misc/network"
 )
 
-// GetInsult returns an insult for the given target
-func GetInsult(target string) {
+// getInsult returns an insult for the given target
+func getInsult(target string) {
 	log.Println("Getting insult for " + target)
 	// Set up query parameters
 	query := url.Values{}
