@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/nxadm/tail"
+	"github.com/trivago/grok"
 )
 
 // Global variables
@@ -21,6 +22,7 @@ var (
 	userNameRegEx                     = `\[U:\d:\d+\]\s+\d{2}:\d{2}\s+`
 	rconNameCommandGetPlayerNameRegex = `"name" = "([^"]+)"`
 	statusResponseHostnameRegEx       = `hostname: .{4,}`
+	grokPattern                       = `^# +%{NUMBER:userid} %{QS:name} +\[U:%{NUMBER:steamuidfirst}:%{NUMBER:steamuidsec}\] +%{MINUTE:min}:%{SECOND:sec} +%{NUMBER:ping} +%{NUMBER:loss} +%{WORD:status}$`
 )
 
 // String slice for caching current players
@@ -32,6 +34,18 @@ type PlayerInfoCache struct {
 /**
 * Exported functions need to start with a capital letter
 **/
+
+// GrokParse parses the given line with the grok pattern
+func GrokParse(line string) {
+	g, _ := grok.New(grok.Config{NamedCapturesOnly: true})
+
+	gc, _ := g.Compile(grokPattern)
+
+	x := gc.ParseString(line)
+	for k, v := range x {
+		fmt.Printf("%+15s: %s\n", k, v)
+	}
+}
 
 // ErrorHandler print the err, stop the program if err is not nil, and exit on user input
 func ErrorHandler(err error, exit bool) {

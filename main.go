@@ -3,12 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/algo7/tf2_rcon_misc/commands"
 	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
-	"strings"
-	"time"
 )
 
 // Const console message that informs you about forceful autobalance
