@@ -30,7 +30,10 @@ func main() {
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	playerName := utils.GrokParsePlayerName(res)
+	playerName, err := utils.GrokParsePlayerName(res)
+	if err != nil {
+		log.Fatalf("%v Please restart the program", err)
+	}
 	log.Printf("Player Name: %s", playerName)
 
 	// Get log path
@@ -38,6 +41,7 @@ func main() {
 
 	// Empty the log file
 	err := utils.EmptyLog(tf2LogPath)
+
 	if err != nil {
 		log.Fatalf("Unable to empty the log file: %v", err)
 	}

@@ -89,15 +89,15 @@ func GrokParse(line string) (*PlayerInfo, error) {
 }
 
 // GrokParsePlayerName parses the given line with the playerName grok pattern
-func GrokParsePlayerName(rconNameResponse string) string {
+func GrokParsePlayerName(rconNameResponse string) (string, error) {
 	// Remove all newlines and spaces from the string
 	processed := strings.ReplaceAll(strings.ReplaceAll(rconNameResponse, "\n", ""), " ", "")
 	playerNameMap := gcPlayerName.ParseString(processed)
 	if len(playerNameMap) == 0 {
-		log.Fatalln("Unable to get the player name. Please restart the program")
+		return "", errors.New("You player name could not be parsed")
 	}
 	playerName := removeQuotes(playerNameMap["playerName"])
-	return playerName
+	return playerName, nil
 }
 
 // EmptyLog empties the tf2 log file
