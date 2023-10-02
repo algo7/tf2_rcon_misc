@@ -31,13 +31,13 @@ func main() {
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	playerName, err := utils.GrokParsePlayerName(res)
+	currentPlayer, err := utils.GrokParsePlayerName(res)
 
 	if err != nil {
 		log.Fatalf("%v Please restart the program", err)
 	}
 
-	log.Printf("Player Name: %s", playerName)
+	log.Printf("Current plyaer is %s", currentPlayer)
 
 	// Get log path
 	tf2LogPath := utils.LogPathDection()
@@ -90,9 +90,7 @@ func main() {
 
 			if err == nil {
 				// log.Printf("GrokParseCommand error: %s at %v", line.Text, err)
-				log.Printf("Command is %s. Arg is %s. Caller is %s", command, args, chat.PlayerName)
-				call := commands.SelfCommandMap[command]
-				call(args)
+				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
 			}
 
 		}
