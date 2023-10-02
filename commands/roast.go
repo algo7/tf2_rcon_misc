@@ -16,7 +16,7 @@ func getInsult(target string) {
 	// Set up query parameters
 	query := url.Values{}
 	query.Set("plural", "true")
-	query.Set("template", target+" is <article target=adj1> <adjective min=3 max=5 id=adj1> <amount> like <article target=adj2> <adjective min=1 max=3 id=adj2> <adverb> <animal>")
+	query.Set("template", target+" is <article target=adj1> <adjective min=3 max=5 id=adj1> <amount> like <article target=adj2> <adjective min=1 max=3 id=adj2> <adverb><animal>")
 
 	// Send GET request to API
 	resp, err := http.Get("https://insult.mattbas.org/api/insult.json?" + query.Encode())
