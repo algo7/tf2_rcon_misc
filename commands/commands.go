@@ -12,17 +12,17 @@ import (
 var SelfCommandMap = map[string]func(args string){
 	// Stuff follows the : are only function pointers not function calls
 	// Just a test command
-	"!test": func(args string) {
+	"test": func(args string) {
 		fmt.Println("Test command executed!")
 		time.Sleep(1000 * time.Millisecond)
 		network.RconExecute("say \"Test command executed!. Value:" + args + "\"")
 	},
 	// Roast someone
-	"!roast": func(args string) {
+	"roast": func(args string) {
 		time.Sleep(1000 * time.Millisecond)
 		getInsult(args)
 	},
-	"!nice": func(args string) {
+	"nice": func(args string) {
 		time.Sleep(1000 * time.Millisecond)
 		getCompliment(args)
 	},

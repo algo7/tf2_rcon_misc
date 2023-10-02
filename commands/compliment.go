@@ -16,7 +16,7 @@ func getCompliment(target string) {
 	// Send GET request to API
 	resp, err := http.Get("https://complimentr.com/api")
 	if err != nil {
-		log.Panicf("Error while calling the Compliment API: %v", err)
+		log.Printf("Error while calling the Compliment API: %v", err)
 	}
 	defer resp.Body.Close()
 
