@@ -24,7 +24,7 @@ const (
 // scanPort scans for the given port on the host
 func scanPort(protocol, hostname string, port int) bool {
 
-	fmt.Printf("Connecting to: %s:%d\n", hostname, port)
+	log.Printf("Connecting to: %s:%d\n", hostname, port)
 	address := hostname + ":" + strconv.Itoa(port)
 	RCONConnection, err := net.DialTimeout(protocol, address, 60*time.Second)
 
