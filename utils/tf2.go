@@ -19,7 +19,7 @@ import (
 const (
 	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
 	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
-	chatPattern          = `(?:(?:\*DEAD\*(?:\(TEAM\))?)|(?:\(TEAM\)))?\s{1}%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}$`
+	chatPattern          = `(?:(?:\*DEAD\*(?:\(TEAM\))?)|(?:\(TEAM\)))?(?:\s{1})?%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}$`
 	commandPattern       = `!%{WORD:command}\s{1}%{GREEDYDATA:args}`
 )
 
