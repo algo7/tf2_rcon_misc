@@ -3,7 +3,7 @@
 1. MongoDB installed locally: https://www.mongodb.com/try/download/community
 2. OpenAI API Key (if you want to use the ChatGPT integration): https://platform.openai.com/account/api-keys
 
-# github.com/algo7/tf2_rcon_misc-MISC
+# github.com/algo7/tf2_rcon_misc
 Go program that performs various commands via RCON base on local TF2 console output.
 Get all the players' name and steamID on the server and store them into the local MongoDB instance.
 
