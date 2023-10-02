@@ -17,7 +17,7 @@ import (
 // Global variables
 const (
 	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
-	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
+	grokPlayerNamePatten = `%{QS}%{SPACE}=%{SPACE}%{QS:playerName}%{SPACE}\(%{SPACE}def\.%{SPACE}%{QS}%{SPACE}\)%{GREEDYDATA}`
 	chatPattern          = `(?:(?:\*DEAD\*(?:\(TEAM\))?)|(?:\(TEAM\)))?(?:\s{1})?%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}$`
 	commandPattern       = `!%{WORD:command}\s{1}%{GREEDYDATA:args}`
 )
@@ -109,8 +109,8 @@ func GrokParse(line string) (*PlayerInfo, error) {
 
 // GrokParsePlayerName parses the given line with the playerName grok pattern
 func GrokParsePlayerName(rconNameResponse string) (string, error) {
-	// Remove all newlines and spaces from the string
-	processed := strings.ReplaceAll(strings.ReplaceAll(rconNameResponse, "\n", ""), " ", "")
+	// Remove all newlinesfrom the string
+	processed := strings.ReplaceAll(rconNameResponse, "\n", "")
 	playerNameMap := gcPlayerName.ParseString(processed)
 	if len(playerNameMap) == 0 {
 		return "", errors.New("You player name could not be parsed")
