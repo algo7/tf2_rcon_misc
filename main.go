@@ -60,18 +60,6 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Parse the line for player info
-		playerInfo, err := utils.GrokParse(line.Text)
-		if err != nil {
-
-		}
-
-		// Parse the line for chat info
-		chat, err := utils.GrokParseChat(line.Text)
-		if err != nil {
-
-		}
-
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
@@ -79,14 +67,12 @@ func main() {
 
 			// Clear the player list
 			playersInGame = []*utils.PlayerInfo{}
-			fmt.Println("playersInGame", playersInGame)
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 		}
 
-		// Save to DB logic
-		if playerInfo != nil {
-
+		// Parse the line for player info
+		if playerInfo, err := utils.GrokParse(line.Text); err == nil {
 			log.Printf("%+v\n", *playerInfo)
 
 			// Append the player to the player list
@@ -103,30 +89,29 @@ func main() {
 			db.AddPlayer(player)
 		}
 
-		if chat != nil {
+		// Parse the line for chat info
+		if chat, err := utils.GrokParseChat(line.Text); err == nil {
+
 			log.Printf("Chat: %+v\n", *chat)
 
 			// Parse the chat message for commands
-			command, args, err := utils.GrokParseCommand(chat.Message)
-
-			// If chat message is a command
-			if err == nil {
+			if command, args, err := utils.GrokParseCommand(chat.Message); err == nil {
+				fmt.Println(command, args, chat.PlayerName, currentPlayer)
 				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
-			} else {
-				// Get the player's steamID64 from the playersInGame
-				steamID, err := utils.GetSteamIDFromPlayerName(chat.PlayerName, playersInGame)
+			}
 
-				if err == nil {
-					// Create a chat document for inserting into MongoDB
-					chatInfo := db.Chat{
-						SteamID:   steamID,
-						Name:      chat.PlayerName,
-						Message:   chat.Message,
-						UpdatedAt: time.Now().UnixNano(),
-					}
-					db.AddChat(chatInfo)
+			// Get the player's steamID64 from the playersInGame
+			steamID, err := utils.GetSteamIDFromPlayerName(chat.PlayerName, playersInGame)
+
+			if err == nil {
+				// Create a chat document for inserting into MongoDB
+				chatInfo := db.Chat{
+					SteamID:   steamID,
+					Name:      chat.PlayerName,
+					Message:   chat.Message,
+					UpdatedAt: time.Now().UnixNano(),
 				}
-
+				db.AddChat(chatInfo)
 			}
 
 		}
