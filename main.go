@@ -70,12 +70,6 @@ func main() {
 			// log.Printf("GrokParseChat error: %s at %v", line.Text, err)
 		}
 
-		// Parse the line for dead player chat info
-		deadChat, err := utils.GrokParseDeadChat(line.Text)
-		if err != nil {
-			// log.Printf("GrokParseDeadChat error: %s at %v", line.Text, err)
-		}
-
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
@@ -90,10 +84,6 @@ func main() {
 
 		if chat != nil {
 			log.Printf("Chat: %+v\n", *chat)
-		}
-
-		if deadChat != nil {
-			log.Printf("Dead Chat: %+v\n", *deadChat)
 		}
 
 		// Save to DB logic
