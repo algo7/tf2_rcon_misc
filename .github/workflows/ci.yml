@@ -32,6 +32,9 @@ jobs:
       #       choco install upx
       #     fi
 
+      - name: Tidy
+        run: go mod tidy
+        shell: bash
       - name: Build
         run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
         shell: bash
