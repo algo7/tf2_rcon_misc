@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math/big"
 	"os"
@@ -151,6 +152,20 @@ func GrokParseCommand(line string) (string, string, error) {
 	args := parsed["args"]
 
 	return command, args, nil
+}
+
+// GetSteamIDFromPlayerName gets the steamID64 from a player name cache
+func GetSteamIDFromPlayerName(playerName string, playersInfo []*PlayerInfo) (int64, error) {
+
+	for _, playerInfo := range playersInfo {
+		fmt.Println("playerInfo.Name", playerName)
+		if playerInfo.Name == playerName {
+			fmt.Println("playerInfo.SteamID", playerInfo.SteamID)
+			return playerInfo.SteamID, nil
+		}
+	}
+
+	return 0, errors.New("Player not found")
 }
 
 // EmptyLog empties the tf2 log file

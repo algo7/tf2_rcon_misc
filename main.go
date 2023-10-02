@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -14,7 +15,7 @@ import (
 // Const console message that informs you about forceful autobalance.
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
-// Slice of player info cache struct that holds the player info
+// playersInGame is a slice of player info cache struct that holds the player info
 var playersInGame []*utils.PlayerInfo
 
 func main() {
@@ -62,13 +63,13 @@ func main() {
 		// Parse the line for player info
 		playerInfo, err := utils.GrokParse(line.Text)
 		if err != nil {
-			// log.Printf("GrokParse error: %s at %v", line.Text, err)
+
 		}
 
 		// Parse the line for chat info
 		chat, err := utils.GrokParseChat(line.Text)
 		if err != nil {
-			// log.Printf("GrokParseChat error: %s at %v", line.Text, err)
+
 		}
 
 		// Refresh player list logic
@@ -78,22 +79,9 @@ func main() {
 
 			// Clear the player list
 			playersInGame = []*utils.PlayerInfo{}
-
+			fmt.Println("playersInGame", playersInGame)
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
-		}
-
-		if chat != nil {
-			log.Printf("Chat: %+v\n", *chat)
-
-			// Parse the chat message for commands
-			command, args, err := utils.GrokParseCommand(chat.Message)
-
-			// If chat message is a command
-			if err == nil {
-				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
-			}
-
 		}
 
 		// Save to DB logic
@@ -113,6 +101,35 @@ func main() {
 
 			// Add the player to the DB
 			db.AddPlayer(player)
+		}
+
+		if chat != nil {
+			log.Printf("Chat: %+v\n", *chat)
+
+			// Parse the chat message for commands
+			command, args, err := utils.GrokParseCommand(chat.Message)
+
+			// If chat message is a command
+			if err == nil {
+				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
+			} else {
+				// Get the player's steamID64 from the playersInGame
+				steamID, err := utils.GetSteamIDFromPlayerName(chat.PlayerName, playersInGame)
+
+				if err != nil {
+					// Create a chat document for inserting into MongoDB
+					chatInfo := db.Chat{
+						SteamID:   steamID,
+						Name:      chat.PlayerName,
+						Message:   chat.Message,
+						UpdatedAt: time.Now().UnixNano(),
+					}
+
+					db.AddChat(chatInfo)
+				}
+
+			}
+
 		}
 	}
 }
