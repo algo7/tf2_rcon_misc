@@ -2,10 +2,8 @@ package db
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"os"
-
-	"github.com/algo7/tf2_rcon_misc/utils"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,7 +15,7 @@ var client = connect()
 
 // connect to the database
 func connect() *mongo.Client {
-	fmt.Println("Connecting to MongoDB...")
+	log.Println("Connecting to MongoDB...")
 
 	// Get the MongoDB URI from the environment
 	mongoURI := os.Getenv("MONGODB_URI")
@@ -37,7 +35,7 @@ func connect() *mongo.Client {
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
-		utils.ErrorHandler(err, true)
+		log.Fatalf("Unable to connect to MongoDB: %v", err)
 	}
 
 	// defer func() {
@@ -48,10 +46,10 @@ func connect() *mongo.Client {
 
 	// Send a ping to confirm a successful connection
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		utils.ErrorHandler(err, true)
+		log.Fatalf("Unable to ping MongoDB: %v", err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
+	log.Println("Connected to MongoDB!")
 
 	return client
 }

@@ -1,144 +1,108 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"github.com/algo7/tf2_rcon_misc/commands"
+	"log"
+	"strings"
+	"time"
+
 	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
-	"strings"
-	"time"
 )
 
 // Const console message that informs you about forceful autobalance
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 // Slice of player info cache struct that holds the player info
-var playersCache []utils.PlayerInfoCache
+var playersInGame []*utils.PlayerInfo
 
 func main() {
 
+	// Init the grok patterns
+	utils.GrokInit()
+
+	// Connect to the rcon server
 	network.Connect()
 
-	if network.IsReady() == false {
-		utils.ErrorHandler(errors.New("finally unable to establish rcon-connection"), true)
+	if network.RCONConnection == nil {
+		log.Println("Connection to RCON failed")
 	}
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	// res sample => "name" = "Algo7" ( def. "unnamed" )
-	//res = "\"name\" = \"atomy\"" // hardcode name for testing
-	playerNameRaw := strings.Fields(res)
+	playerName, err := utils.GrokParsePlayerName(res)
 
-	if len(playerNameRaw) == 0 {
-		utils.ErrorHandler(errors.New("unable to parse empty response to 'name' command"), true)
+	if err != nil {
+		log.Fatalf("%v Please restart the program", err)
 	}
 
-	playerName := strings.TrimSuffix(strings.TrimPrefix(playerNameRaw[2], `"`), `"`)
-	fmt.Println("Player name:", playerName)
+	log.Printf("Player Name: %s", playerName)
 
 	// Get log path
 	tf2LogPath := utils.LogPathDection()
 
 	// Empty the log file
-	utils.EmptyLog(tf2LogPath)
+	err = utils.EmptyLog(tf2LogPath)
+
+	if err != nil {
+		log.Fatalf("Unable to empty the log file: %v", err)
+	}
 
 	// Tail the log
-	fmt.Println("Tailing Logfile at:", tf2LogPath)
-	t := utils.TailLog(tf2LogPath)
+	log.Println("Tailing Logfile at:", tf2LogPath)
+	t, err := utils.TailLog(tf2LogPath)
+	if err != nil {
+		log.Fatalf("Unable to tail the log file: %v", err)
+	}
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Debug, turn on to print every line we read from file
-		//fmt.Printf("[+] %s\n", line.Text)
+		// Parse the line for player info
+		playerInfo, err := utils.GrokParse(line.Text)
+		if err != nil {
+			// log.Printf("GrokParse error: %s at %v", line.Text, err)
+		}
+
+		// Parse the line for chat info
+		chat, err := utils.GrokParseChat(line.Text)
+		if err != nil {
+			// log.Printf("GrokParseChat error: %s at %v", line.Text, err)
+		}
 
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
-			fmt.Println("Executing *status* rcon command after line:", line.Text)
+			log.Printf("Executing *status* command after line: %s", line.Text)
+
+			// Clear the player list
+			playersInGame = []*utils.PlayerInfo{}
+
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 		}
 
+		if chat != nil {
+			log.Printf("Chat: %+v\n", *chat)
+		}
+
 		// Save to DB logic
-		if utils.Steam3IDMatcher(line.Text) && utils.GetPlayerNameFromLine(line.Text) != "" {
-			// Convert Steam 32 ID to Steam 64 ID
-			steamID := utils.Steam3IDToSteam64(utils.Steam3IDFindString(line.Text))
+		if playerInfo != nil {
 
-			// Find the player's userName
-			user := utils.GetPlayerNameFromLine(line.Text)
+			log.Printf("%+v\n", *playerInfo)
 
-			if user == "" {
-				fmt.Println("Failed to parse user! line.Text:", line.Text)
-			}
+			// Append the player to the player list
+			playersInGame = append(playersInGame, playerInfo)
 
-			// Create a player struct
+			// Create a player document for inserting into MongoDB
 			player := db.Player{
-				SteamID:   steamID,
-				Name:      user,
+				SteamID:   playerInfo.SteamID,
+				Name:      playerInfo.Name,
 				UpdatedAt: time.Now().UnixNano(),
 			}
 
 			// Add the player to the DB
 			db.AddPlayer(player)
-
-			// Player cache logic
-			playerInfoCachce := utils.PlayerInfoCache{
-				SteamID: steamID,
-				Name:    user,
-			}
-
-			// Add the player to the cache
-			utils.AddPlayerCache(&playersCache, playerInfoCachce)
-
-			fmt.Println("SteamID: ", steamID, " UserName: ", user)
 		}
-
-		// Command logic - TF2
-		isSay, user, text := utils.GetChatSayTF2(playersCache, line.Text)
-
-		// Add chat logic. prob better to do this in a separate function
-		if isSay && strings.TrimSpace(text) != "" {
-			steamID := utils.GetSteamIDFromPlayerCache(user, playersCache)
-
-			chat := db.Chat{
-				SteamID:   steamID,
-				Name:      user,
-				Message:   text,
-				UpdatedAt: time.Now().UnixNano(),
-			}
-
-			db.AddChat(chat)
-		}
-
-		// Command logic - TF2
-		if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
-
-			commands.HandleUserSay(text, user, playerName)
-		} else {
-			// Command logic - Dystopia
-			isSay, user, text = utils.GetChatSayDystopia(playersCache, line.Text)
-
-			if isSay && strings.TrimSpace(text) != "" && string(text[0]) == "!" {
-				commands.HandleUserSay(text, user, playerName)
-			}
-		}
-
-		// Autobalance comment logic
-		if strings.Contains(line.Text, teamSwitchMessage) && utils.IsAutobalanceCommentEnabled() { // when you get team switched forcefully, thank gaben for the bonusxp!
-			time.Sleep(1000 * time.Millisecond)
-			network.RconExecute("say \"Thanks gaben for bonusxp!\"")
-		}
-
-		if utils.IsStatusResponseHostname(line.Text) {
-			// Refresh the player cache
-			playersCache = []utils.PlayerInfoCache{}
-		}
-
-		// Input text is not being parsed since there's no logic for parsing it (yet)
-		// fmt.Println("Unknown:", line.Text)
-
 	}
 }

@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/gorcon/rcon v1.3.4
 	github.com/nxadm/tail v1.4.8
-	github.com/sashabaranov/go-openai v1.15.4
+	github.com/trivago/grok v1.0.0
 	go.mongodb.org/mongo-driver v1.12.1
 )
 
@@ -14,6 +14,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
+	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect

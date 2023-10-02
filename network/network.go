@@ -2,7 +2,7 @@ package network
 
 import (
 	"fmt"
-	"github.com/algo7/tf2_rcon_misc/utils"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -13,8 +13,8 @@ import (
 
 // Global variables
 var (
-	rconHost string
-	conn     *rcon.Conn
+	rconHost       string
+	RCONConnection *rcon.Conn
 )
 
 const (
@@ -26,13 +26,13 @@ func scanPort(protocol, hostname string, port int) bool {
 
 	fmt.Printf("Connecting to: %s:%d\n", hostname, port)
 	address := hostname + ":" + strconv.Itoa(port)
-	conn, err := net.DialTimeout(protocol, address, 60*time.Second)
+	RCONConnection, err := net.DialTimeout(protocol, address, 60*time.Second)
 
 	if err != nil {
 		return false
 	}
 
-	defer conn.Close()
+	defer RCONConnection.Close()
 
 	return true
 }
@@ -41,11 +41,15 @@ func scanPort(protocol, hostname string, port int) bool {
 func getHostInfo() []string {
 	// Get host name
 	host, err := os.Hostname()
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		log.Fatalf("Unable to obtain the Hostname: %v", err)
+	}
 
 	// Get host's ipv4 and ipv6 addresses
 	addrs, err := net.LookupIP(host)
-	utils.ErrorHandler(err, true)
+	if err != nil {
+		log.Fatalf("Unable to obtain the Host IP Addresses: %v", err)
+	}
 
 	// Slice to hold ipv4 and ipv6 addresses
 	var ips []string
@@ -87,33 +91,33 @@ func determineRconHost() string {
 // rconConnect connects to a rcon host
 func rconConnect(rconHost string) *rcon.Conn {
 
-	conn, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
+	RCONConnection, err := rcon.Dial(rconHost+":"+strconv.Itoa(rconPort), "123")
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Unable to connect to the RCON host: %v", err)
 		return nil
 	}
 
-	_, err = conn.Execute("status")
+	_, err = RCONConnection.Execute("status")
 	if err != nil {
-		utils.ErrorHandler(err, false)
+		log.Printf("Unable to execute the initial `status` command: %v", err)
 		return nil
 	}
 
-	fmt.Println("Connected")
+	log.Println("RCON connection established")
 
-	return conn
+	return RCONConnection
 }
 
 // RconExecute executes a rcon command
 func RconExecute(command string) string {
 
 	// fmt.Println("Executing: " + command)
-	response, err := conn.Execute(command)
+	response, err := RCONConnection.Execute(command)
 
 	// Reconnect if the connection is lost (usually when joining a server)
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println("Connection failed, retrying...")
+		log.Printf("Unable to execute the command: %s because %v", command, err)
+		log.Println("Connection failed, retrying...")
 		rconConnect(rconHost)
 	}
 
@@ -141,7 +145,7 @@ func Connect() {
 		rconHost = determineRconHost()
 
 		if rconHost == "" {
-			fmt.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
+			log.Printf("Rcon host detection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
 			break
@@ -158,10 +162,10 @@ func Connect() {
 	for time.Since(start) < duration && try <= maxRetries {
 
 		// Connect to the rcon host
-		conn = rconConnect(rconHost)
+		RCONConnection = rconConnect(rconHost)
 
-		if conn == nil {
-			fmt.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
+		if RCONConnection == nil {
+			log.Printf("Rcon connection failed, retrying, %d/%d tries...\n", try, maxRetries)
 			time.Sleep(interval)
 		} else {
 			break
@@ -169,9 +173,4 @@ func Connect() {
 
 		try++
 	}
-}
-
-// IsReady returns true if the connection is ready
-func IsReady() bool {
-	return conn != nil
 }
