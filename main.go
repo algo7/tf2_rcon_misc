@@ -84,6 +84,12 @@ func main() {
 
 		if chat != nil {
 			log.Printf("Chat: %+v\n", *chat)
+			command, args, err := utils.GrokParseCommand(chat.Message)
+			if err == nil {
+				// log.Printf("GrokParseCommand error: %s at %v", line.Text, err)
+				log.Printf("Command is %s. Arg is %s. Caller is %s", command, args, chat.PlayerName)
+			}
+
 		}
 
 		// Save to DB logic
