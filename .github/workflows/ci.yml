@@ -19,7 +19,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.20
+          go-version: '1.20'
+          cache-dependency-path: '**/*.sum'
+
+      - name: Build
+        run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
+        shell: bash
 
       # - name: Setup UPX
       #   shell: bash
@@ -31,13 +36,6 @@ jobs:
       #     else
       #       choco install upx
       #     fi
-
-      - name: Tidy
-        run: go mod tidy
-        shell: bash
-      - name: Build
-        run: CGO_ENABLED=0 go build -v -ldflags="-s -w"
-        shell: bash
 
       # - name: Pack with UPX
       #   shell: bash
