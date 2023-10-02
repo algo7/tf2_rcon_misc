@@ -116,7 +116,7 @@ func main() {
 				// Get the player's steamID64 from the playersInGame
 				steamID, err := utils.GetSteamIDFromPlayerName(chat.PlayerName, playersInGame)
 
-				if err != nil {
+				if err == nil {
 					// Create a chat document for inserting into MongoDB
 					chatInfo := db.Chat{
 						SteamID:   steamID,
@@ -124,7 +124,6 @@ func main() {
 						Message:   chat.Message,
 						UpdatedAt: time.Now().UnixNano(),
 					}
-
 					db.AddChat(chatInfo)
 				}
 
