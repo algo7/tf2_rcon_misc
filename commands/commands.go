@@ -37,9 +37,6 @@ func CommandExecuted(command string, args string, callerName string, currentPlay
 	case "test":
 		time.Sleep(1000 * time.Millisecond)
 		network.RconExecute("say \"Test command executed!. Value:" + args + "\"")
-	case "roast":
-		time.Sleep(1000 * time.Millisecond)
-		getInsult(args)
 	default:
 		return
 	}
