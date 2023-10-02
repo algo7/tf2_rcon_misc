@@ -1,6 +1,6 @@
 module github.com/algo7/tf2_rcon_misc
 
-go 1.21.1
+go 1.20
 
 require (
 	github.com/gorcon/rcon v1.3.4
