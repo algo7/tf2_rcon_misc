@@ -86,10 +86,11 @@ func main() {
 		if chat != nil {
 			log.Printf("Chat: %+v\n", *chat)
 
+			// Parse the chat message for commands
 			command, args, err := utils.GrokParseCommand(chat.Message)
 
+			// If chat message is a command
 			if err == nil {
-				// log.Printf("GrokParseCommand error: %s at %v", line.Text, err)
 				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
 			}
 
