@@ -6,7 +6,7 @@ flags:
   - -tags=netgo
 goos: darwin
 goarch: amd64
-binary: github.com/algo7/tf2_rcon_misc-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}.bin
+binary: tf2-rcon-{{ .Os }}-{{ .Arch }}-{{ .Env.VERSION }}.bin
 ldflags:
   - '-s'
   - '-w'
