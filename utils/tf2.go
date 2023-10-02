@@ -19,6 +19,7 @@ const (
 	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
 	grokPlayerNamePatten = `%{QS}=%{QS:playerName}\(def\.%{QS}\)%{GREEDYDATA}`
 	chatPattern          = `(?:(?:\*DEAD\*(?:\(TEAM\))?)|(?:\(TEAM\)))?\s{1}%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}$`
+	commandPattern       = `!${WORD:command}${SPACE}${GREENYDATA:args}`
 )
 
 var (
@@ -28,6 +29,8 @@ var (
 	gcPlayerName *grok.CompiledGrok
 	gChat        *grok.Grok
 	gcChat       *grok.CompiledGrok
+	gCommands    *grok.Grok
+	gcCommands   *grok.CompiledGrok
 )
 
 // PlayerInfo is a struct containing all the info we need about a player
@@ -62,6 +65,10 @@ func GrokInit() {
 	// Compile the chat grok pattern
 	gChat, _ = grok.New(grok.Config{NamedCapturesOnly: true})
 	gcChat, _ = gChat.Compile(chatPattern)
+
+	// Compile the command grok pattern
+	gCommands, _ = grok.New(grok.Config{NamedCapturesOnly: true})
+	gcCommands, _ = gCommands.Compile(commandPattern)
 }
 
 // GrokParse parses the given line with the main grok pattern
@@ -129,6 +136,21 @@ func GrokParseChat(line string) (*ChatInfo, error) {
 	}
 
 	return &chatInfo, nil
+}
+
+// GrokParseCommand parses the given line with the command grok pattern
+func GrokParseCommand(line string) (string, string, error) {
+
+	parsed := gcCommands.ParseString(line)
+
+	if len(parsed) == 0 {
+		return "", "", errors.New("failed to parse command line")
+	}
+
+	command := parsed["command"]
+	args := parsed["args"]
+
+	return command, args, nil
 }
 
 // EmptyLog empties the tf2 log file
