@@ -10,7 +10,7 @@ import (
 	"github.com/algo7/tf2_rcon_misc/utils"
 )
 
-// Const console message that informs you about forceful autobalance
+// Const console message that informs you about forceful autobalance.
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
 // Slice of player info cache struct that holds the player info
