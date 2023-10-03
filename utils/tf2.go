@@ -130,9 +130,10 @@ func GrokParseChat(line string) (*ChatInfo, error) {
 
 	playerName := parsed["player_name"]
 	message := parsed["message"]
+	messageTrimmed := strings.TrimRight(message, "\r\n")
 	chatInfo := ChatInfo{
 		PlayerName: playerName,
-		Message:    message,
+		Message:    messageTrimmed,
 	}
 
 	return &chatInfo, nil
