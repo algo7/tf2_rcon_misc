@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -96,7 +95,6 @@ func main() {
 
 			// Parse the chat message for commands
 			if command, args, err := utils.GrokParseCommand(chat.Message); err == nil {
-				fmt.Println(command, args, chat.PlayerName, currentPlayer)
 				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
 			}
 
