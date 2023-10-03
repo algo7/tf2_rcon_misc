@@ -16,7 +16,7 @@ import (
 
 // Global variables
 const (
-	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}$`
+	grokPattern          = `^# +%{NUMBER:userId} %{QS:userName} +\[%{WORD:steamAccType}:%{NUMBER:steamUniverse}:%{NUMBER:steamID32}\] +%{MINUTE}:%{SECOND} +%{NUMBER} +%{NUMBER} +%{WORD}(?:\r?\n?)?$`
 	grokPlayerNamePatten = `%{QS}%{SPACE}=%{SPACE}%{QS:playerName}%{SPACE}\(%{SPACE}def\.%{SPACE}%{QS}%{SPACE}\)%{GREEDYDATA}`
 	chatPattern          = `(?:(?:\*DEAD\*(?:\(TEAM\))?)|(?:\(TEAM\)))?(?:\s{1})?%{GREEDYDATA:player_name}\s{1}:\s{2}%{GREEDYDATA:message}$`
 	commandPattern       = `!%{WORD:command}\s{1}%{GREEDYDATA:args}`
