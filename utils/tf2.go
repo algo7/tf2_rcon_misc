@@ -150,8 +150,9 @@ func GrokParseCommand(line string) (string, string, error) {
 
 	command := parsed["command"]
 	args := parsed["args"]
+	argsTrimmed := strings.TrimRight(args, "\r\n")
 
-	return command, args, nil
+	return command, argsTrimmed, nil
 }
 
 // GetSteamIDFromPlayerName gets the steamID64 from a player name cache
