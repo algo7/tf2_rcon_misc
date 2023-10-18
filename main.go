@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/algo7/tf2_rcon_misc/commands"
 	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
 	"github.com/algo7/tf2_rcon_misc/utils"
@@ -13,7 +14,7 @@ import (
 // Const console message that informs you about forceful autobalance.
 const teamSwitchMessage = "You have switched to team BLU and will receive 500 experience points at the end of the round for changing teams."
 
-// Slice of player info cache struct that holds the player info
+// playersInGame is a slice of player info cache struct that holds the player info
 var playersInGame []*utils.PlayerInfo
 
 func main() {
@@ -30,13 +31,13 @@ func main() {
 
 	// Get the current player name
 	res := network.RconExecute("name")
-	playerName, err := utils.GrokParsePlayerName(res)
+	currentPlayer, err := utils.GrokParsePlayerName(res)
 
 	if err != nil {
 		log.Fatalf("%v Please restart the program", err)
 	}
 
-	log.Printf("Player Name: %s", playerName)
+	log.Printf("Current plyaer is %s", currentPlayer)
 
 	// Get log path
 	tf2LogPath := utils.LogPathDection()
@@ -58,18 +59,6 @@ func main() {
 	// Loop through the text of each received line
 	for line := range t.Lines {
 
-		// Parse the line for player info
-		playerInfo, err := utils.GrokParse(line.Text)
-		if err != nil {
-			// log.Printf("GrokParse error: %s at %v", line.Text, err)
-		}
-
-		// Parse the line for chat info
-		chat, err := utils.GrokParseChat(line.Text)
-		if err != nil {
-			// log.Printf("GrokParseChat error: %s at %v", line.Text, err)
-		}
-
 		// Refresh player list logic
 		// Dont assume status headlines as player connects
 		if strings.Contains(line.Text, "Lobby updated") || (strings.Contains(line.Text, "connected") && !strings.Contains(line.Text, "uniqueid")) {
@@ -77,18 +66,12 @@ func main() {
 
 			// Clear the player list
 			playersInGame = []*utils.PlayerInfo{}
-
 			// Run the status command when the lobby is updated or a player connects
 			network.RconExecute("status")
 		}
 
-		if chat != nil {
-			log.Printf("Chat: %+v\n", *chat)
-		}
-
-		// Save to DB logic
-		if playerInfo != nil {
-
+		// Parse the line for player info
+		if playerInfo, err := utils.GrokParse(line.Text); err == nil {
 			log.Printf("%+v\n", *playerInfo)
 
 			// Append the player to the player list
@@ -103,6 +86,32 @@ func main() {
 
 			// Add the player to the DB
 			db.AddPlayer(player)
+		}
+
+		// Parse the line for chat info
+		if chat, err := utils.GrokParseChat(line.Text); err == nil {
+
+			log.Printf("Chat: %+v\n", *chat)
+
+			// Parse the chat message for commands
+			if command, args, err := utils.GrokParseCommand(chat.Message); err == nil {
+				commands.CommandExecuted(command, args, chat.PlayerName, currentPlayer)
+			}
+
+			// Get the player's steamID64 from the playersInGame
+			steamID, err := utils.GetSteamIDFromPlayerName(chat.PlayerName, playersInGame)
+
+			if err == nil {
+				// Create a chat document for inserting into MongoDB
+				chatInfo := db.Chat{
+					SteamID:   steamID,
+					Name:      chat.PlayerName,
+					Message:   chat.Message,
+					UpdatedAt: time.Now().UnixNano(),
+				}
+				db.AddChat(chatInfo)
+			}
+
 		}
 	}
 }
