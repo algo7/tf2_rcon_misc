@@ -8,7 +8,7 @@ import (
 	"github.com/algo7/tf2_rcon_misc/commands"
 	"github.com/algo7/tf2_rcon_misc/db"
 	"github.com/algo7/tf2_rcon_misc/network"
-	"github.com/algo7/tf2_rcon_misc/ui"
+
 	"github.com/algo7/tf2_rcon_misc/utils"
 )
 
@@ -57,13 +57,7 @@ func main() {
 		log.Fatalf("Unable to tail the log file: %v", err)
 	}
 
-	ui.InitUI()
-
-	go func() {
-		if err := ui.App().SetRoot(ui.PlayerTable(), true).Run(); err != nil {
-			panic(err)
-		}
-	}()
+	// Go routine to start the UI so that the UI doesn't block the execution
 
 	// Loop through the text of each received line
 	for line := range t.Lines {
@@ -85,7 +79,7 @@ func main() {
 
 			// Append the player to the player list
 			playersInGame = append(playersInGame, playerInfo)
-			ui.UpdateView(playersInGame)
+
 			// Create a player document for inserting into MongoDB
 			player := db.Player{
 				SteamID:   playerInfo.SteamID,
