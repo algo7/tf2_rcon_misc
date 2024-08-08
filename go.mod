@@ -6,7 +6,7 @@ require (
 	github.com/gorcon/rcon v1.3.5
 	github.com/nxadm/tail v1.4.11
 	github.com/trivago/grok v1.0.0
-	go.mongodb.org/mongo-driver v1.16.0
+	go.mongodb.org/mongo-driver v1.16.1
 )
 
 require (
